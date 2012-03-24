@@ -3,6 +3,6 @@ task :default do
 end
 
 task :clear do
-	exec "rm -r *~"
+	exec "rm -rf *~"
 end
 	
