@@ -13,20 +13,14 @@
 
 	<meta name="viewport" content="width=device-width">
 
-	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/highlight.css">
+	<link rel="stylesheet" href="/css/custom.css">
 
-	<script src="js/libs/modernizr-2.5.3.min.js"></script>
+	<script src="/js/libs/modernizr-2.5.3.min.js"></script>
 </head>
-<body>
+<body class="gray">
 <header>
-<nav>
-	<ul>
-		<li><a href="#">me</a></li>
-		<li><a href="#">Index</a></li>
-		<li><a href="#">JavaScript</a></li>
-		<li><a href="#">CoffeeScript</a></li>
-	</ul>
-</nav>
 </header>
 <div role="main" id="main">
 	<div class="post">
@@ -43,11 +37,11 @@
 <pre><code>animal = new Animal</code></pre>
 
 <p>定义构造函数（在实例化前调用的函数）很简单，使用名为<code>constructor</code>的函数即可。这与Ruby的<code>initialize</code>或者Python的<code>__init__</code>类似。</p>
-<span class='csscript' />
-<pre><code>class Animal
-  constructor: (name) -&gt;
-    @name = name</code></pre>
-
+<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='k'>class</span> <span class='nx'>Animal</span>
+      <span class='nv'>constructor: </span><span class='nf'>(name) -&gt;</span>
+        <span class='vi'>@name = </span><span class='nx'>name</span>
+</code></pre>
+</div>
 <p>实际上，CoffeeScript为设置实例属性值的常见模式提供了一种简写的方式。如果在参数前加一个<code>@</code>，CoffeeScript就会在构造函数中自动地把参数设置为实例的属性。而且，这中简写对于类之外的普通函数同样适用。下面的例子与我们手动设置实例属性的上一例子等价。</p>
 <span class='csscript' />
 <pre><code>class Animal
@@ -213,7 +207,6 @@ class User extends Module
 
 </div>
 <footer>
-	<p>&copy;2012 island205.github.com</p>
 </footer>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
