@@ -1,7 +1,9 @@
 body{
 	font-family: "minion-pro-1", "minion-pro-2", "Palatino", Georgia, "Times New Roman", serif;
 	line-height:1.6em;
+	visibility:hidden;
 }
+
 #main{
 	background-color:#fff;
 	margin-left:auto;
