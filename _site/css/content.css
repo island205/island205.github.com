@@ -1,0 +1,8 @@
+ol{
+	padding:0;
+}
+ol li{
+	border-bottom:1px solid #ddd;
+	line-height:1.7em;
+	list-style-position: inside;
+}
