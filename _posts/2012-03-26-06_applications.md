@@ -220,7 +220,7 @@ JavaScript模板与服务端模板非常相似。你可以混合使用模板标�
 
 现在我们已经学习了语法，让我们在`views/users/show.eco`定义一个Eco模板吧：
 
-{% highlight coffeescript %}    
+{% highlight coffeescript %}
     <label>Name: <%= @name %></label>
 {% endhighlight %}
     

@@ -215,8 +215,7 @@
 </div></p>
 
 <p>现在我们已经学习了语法，让我们在<code>views/users/show.eco</code>定义一个Eco模板吧：</p>
-<div class='highlight'><pre><code class='coffeescript'>    
-    <span class='o'>&lt;</span><span class='nx'>label</span><span class='o'>&gt;</span><span class='nv'>Name: </span><span class='o'>&lt;%=</span> <span class='nx'>@name</span> <span class='o'>%&gt;&lt;</span><span class='err'>/label&gt;</span>
+<div class='highlight'><pre><code class='coffeescript'>    <span class='o'>&lt;</span><span class='nx'>label</span><span class='o'>&gt;</span><span class='nv'>Name: </span><span class='o'>&lt;%=</span> <span class='nx'>@name</span> <span class='o'>%&gt;&lt;</span><span class='err'>/label&gt;</span>
 </code></pre>
 </div>
 <p>Stitch会自动编译我们的模板且把它们打包到<code>application.js</code>中。然后，在程序控制器中我们就可以require模板，就像使用一个模块一样，传入所以的数据执行它。</p>

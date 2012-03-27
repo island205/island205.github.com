@@ -2,6 +2,7 @@
 layout: chapter
 title:  糟粕
 ---
+
 <div class="back"><a href="/tlboc.html">&laquo; 返回目录</a></div>
 
 #糟粕
@@ -16,13 +17,17 @@ JavaScript是一个让人头疼的怪物，知道你不能用什么和应该用�
 
 CoffeeScript的语法只包含了JavaScript的一个子集，众所周知的*精华部分*，因此这样就减少了需要处理的问题。让我们用`with`作为例子来看看。`with`被“看作有害的”好久了，应该避免使用它。`with`提供了一个频繁读写对象的快捷方式。例如，像下面这样写：
 
+{% highlight javascript %}
     dataObj.users.alex.email = "info@eribium.org";
+{% endhighlight %}
     
 你可以这样写：
 
+{% highlight javascript %}
     with(dataObj.users.alex) {
       email = "info@eribium.org";
     }
+{% endhighlight %}
     
 首先撇开我们不应该使用如此深的对象不说，这个语法非常漂亮。但必须除掉这一点。这会让JavaScript非常迷惑，它不知道你在`with`的上下文中到底要干嘛，使得它会强迫自己在任何变量查找时总是从这个特殊的对象开始。
 
@@ -32,6 +37,7 @@ CoffeeScript的语法只包含了JavaScript的一个子集，众所周知的*精
 
 默认情况下，你的JavaScript程序是在全局作用域下运行的，并且任何创建出来的变量默认的也会都在全局作用域中。如果你想创建一个局部变量的话，JavaScript要求使用`var`关键字来显式的指明。
 
+{% highlight javascript %}
     usersCount = 1;        // Global
     var groupsCount = 2;   // Global
                           
@@ -39,6 +45,7 @@ CoffeeScript的语法只包含了JavaScript的一个子集，众所周知的*精
       pagesCount = 3;      // Global
       var postsCount = 4;  // Local
     })()
+{% endhighlight %}
 
 这是一个比较奇怪的决定，既然大部分情况下你创建的是局部而不是全局变量，那么为什么要让它成为默认的呢？事实就是这样，开发者必须记住在定义变量之前加上`var`关键字，否则会造成冲突复写了彼此的变量，引起怪异的bug。
 
@@ -48,23 +55,28 @@ CoffeeScript的语法只包含了JavaScript的一个子集，众所周知的*精
 
 <span class="csscript"></span>
 
+{% highlight coffeescript %}
     outerScope = true
     do ->
       innerScope = true
+{% endhighlight %}
       
 编译过来就是：
 
+{% highlight javascript %}
     var outerScope;
     outerScope = true;
     (function() {
       var innerScope;
       return innerScope = true;
     })();
+{% endhighlight %}
     
 注意CoffeeScript是如何自动的在上下文中第一次使用时自动的初始化变量（使用`var`）的。同时，我们无法覆盖外层作用域的变量，你仍然可以引用和访问它们。这你就要当心了，在你编译一个嵌套比较深的函数或者类时你就要当心不要意外的重用某个外层变量的名字。例如，这样我们就不小心在一个类函数中复写掉了`package`变量。
 
 <span class="csscript"></span>
 
+{% highlight coffeescript %}
     package = require('./package')
     
     class Hem
@@ -74,13 +86,16 @@ CoffeeScript的语法只包含了JavaScript的一个子集，众所周知的*精
         
       hemPackage: ->
         package.create()
+{% endhighlight %}
         
 偶尔需要使用全局变量时，你需要将它们设置为`window`的属性才行：
 
 <span class="csscript"></span>
 
+{% highlight coffeescript %}
       class window.Asset
         constructor: ->
+{% endhighlight %}
 
 通过保证显式的全局变量而不是隐式的，CoffeeScript移除了JavaScript程序中主要的bug源之一。
 
@@ -90,12 +105,16 @@ JavaScript并没有强制要求在源码中使用分号，因此可以省略分�
 
 很不幸，这是一个非常糟糕的想法，这有可能完全改变代码的行为。看下面这个例子，这段JavaScript没有问题，对吗？
 
+{% highlight javascript %}
     function() {}
     (window.options || {}).property
+{% endhighlight %}
     
 不对，至少对解析器来说是这样，这会导致一个语法错误。如果以一个括号开头的话，解析器就不会插入一个分号。代码会被转化成一行：
 
+{% highlight javascript %}
     function() {}(window.options || {}).property
+{% endhighlight %}
 
 现在你可以看到问题在哪里，知道为什么解析器会抱怨了。当你写JavaScript的时候，你因该在语句后面加上分号。CoffeeScript通过在其语法中不使用分号来绕靠了这些麻烦。相反会在CoffeeScript编译为JavaScript时在把分号自动的插入到正确的位置上。
 
@@ -107,19 +126,23 @@ JavaScript并没有强制要求在源码中使用分号，因此可以省略分�
 
 <span class="csscript"></span>
 
+{% highlight coffeescript %}
     myObj = {
       delete: "I am a keyword!"
     }
     myObj.class = ->
+{% endhighlight %}
     
 
 CoffeeScript解析器会注意到你使用了保留字，而为你加上引号：
 
+{% highlight javascript %}
     var myObj;
     myObj = {
       "delete": "I am a keyword!"
     };
     myObj["class"] = function() {};
+{% endhighlight %}
     
 ##相等比较
 
@@ -127,6 +150,7 @@ JavaScript的非严格等于比较会产生一些莫名其妙的行为，往往�
 
 <span class="csscript"></span>
 
+{% highlight coffeescript %}
     ""           ==   "0"           // false
     0            ==   ""            // true
     0            ==   "0"           // true
@@ -136,6 +160,7 @@ JavaScript的非严格等于比较会产生一些莫名其妙的行为，往往�
     false        ==   null          // false
     null         ==   undefined     // true
     " \t\r\n"    ==   0             // true
+{% endhighlight %}
 
 这些行为背后的原因是非严格等于会自动的强制类型转换。我相信你也同意这中方式是多么的模糊不清，而且会导致不可预料的结果和bug。
 
@@ -147,15 +172,19 @@ CoffeeScript通过简单的将非严格的比较替换为严格的来解决这�
 
 <span class="csscript"></span>
 
+{% highlight coffeescript %}
     alert("Empty Array")  unless [].length
     alert("Empty String") unless ""
     alert("Number 0")     unless 0
+{% endhighlight %}
     
 如果你想显式的检查`null`和`undefined`的话，你可以使用CoffeeScript的存在操作符：
 
 <span class="csscript"></span>
 
+{% highlight coffeescript %}
     alert("This is not called") unless ""?
+{% endhighlight %}
     
 在上例中，由于空字符串不等于`null`，所以`alert()`不会被调用。
 
@@ -163,11 +192,14 @@ CoffeeScript通过简单的将非严格的比较替换为严格的来解决这�
 
 在JavaScript有一点非常奇怪，函数可以在定义之前调用。例如，下面的代码能够正常运行，尽管`wem`实在被调用之后才被定义的：
 
+{% highlight javascript %}
     wem();
     function wem() {}
+{% endhighlight %}
 
 这与函数的作用域有关。在程序运行之前函数会被提升，这样的话函数在被定义的作用域的任何地方都可用，就算在源码中也可以在明确的定义之前调用它们。可问题在于，这中提升行为在浏览器上表现不一，例如：
     
+{% highlight javascript %}
     if (true) {
       function declaration() {
         return "first";
@@ -178,13 +210,16 @@ CoffeeScript通过简单的将非严格的比较替换为严格的来解决这�
       }
     }
     declaration();
+{% endhighlight %}
     
 在像Firefox这类浏览器中，`declaration()`会返回`"first"`，而在其他类似于Chrome这类浏览器上会返回`"second"`，尽管看起来`else`语句永远不会被执行。
 
 如果你想更加深入的了解函数定义式的话，你可以访问 [Juriy Zaytsev的指南](http://kangax.github.com/nfe/)，他对标准进行了深入的研究。但我只想说，它们有怪异的行为，在后面的代码中就会引起问题。综合考虑下来，使用函数表达式是避免这些问题的最佳方法。
 
+{% highlight coffeescript %}
     var wem = function(){};
     wem();
+{% endhighlight %}
 
 CoffeeScript通过彻底地移除函数定义式而只是用函数表达式来解决此问题。
 
@@ -192,12 +227,16 @@ CoffeeScript通过彻底地移除函数定义式而只是用函数表达式来�
 
 JavaScript解释器的一个瑕疵是数值对象的*点表示法*会被解释为一个浮点数，而不是一个属性的查找。比如，下面的JavaScript会产生一个语法错误：
 
+{% highlight javascript %}
     5.toString();
+{% endhighlight %}
     
 JavaScript解释器会在点后面查找数字，但是当它碰到的是`toString()`的话就会产生一个`Unexpected token`错误。既可以使用括号也可以多加一个点来解决这个问题。
     
+{% highlight javascript %}
     (5).toString();
     5..toString();
+{% endhighlight %}
     
 还好CoffeeScript解析器非常聪明，当你访问一个数字的属性时，自动地使用两个点标记来处理这个问题（如上面的例子所示）。
 
@@ -215,11 +254,13 @@ CoffeeScript竭尽全力解决了JavaScript设计上的一些缺陷，但是也�
 
 <span class="csscript"></span>
 
+{% highlight coffeescript %}
     # Don't do this
     model = eval(modelName)
     
     # Use square brackets instead
     model = window[modelName]
+{% endhighlight %}
     
 ##使用typeof
 
@@ -227,12 +268,15 @@ CoffeeScript竭尽全力解决了JavaScript设计上的一些缺陷，但是也�
 
 <span class="csscript"></span>
 
+{% highlight coffeescript %}
     typeof undefinedVar is "undefined"
+{% endhighlight %}
 
 对于其他所有的类型检测，`typeof`非常失败。依赖于浏览器和实例初始化方式不同会返回不一致的结果。于此CoffeeScript也无能为力，因为这语言用的是静态检查没有运行时的类型判断。你只能自食其力了。
 
 为了说明问题所在，这是从[JavaScript Garden](http://bonsaiden.github.com/JavaScript-Garden/)拿来的表格，该表格展示了这个类型检测的关键字主要不稳定的地方。
-  
+
+{% highlight coffeescript %}  
     Value               Class      Type
     -------------------------------------
     "foo"               String     string
@@ -250,6 +294,7 @@ CoffeeScript竭尽全力解决了JavaScript设计上的一些缺陷，但是也�
     new RegExp("meow")  RegExp     object
     {}                  Object     object
     new Object()        Object     object
+{% endhighlight %}
     
 你会发现，使用引号还是`String`类来定义一个字符串会影响`typeof`的结果。`typeof`应该都返回`"string"`才符合逻辑，但是对于后者它返回的却是`"object"`。很不幸，这样的不一致性只会让事情变得更糟糕。
 
@@ -257,6 +302,7 @@ CoffeeScript竭尽全力解决了JavaScript设计上的一些缺陷，但是也�
 
 <span class="csscript"></span>
 
+{% highlight coffeescript %}
     type = do ->
       classToType = {}
       for name in "Boolean Number String Function Array Date RegExp Undefined Null".split(" ")
@@ -275,23 +321,30 @@ CoffeeScript竭尽全力解决了JavaScript设计上的一些缺陷，但是也�
     type(true)       # "boolean"
     type(null)       # "null"
     type({})         # "object"
+{% endhighlight %}
     
 如果你想检查某个变量是否被定义，你仍然需要使用`typeof`，否则你会得到一个`ReferenceError`的错误。
 
 <span class="csscript"></span>
 
+{% highlight coffeescript %}
     if typeof aVar isnt "undefined"
       objectType = type(aVar)
+{% endhighlight %}
       
 或者使用更加简洁的存在操作符：
 
+{% highlight coffeescript %}
     objectType = type(aVar?)
+{% endhighlight %}
     
 作为类型检测的替代，你通常还可以使用鸭子类型检测结合CoffeeScript的存在操作符来避免确定一个对象的类型。例如，假设我们将向一个数组中加入一个值。我们可以这么说，既然这个`类数组`对象实现了`push()`方法，我们应该把它当作一个数组：
 
 <span class="csscript"></span>
 
+{% highlight coffeescript %}
     anArray?.push? aValue
+{% endhighlight %}
     
 如果`anArray`是一个对象而不是一个数组，那么存在操作符会保证`push()`绝不会被调用。
     
@@ -301,19 +354,23 @@ JavaScript的`instanceof`关键字几乎就和`typeof`一样不给力。理想�
 
 <span class="csscript"></span>
 
+{% highlight coffeescript %}
     new String("foo") instanceof String # true
     "foo" instanceof String             # false
+{% endhighlight %}
     
 而且，`instanceof`当比较不用浏览器里不同frame中的对象时也不能正常工作。实际上，`instanceof`对于自定义的对象才会返回正确的值，比方说CoffeeScript的类型。
 
 <span class="csscript"></span>
 
+{% highlight coffeescript %}
     class Parent
     class Child extends Parent
     
     child = new Child
     child instanceof Child  # true
     child instanceof Parent # true
+{% endhighlight %}
     
 确定你只在比较你自己的对象时使用它，或者坚决不用更好。
 
@@ -323,36 +380,46 @@ JavaScript的`instanceof`关键字几乎就和`typeof`一样不给力。理想�
 
 <span class="csscript"></span>
 
+{% highlight coffeescript %}
     anObject = {one: 1, two: 2}
     delete anObject.one
     anObject.hasOwnProperty("one") # false
+{% endhighlight %}
 
 用于其他地方，比方说删除一个变量或者函数，就完全不行。
 
 <span class="csscript"></span>
 
+{% highlight coffeescript %}
     aVar = 1
     delete aVar
     typeof Var # "integer"
+{% endhighlight %}
 
 这种行为非常古怪，但是你已经知道了。如果你想移除一个变量的引用，将其赋值为`null`即可。
 
 <span class="csscript"></span>
 
+{% highlight coffeescript %}
     aVar = 1
     aVar = null
+{% endhighlight %}
 
 ##使用parseInt
 
 如果你给JavaScript的`parseInt()`函数传递一个字符串而没有指明基数的话它会返回一个让你意外的值，例如：
 
+{% highlight coffeescript %}
     # Returns 8, not 10!
     parseInt('010') is 8
+{% endhighlight %}
     
 给该函数传递一个基数让它能够正常工作：
 
+{% highlight coffeescript %}
     # Use base 10 for the correct result
     parseInt('010', 10) is 10
+{% endhighlight %}
 
 这些用法CoffeeScript并不能为你做，每次当你使用`parseInt()`函数的时候别忘了给它传递一个基数。
     
@@ -379,7 +446,7 @@ Strict模式是ECMAScript5的一个新特性，它能够让你在一种*严格*�
 * 访问`arguments.caller` 或`arguments.callee` 报错（与性能有关）
 * 使用`with`的话会抛出语法错误
 * `undefined`等之类的确定的变量不再可写
-* 引入更多的保留关键字，比方说 `implements`、`interface`、`let`、`package`、`private`、`protected`、`public`、`static`和`yield`
+* 引入更多的保留关键字，比方说 `implements`、 `interface`、 `let`、 `package`、 `private`、 `protected`、 `public`、 `static`和`yield`
 
 而且，严格模式还改变了一些运行时的行为：
 
@@ -396,18 +463,22 @@ CoffeeScript已经遵循了许多严格模式的要求，比方说在定义变�
 
 <span class="csscript"></span>
     
+{% highlight coffeescript %}
     ->
       "use strict"
     
       # ... your code ...
+{% endhighlight %}
       
 就是这样，直接使用`'use strict'`字符串。没有比这更简单的了，而且它完全向后兼容。让我们实际试试严格模式。下面的代码在严格模式下会引起一个语法错误，而在普通模式下就没问题：
 
 <span class="csscript"></span>
 
+{% highlight coffeescript %}
     do ->
       "use strict"
       console.log(arguments.callee)
+{% endhighlight %}
       
 在Strict模式下，对`arguments.caller`和`arguments.callee`的访问已经被移除了，因为它们是性能损耗的要点。现在只要使用它们就会抛出语法错误。
 
@@ -415,17 +486,21 @@ CoffeeScript已经遵循了许多严格模式的要求，比方说在定义变�
 
 <span class="csscript"></span>
 
+{% highlight coffeescript %}
     do ->
       "use strict"
       class @Spine
+{% endhighlight %}
       
 这背后的原因是不一致性，即在严格模式下`this`是`undefined`的，而在普通模式下它指向`window`对象。解决办法就是像这样显式的在`window`对象上设置全局变量。
 
 <span class="csscript"></span>
 
+{% highlight coffeescript %}
     do ->
       "use strict"
       class window.Spine
+{% endhighlight %}
       
 虽然我推荐使用严格模式，但是并不值得这么做，一是严格模式并不会引入JavaScript中还没有完全准备好的特性，再者由于VM（虚拟机）在运行时会进行更多的检查从而让你的代码变慢。你应该在开发时使用严格模式，而发布时去掉它。
 
@@ -435,5 +510,7 @@ CoffeeScript已经遵循了许多严格模式的要求，比方说在定义变�
 
 好消息是CoffeeScript已经对编译输出进行过`lints`检查，因此CoffeeScript产生的JavaScript已经是与JavaScript Lint兼容的代码了。事实上，`coffee`命令工具支持`--lint`参数：
 
+{% highlight coffeescript %}
     coffee --lint index.coffee
       index.coffee:	0 error(s), 0 warning(s)
+{% endhighlight %}
