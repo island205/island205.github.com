@@ -2,7 +2,7 @@
 layout: chapter
 title:  应用程序
 ---
-<div class="back"><a href="/tlboc.html">&laquo; 返回目录</a></div>
+<div class="back"><a href="/tlboc/">&laquo; 返回目录</a></div>
 
 #创建应用程序
 

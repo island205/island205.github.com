@@ -3,7 +3,7 @@ layout: chapter
 title:  介绍
 ---
 
-<div class="back"><a href="/tlboc.html">&laquo; 返回目录</a></div>
+<div class="back"><a href="/tlboc/">&laquo; 返回目录</a></div>
 
 #CoffeeScirpt是什么？
 

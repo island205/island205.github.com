@@ -3,7 +3,7 @@ layout: chapter
 title:  糟粕
 ---
 
-<div class="back"><a href="/tlboc.html">&laquo; 返回目录</a></div>
+<div class="back"><a href="/tlboc/">&laquo; 返回目录</a></div>
 
 #糟粕
 
