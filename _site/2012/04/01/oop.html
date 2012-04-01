@@ -1,0 +1,171 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+	<title></title>
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<meta name="viewport" content="width=device-width">
+
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/highlight.css">
+	<link rel="stylesheet" href="/css/custom.css">
+
+	<script src="/js/libs/modernizr-2.5.3.min.js"></script>
+</head>
+<body class="gray">
+<header>
+</header>
+<div role="main" id="main">
+	<div class="post">
+	<div class='back'><a href='/cs/'>&laquo; 返回目录</a></div>
+<h2 id='id38'>类：原型函数</h2>
+
+<p>CoffeeScript的类定义语法与它对象的定义语法很像。这并不是巧合，当你定义一个类时，其实你定义的就是一个对象。具体来讲，你定义的是一个原型。如果你定义了<code>constructor</code>函数，那它是唯一不属于原型的属性。<br />让我们看一个例子，以阐明一个众所周知的事实：单个毛球族制造的麻烦与全部毛球族的数量成正比：</p>
+
+<p><strong>Classes/Tribble.coffee</strong></p>
+<div class='highlight'><pre><code class='coffeescript'>    <span class='k'>class</span> <span class='nx'>Tribble</span>
+      <span class='nv'>constructor: </span><span class='o'>-&gt;</span>
+        <span class='vi'>@isAlive = </span><span class='kc'>true</span>
+         <span class='nx'>Tribble</span><span class='p'>.</span><span class='nx'>count</span><span class='o'>++</span>
+     
+       <span class='c1'># Prototype properties</span>
+       <span class='nv'>breed: </span><span class='o'>-&gt;</span> <span class='k'>new</span> <span class='nx'>Tribble</span> <span class='k'>if</span> <span class='nx'>@isAlive</span>
+       <span class='nv'>die: </span><span class='o'>-&gt;</span>
+         <span class='nx'>Tribble</span><span class='p'>.</span><span class='nx'>count</span><span class='o'>--</span> <span class='k'>if</span> <span class='nx'>@isAlive</span>
+         <span class='vi'>@isAlive = </span><span class='kc'>false</span>
+      
+       <span class='c1'># Class-level properties</span>
+       <span class='vi'>@count: </span><span class='mi'>0</span>
+       <span class='vi'>@makeTrouble: </span><span class='o'>-&gt;</span> <span class='nx'>console</span><span class='p'>.</span><span class='nx'>log</span> <span class='p'>(</span><span class='s1'>&#39;Trouble!&#39;</span> <span class='k'>for</span> <span class='nx'>i</span> <span class='k'>in</span> <span class='p'>[</span><span class='mi'>1</span><span class='p'>..</span><span class='nx'>@count</span><span class='p'>]).</span><span class='nx'>join</span><span class='p'>(</span><span class='s1'>&#39; &#39;</span><span class='p'>)</span>
+</code></pre>
+</div>
+<p>这里有很多新语法，让我们分块讨论。<br />每次新建一个毛球族时，<code>Trible.count</code>就加1（在这里我们可以将其称为<code>@count</code>，因为在类内部的<code>this</code>值就是类本身）。当调用<code>Trible.makeTrouble()</code>时，它会输出<code>Trible.count</code>次“Trouble”。<br />测试一下：</p>
+
+<p><strong>Classes/Tribble.coffee</strong></p>
+<div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>tribble1 = </span><span class='k'>new</span> <span class='nx'>Tribble</span>
+    <span class='nv'>tribble2 = </span><span class='k'>new</span> <span class='nx'>Tribble</span>
+    <span class='nx'>Tribble</span><span class='p'>.</span><span class='nx'>makeTrouble</span><span class='p'>()</span> <span class='c1'># &quot;Trouble! Trouble!&quot;</span>
+</code></pre>
+</div>
+<p>注意，在<code>Tribble</code>类的上下文中可以用<code>@count</code>来访问<code>Tribble.count</code>，但在<code>Tribble</code>的方法中却不可以。咋一看可能会有点莫名其妙，但是别忘记我们涉及到三个对象：<code>Tribble</code>对象本身（实际上就是<code>contructor</code>函数），<code>Tribble.prototype</code>，还有<code>Tribble</code>的实例。默认地，<code>Tribble</code>的属性（除去<code>contructor</code>之外的）都会附加到原型上。当使用<code>@</code>前缀时，就是明确表示我们想把该属性添加到类对象本身上去 。<br />因为添加到原型上的函数（包括构造器）都是以各自的对象作为上下文被调用的，在这些函数中有@前缀的变量指向的都是实例属性。这就是我们在构造函数中定义<code>@isAlive</code>的原因：我们需要为每个实例添加各自的<code>@isAlive</code>属性。然后我们就可以这样做：</p>
+
+<p><strong>Classes/Tribble.coffee</strong></p>
+<div class='highlight'><pre><code class='coffeescript'>    <span class='nx'>tribble1</span><span class='p'>.</span><span class='nx'>die</span><span class='p'>()</span>
+    <span class='nx'>Tribble</span><span class='p'>.</span><span class='nx'>makeTrouble</span><span class='p'>()</span> <span class='c1'># &quot;Trouble!&quot;</span>
+</code></pre>
+</div>
+<p>由于有<code>if @isAlive</code>的检查，再次杀死<code>tribble1</code>就没什么影响了。而且众所周知，毛球族（tribbles）是胎生的，因此要不了多久就会有新的生物注入到我们的程序中：</p>
+
+<p><strong>Classes/Tribble.coffee</strong></p>
+<div class='highlight'><pre><code class='coffeescript'>    <span class='nx'>tribble2</span><span class='p'>.</span><span class='nx'>breed</span><span class='p'>().</span><span class='nx'>breed</span><span class='p'>().</span><span class='nx'>breed</span><span class='p'>()</span>
+    <span class='nx'>Tribble</span><span class='p'>.</span><span class='nx'>makeTrouble</span><span class='p'>()</span> <span class='c1'># &quot;Trouble! Trouble! Trouble! Trouble!&quot;</span>
+</code></pre>
+</div>
+<h2 id='extends'>使用“extends”来继承</h2>
+
+<p>到目前为止，我们讨论了原型是如何使得在大量对象之间共享各种功能变得容易的，以及CoffeeScript的类如何提供一个有用的语法来将原型属性绑到一起。如果这就是类所有能做的事情，那它似乎没多大用处。但是当我们想使用继承时类就会真正地闪闪发光起来。<br />JavaScript是通过某个称为“原型链”的东西来实现继承的。假设，A的原型B有自己的原型C。然后我们写了这样的代码：</p>
+<div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>a = </span><span class='k'>new</span> <span class='nx'>A</span>
+    <span class='nx'>console</span><span class='p'>.</span><span class='nx'>log</span> <span class='nx'>a</span><span class='p'>.</span><span class='nx'>flurb</span><span class='p'>()</span>
+</code></pre>
+</div>
+<p>首先，运行时查看这个特殊的类A的实例a上是否有一个<code>flurb</code>的属性；如果没有则查看A的原型B；如果还是没找到，则它继续查看B的原型C。简而言之，它会遍历整个原型链。<br />如果C上也没有flurb会怎么样？那运行时会检查原始对象的原型（即<code>{}</code>的原型）。也就是说，每个对象都继承了<code>{}</code>的原型，但是之间可能会包含其他原型。<br />所有这些把原型给原型再给原型的赋值会变得有些混乱。这就是CoffeeScript中需要<code>extends</code>的原因。<br />我们做个申明：</p>
+<div class='highlight'><pre><code class='coffeescript'>    <span class='k'>class</span> <span class='nx'>B</span> <span class='k'>extends</span> <span class='nx'>A</span>
+</code></pre>
+</div>
+<p>然后B的原型就继承自A的原型，另外还把A的类属性拷贝给了B。因此如果我们现在不再继续定义B，B的实例将有和A实例完全一样的行为。（有一个例外：<code>B.name</code>是“B”而<code>A.name</code>是“A”——name是一个特殊的属性。）<br />让我们来看一个稍微深入点的例子：</p>
+<div class='highlight'><pre><code class='coffeescript'>    <span class='k'>class</span> <span class='nx'>Pet</span>
+       <span class='nv'>constructor: </span><span class='o'>-&gt;</span> <span class='vi'>@isHungry = </span><span class='kc'>true</span>
+       <span class='nv'>eat: </span><span class='o'>-&gt;</span> <span class='vi'>@isHungry = </span><span class='kc'>false</span>
+    
+    <span class='k'>class</span> <span class='nx'>Dog</span> <span class='k'>extends</span> <span class='nx'>Pet</span>
+    <span class='nv'>eat: </span><span class='o'>-&gt;</span>
+      <span class='nx'>console</span><span class='p'>.</span><span class='nx'>log</span> <span class='s1'>&#39;*crunch, crunch*&#39;</span>
+       <span class='k'>super</span><span class='p'>()</span>
+    <span class='nv'>fetch: </span><span class='o'>-&gt;</span>
+      <span class='nx'>console</span><span class='p'>.</span><span class='nx'>log</span> <span class='s1'>&#39;Yip yip!&#39;</span>
+       <span class='vi'>@isHungry = </span><span class='kc'>true</span>
+</code></pre>
+</div>
+<p><code>Dog</code>继承了<code>Pet</code>的构造器，这意味着狗狗们生来就是饿的。当小狗吃东西时，它会发出一些声音然后调用<code>super()</code>，<code>super()</code>的意思是“调用父类同名的方法。”（精确地说就是<code>Pet::eat.call this</code>。）然后这只狗就不饿了。<br />如果在子类上定义了一个构造函数，那它会覆盖父类的构造函数。不过它随时都可以用<code>super()</code>来调用父类的构造函数。在子类构造函数开始时就调用一下<code>super()</code>（或者更有可能用的<code>super</code>——参看<em>“super”不是“super”</em>，67页。）通常是明智之举。<br />信不信由你，你已经知道了关于类的所有需要了解的知识。由于这些东西都是基于CoffeeScript的，所以语法可能与JavaScript有较大差别，但是编译后的代码是简单易懂的。如果你是一个传统OOP（面向对象编程）方法论的死忠，那下面这小节就是为你而设的了。</p>
+
+<p><strong>多态与转型</strong><br />类的一大应用就是多态。多态是一个高级的面向对象编程的术语——“某个对象可以被当作几种对象，但不是全部种类的对象”。下面是一个典型的例子：</p>
+<div class='highlight'><pre><code class='coffeescript'>    <span class='k'>class</span> <span class='nx'>Shape</span>
+       <span class='nv'>constructor: </span><span class='nf'>(@width) -&gt;</span>
+       <span class='nv'>computeArea: </span><span class='o'>-&gt;</span> <span class='k'>throw</span> <span class='k'>new</span> <span class='nb'>Error</span><span class='p'>(</span><span class='s1'>&#39;I am an abstract class!&#39;</span><span class='p'>)</span>
+    
+    <span class='k'>class</span> <span class='nx'>Square</span> <span class='k'>extends</span> <span class='nx'>Shape</span>
+       <span class='nv'>computeArea: </span><span class='o'>-&gt;</span> <span class='nb'>Math</span><span class='p'>.</span><span class='nx'>pow</span> <span class='nx'>@width</span><span class='p'>,</span> <span class='mi'>2</span>
+    
+    <span class='k'>class</span> <span class='nx'>Circle</span> <span class='k'>extends</span> <span class='nx'>Shape</span>
+       <span class='nv'>radius: </span><span class='o'>-&gt;</span> <span class='nx'>@width</span> <span class='err'>/ 2</span>
+       <span class='nv'>computeArea: </span><span class='o'>-&gt;</span> <span class='nb'>Math</span><span class='p'>.</span><span class='nx'>PI</span> <span class='o'>*</span> <span class='nb'>Math</span><span class='p'>.</span><span class='nx'>pow</span> <span class='nx'>@radius</span><span class='p'>(),</span> <span class='mi'>2</span>
+    
+    <span class='nv'>showArea = </span><span class='nf'>(shape) -&gt;</span>
+       <span class='nx'>unless</span> <span class='nx'>shape</span> <span class='k'>instanceof</span> <span class='nx'>Shape</span>
+         <span class='k'>throw</span> <span class='k'>new</span> <span class='nb'>Error</span><span class='p'>(</span><span class='s1'>&#39;showArea requires a Shape instance!&#39;</span><span class='p'>)</span>
+       <span class='nx'>console</span><span class='p'>.</span><span class='nx'>log</span> <span class='nx'>shape</span><span class='p'>.</span><span class='nx'>computeArea</span><span class='p'>()</span>
+    
+    <span class='nx'>showArea</span> <span class='k'>new</span> <span class='nx'>Square</span><span class='p'>(</span><span class='mi'>2</span><span class='p'>)</span> <span class='c1'># 4</span>
+    <span class='nx'>showArea</span> <span class='k'>new</span> <span class='nx'>Circle</span><span class='p'>(</span><span class='mi'>2</span><span class='p'>)</span> <span class='c1'># pi</span>
+</code></pre>
+</div>
+<p>注意到函数<code>showArea</code>会检查传入的对象是否是一个<code>Shape</code>的实例（使用<code>instanceof</code>关键字），但是它并不关心给它的是何种形状（Shape）。<code>Square</code>或者<code>Circle</code>实例都行。尽管这只是一个小示例，但是很难想象一个丰富的几何库不采用这种方式。</p>
+
+<div class="extends">
+<p><strong>“super”不是“super()”</strong></p>
+
+<p>下面的代码有什么问题？</p>
+<div class='highlight'><pre><code class='coffeescript'>    <span class='k'>class</span> <span class='nx'>Appliance</span>
+       <span class='nv'>constructor: </span><span class='nf'>(warranty) -&gt;</span>
+         <span class='nx'>warrantyDb</span><span class='p'>.</span><span class='nx'>save</span><span class='p'>(</span><span class='k'>this</span><span class='p'>)</span> <span class='k'>if</span> <span class='nx'>warranty</span>
+    
+    <span class='k'>class</span> <span class='nx'>Toaster</span> <span class='k'>extends</span> <span class='nx'>Appliance</span>
+       <span class='nv'>constructor: </span><span class='nf'>(warranty) -&gt;</span>
+         <span class='k'>super</span><span class='p'>()</span>
+</code></pre>
+</div>
+<p>当我们创建一个新的<code>Toaster</code>时，<code>super()</code>没有照样传递<code>warranty</code>参数而是直接调用父类的构造函数，这意味着新的烤面包机（toaster）并不会被存储到担保（warranty）数据库中。<br />我们可以使用<code>super(warranty)</code>来解决这个问题，同时也可以用另一种简写方式：<code>super</code>。没有括号也没有参数的<code>super</code>会传递当前函数的所有参数。如果你是个Ruby程序员，这一定很眼熟。如果不是，那你就把<code>super</code>想象为一个非常非常贪婪的关键字吧——如果你没有告诉它你想传递哪些参数，它会传递所有的参数。</p>
+</div>
+
+<p>如果我们不使用<code>instanceof</code>检查，这就会变成著名的“鸭子类型”（意思是，“如果它看起来像一只鸭子……” ）。就算相关对象没有<code>computeArea</code>方法，我们也总还是能得到一条有意义的错误信息。虽然鸭子类型很好，但是总有那么些时候你就是想要确定某个特定对象是否是如你所想的一样。<br />在更加经典的面向对象的语言中，有一种结合switch来使用多态的惯用语法。我们还没有讨论过CoffeeScript中的<code>switch</code>，它与JavaScript中的<code>switch</code>有数处差别：首先，它在每个分句之间都有隐式的打断（<code>break</code>） 以防止意外的“落空”（fallthrough） ；其次，<code>switch</code>的运行结果会被用作它的返回值。（当该返回值被使用时，就不能使用<code>break</code>或<code>return</code>语句。如果你非要这样试试看，那你会得到一个像<code>Syntax-Error: cannot include a pure statement in an expression</code>这样的错误。用行话来说就是<code>a=return x</code>没有意义，因此编译器不会允许存在这种可能性。）<br />CoffeeScript还做了一些语法上的改变，这在某种程度上提醒了JavaScript程序员注意那些隐藏着的差异：使用<code>when</code>代替了<code>case</code>，<code>else</code>代替了<code>default</code>。单个<code>when</code>后面可以跟几个潜在的匹配（matches），匹配之间用逗号隔开。同样，作为<code>:</code>的替代，也可以使用缩进 （或者then）把匹配分句与它们产生的结果隔开。<br />下面是如何把它们合并到一个工厂函数中去的示例：</p>
+<div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>requisitionStarship = </span><span class='nf'>(captain) -&gt;</span>
+       <span class='k'>switch</span> <span class='nx'>captain</span>
+          <span class='k'>when</span> <span class='s1'>&#39;Kirk&#39;</span><span class='p'>,</span> <span class='s1'>&#39;Picard&#39;</span><span class='p'>,</span> <span class='s1'>&#39;Archer&#39;</span>
+           <span class='k'>new</span> <span class='nx'>Enterprise</span><span class='p'>()</span>
+         <span class='k'>when</span> <span class='s1'>&#39;Janeway&#39;</span>
+           <span class='k'>new</span> <span class='nx'>Voyager</span><span class='p'>()</span>
+         <span class='k'>else</span>
+           <span class='k'>throw</span> <span class='k'>new</span> <span class='nb'>Error</span><span class='p'>(</span><span class='s1'>&#39;Invalid starship captain&#39;</span><span class='p'>)</span>
+</code></pre>
+</div>
+<p>关于模块和类我们就讨论这些。你只要记住：CoffeeScript绝不会要求你必须使用类或者使用经典的面向对象的设计模式——毕竟，不使用它们，大多数JavaScript工程师也能干得很出色——但是对于某些程序来说，类就显得尤为适合。<br />说到这里，还记得上一章程序中混乱的代码吗？来看看我们能对它们做点什么。</p>	
+<div>
+
+</div>
+<footer>
+</footer>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script>
+
+<!-- scripts concatenated and minified via ant build script-->
+<script src="/js/plugins.js"></script>
+<script src="/js/script.js"></script>
+<!-- end scripts-->
+
+<script>
+	var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+	(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+	g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+	s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+
+</body>
+</html>

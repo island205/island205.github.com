@@ -34,3 +34,10 @@ body{
 	border:1px solid #ccc;
 	font-size:0.8em;
 }
+
+.gray .extends{
+	border-top:2px solid #aaa;
+	border-bottom:2px solid #aaa;
+	padding:10px 2em 10px 2em;
+	background-color:#eff;
+}
