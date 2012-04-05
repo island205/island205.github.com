@@ -16,6 +16,7 @@
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="/css/highlight.css">
 	<link rel="stylesheet" href="/css/custom.css">
+	<link rel="stylesheet" href="/css/screen.css">
 
 	<script src="/js/libs/modernizr-2.5.3.min.js"></script>
 </head>
@@ -117,8 +118,7 @@
 </code></pre>
 </div>
 <p>注意到函数<code>showArea</code>会检查传入的对象是否是一个<code>Shape</code>的实例（使用<code>instanceof</code>关键字），但是它并不关心给它的是何种形状（Shape）。<code>Square</code>或者<code>Circle</code>实例都行。尽管这只是一个小示例，但是很难想象一个丰富的几何库不采用这种方式。</p>
-
-<div class="extends">
+<div class='addition'>
 <p><strong>“super”不是“super()”</strong></p>
 
 <p>下面的代码有什么问题？</p>
@@ -133,7 +133,6 @@
 </div>
 <p>当我们创建一个新的<code>Toaster</code>时，<code>super()</code>没有照样传递<code>warranty</code>参数而是直接调用父类的构造函数，这意味着新的烤面包机（toaster）并不会被存储到担保（warranty）数据库中。<br />我们可以使用<code>super(warranty)</code>来解决这个问题，同时也可以用另一种简写方式：<code>super</code>。没有括号也没有参数的<code>super</code>会传递当前函数的所有参数。如果你是个Ruby程序员，这一定很眼熟。如果不是，那你就把<code>super</code>想象为一个非常非常贪婪的关键字吧——如果你没有告诉它你想传递哪些参数，它会传递所有的参数。</p>
 </div>
-
 <p>如果我们不使用<code>instanceof</code>检查，这就会变成著名的“鸭子类型”（意思是，“如果它看起来像一只鸭子……” ）。就算相关对象没有<code>computeArea</code>方法，我们也总还是能得到一条有意义的错误信息。虽然鸭子类型很好，但是总有那么些时候你就是想要确定某个特定对象是否是如你所想的一样。<br />在更加经典的面向对象的语言中，有一种结合switch来使用多态的惯用语法。我们还没有讨论过CoffeeScript中的<code>switch</code>，它与JavaScript中的<code>switch</code>有数处差别：首先，它在每个分句之间都有隐式的打断（<code>break</code>） 以防止意外的“落空”（fallthrough） ；其次，<code>switch</code>的运行结果会被用作它的返回值。（当该返回值被使用时，就不能使用<code>break</code>或<code>return</code>语句。如果你非要这样试试看，那你会得到一个像<code>Syntax-Error: cannot include a pure statement in an expression</code>这样的错误。用行话来说就是<code>a=return x</code>没有意义，因此编译器不会允许存在这种可能性。）<br />CoffeeScript还做了一些语法上的改变，这在某种程度上提醒了JavaScript程序员注意那些隐藏着的差异：使用<code>when</code>代替了<code>case</code>，<code>else</code>代替了<code>default</code>。单个<code>when</code>后面可以跟几个潜在的匹配（matches），匹配之间用逗号隔开。同样，作为<code>:</code>的替代，也可以使用缩进 （或者then）把匹配分句与它们产生的结果隔开。<br />下面是如何把它们合并到一个工厂函数中去的示例：</p>
 <div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>requisitionStarship = </span><span class='nf'>(captain) -&gt;</span>
        <span class='k'>switch</span> <span class='nx'>captain</span>

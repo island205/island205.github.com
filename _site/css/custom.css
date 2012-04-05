@@ -1,7 +1,6 @@
 body{
 	font-family: "minion-pro-1", "minion-pro-2", "Palatino", Georgia, "Times New Roman", serif;
 	line-height:1.6em;
-	visibility:hidden;
 }
 
 #main{
@@ -35,9 +34,9 @@ body{
 	font-size:0.8em;
 }
 
-.gray .extends{
-	border-top:2px solid #aaa;
-	border-bottom:2px solid #aaa;
-	padding:10px 2em 10px 2em;
+.gray .addition{
+	border-top:1px solid #aaa;
+	border-bottom:1px solid #aaa;
 	background-color:#eff;
+	padding:0 20px;
 }

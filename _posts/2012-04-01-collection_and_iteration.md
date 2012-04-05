@@ -105,21 +105,17 @@ CoffeeScript还为`splice`——`slice`的用于插值的兄弟方法——提�
     ['a', 'b']
 {% endhighlight %}
 
----------------------------------
+<br />
+<div class="addition">
+<p><strong>字符串的切分</strong></p>
 
-**字符串的切分**
-
-有意思的是，JavaScript也为字符串提供了一个`slice`方法，尽管它的行为与`substring`方法一致。这就非常方便了，因为意味这你可以使用CoffeeSript的切分语法获取子字符串：
-
-{% highlight bash %}
-    coffee> 'The year is 3022'[-4..]
+<p>有意思的是，JavaScript也为字符串提供了一个<code>slice</code>方法，尽管它的行为与<code>substring</code>方法一致。这就非常方便了，因为意味这你可以使用CoffeeSript的切分语法获取子字符串：</p>
+<div class='highlight'><pre><code class='bash'>    coffee&gt; <span class='s1'>&#39;The year is 3022&#39;</span><span class='o'>[</span>-4..<span class='o'>]</span>
     3022
-{% endhighlight %}
-
-然而，别太发散——虽然切分适用于字符串，但是剪接却不行。因为在JavaScript中字符串一旦被定义就永远不能修改了。
-
----------------------------------
-
+</code></pre>
+</div>
+<p>然而，别太发散——虽然切分适用于字符串，但是剪接却不行。因为在JavaScript中字符串一旦被定义就永远不能修改了。</p>
+</div>
 
 区间即表示数组被替换的部分。如果该区间为空，则会从第一个索引处开始直接插入值。
 
@@ -153,29 +149,22 @@ CoffeeScript还为`splice`——`slice`的用于插值的兄弟方法——提�
 
 该循环会迭代该对象的所有键名，并且将其赋值给`for`后面第一个具名变量。第二个变量，即上面名为`value`的变量，可以省略。正如你所期望的那样，它会被赋上与键相对应的值，因此`value=object[key]`。
 
---------------------------------
+<div class="addition">
+<p><strong>“hasOwnProperty”与“for own”</strong></p>
 
-**“hasOwnProperty”与“for own”**
-
-在JavaScript中，对象“自己”的属性和从原型上继承而来的属性是有差别的。你可以使用`object.hasOwnProperty(key)`来检测某个特定属性是不是对象“自己”的。  
-因为大家通常希望迭代对象自己的属性，而不是迭代那些与同类共享的属性，所以CoffeeScript允许你使用`for own`自动进行检查且跳过那些没有通过检查的属性。这里有个例子：
-
-{% highlight coffeescript %}
-    for own sword of Kahless
-      ...
-{% endhighlight %}
-
-它是下面这段代码的简写：
-
-{% highlight coffeescript %}
-    for sword of Kahless
-      continue unless Kahless.hasOwnProperty(sword)
-      ...
-{% endhighlight %}
-
-每当`for…of`给出了你不想要的属性时，使用`for own…in`替换了试试看。 
-
---------------------------------
+<p>在JavaScript中，对象“自己”的属性和从原型上继承而来的属性是有差别的。你可以使用<code>object.hasOwnProperty(key)</code>来检测某个特定属性是不是对象“自己”的。<br />因为大家通常希望迭代对象自己的属性，而不是迭代那些与同类共享的属性，所以CoffeeScript允许你使用<code>for own</code>自动进行检查且跳过那些没有通过检查的属性。这里有个例子：</p>
+<div class='highlight'><pre><code class='coffeescript'>    <span class='k'>for</span> <span class='nx'>own</span> <span class='nx'>sword</span> <span class='k'>of</span> <span class='nx'>Kahless</span>
+      <span class='p'>...</span>
+</code></pre>
+</div>
+<p>它是下面这段代码的简写：</p>
+<div class='highlight'><pre><code class='coffeescript'>    <span class='k'>for</span> <span class='nx'>sword</span> <span class='k'>of</span> <span class='nx'>Kahless</span>
+      <span class='k'>continue</span> <span class='nx'>unless</span> <span class='nx'>Kahless</span><span class='p'>.</span><span class='nx'>hasOwnProperty</span><span class='p'>(</span><span class='nx'>sword</span><span class='p'>)</span>
+      <span class='p'>...</span>
+</code></pre>
+</div>
+<p>每当<code>for…of</code>给出了你不想要的属性时，使用<code>for own…in</code>替换了试试看。</p>
+</div>
 
 对于数组来说，语法稍稍有点不一样：
 
@@ -202,41 +191,31 @@ CoffeeScript还为`splice`——`slice`的用于插值的兄弟方法——提�
 
 当然，我们也可以在循环体内使用`continue`、`unless`等条件语句来替代`when`从句。但是`when`是一个非常有用的语法糖，尤其对于单行代码控来说。就如我们将在47页3.5节*列表解析*中看到的一样，它还是可以阻止任何值被添加到循环返回值数组中的唯一方法。
 
----------------------------
-
-**无作用域的`for`**  
-当你写`for x of obj`或者`for x in arr`时，你其实正在给一个当前作用域内名为`x`的变量赋值。在循环结束后你还可以继续利用它们。看这个例子：
-
-{% highlight coffeescript %}
-    for name, occupation of murderMysteryCharacters
-      break if occupation is 'butler'
-    console.log "#{name} did it!"
-{% endhighlight %}
-
-再看另外一个例子：
-
-{% highlight coffeescript %}
-    countdown = [10..0]
-    for num in countdown
-      break if abortLaunch()
-    if num is 0
-      console.log 'We have liftoff!'
-    else
-      console.log "Launch aborted with #{num} seconds left"
-{% endhighlight %}
-
-但是这样作用域的缺少也会让你出其不意，尤其是当你在循环内定义了函数的时候。因此在不确定的情况下，就用`do`来捕获每个迭代内的变量：
-
-{% highlight coffeescript %}
-    for x in arr
-      do (x) ->
-        setTimeout (-> console.log x), 0
-{% endhighlight %}
-
-我们还会在3.9节*练习*中来回顾这个问题，详见56页。
-
------------------------------
-
+<div class="addition">
+<p><strong>无作用域的<code>for</code></strong><br />当你写<code>for x of obj</code>或者<code>for x in arr</code>时，你其实正在给一个当前作用域内名为<code>x</code>的变量赋值。在循环结束后你还可以继续利用它们。看这个例子：</p>
+<div class='highlight'><pre><code class='coffeescript'>    <span class='k'>for</span> <span class='nx'>name</span><span class='p'>,</span> <span class='nx'>occupation</span> <span class='k'>of</span> <span class='nx'>murderMysteryCharacters</span>
+      <span class='k'>break</span> <span class='k'>if</span> <span class='nx'>occupation</span> <span class='o'>is</span> <span class='s1'>&#39;butler&#39;</span>
+    <span class='nx'>console</span><span class='p'>.</span><span class='nx'>log</span> <span class='s2'>&quot;#{name} did it!&quot;</span>
+</code></pre>
+</div>
+<p>再看另外一个例子：</p>
+<div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>countdown = </span><span class='p'>[</span><span class='mi'>10</span><span class='p'>..</span><span class='mi'>0</span><span class='p'>]</span>
+    <span class='k'>for</span> <span class='nx'>num</span> <span class='k'>in</span> <span class='nx'>countdown</span>
+      <span class='k'>break</span> <span class='k'>if</span> <span class='nx'>abortLaunch</span><span class='p'>()</span>
+    <span class='k'>if</span> <span class='nx'>num</span> <span class='o'>is</span> <span class='mi'>0</span>
+      <span class='nx'>console</span><span class='p'>.</span><span class='nx'>log</span> <span class='s1'>&#39;We have liftoff!&#39;</span>
+    <span class='k'>else</span>
+      <span class='nx'>console</span><span class='p'>.</span><span class='nx'>log</span> <span class='s2'>&quot;Launch aborted with #{num} seconds left&quot;</span>
+</code></pre>
+</div>
+<p>但是这样作用域的缺少也会让你出其不意，尤其是当你在循环内定义了函数的时候。因此在不确定的情况下，就用<code>do</code>来捕获每个迭代内的变量：</p>
+<div class='highlight'><pre><code class='coffeescript'>    <span class='k'>for</span> <span class='nx'>x</span> <span class='k'>in</span> <span class='nx'>arr</span>
+      <span class='nx'>do</span> <span class='nf'>(x) -&gt;</span>
+        <span class='nx'>setTimeout</span> <span class='p'>(</span><span class='o'>-&gt;</span> <span class='nx'>console</span><span class='p'>.</span><span class='nx'>log</span> <span class='nx'>x</span><span class='p'>),</span> <span class='mi'>0</span>
+</code></pre>
+</div>
+<p>我们还会在3.9节<em>练习</em>中来回顾这个问题，详见56页。</p>
+</div>
 
 `for…in`支持一个其表兄`for…of`并不支持的补充修饰符：`by`。比起每次逐个循环（默认情况）整个数组，`by`可以让你随意地设置步值 ：
 
