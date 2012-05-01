@@ -1,0 +1,7 @@
+ol{
+	padding:0;
+}
+ol li{
+	line-height:1.7em;
+	list-style-position: inside;
+}

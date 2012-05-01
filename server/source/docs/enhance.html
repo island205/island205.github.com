@@ -1,0 +1,518 @@
+<!DOCTYPE html>  <html> <head>   <title>enhance.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               enhance.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>               <p>EnhanceJS version 1.1 - Test-Driven Progressive Enhancement
+http://enhancejs.googlecode.com/
+Copyright (c) 2010 Filament Group, Inc, authors.txt
+Licensed under MIT (license.txt)</p>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>闭包</p>
+
+<p>(function(win,doc,undefined){})(window,document);</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">win</span><span class="p">,</span> <span class="nx">doc</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <h4>局部标量</h4>
+
+<ul>
+<li>settings</li>
+<li>body</li>
+<li>fakeBody</li>
+<li>windowLoaded</li>
+<li>head</li>
+<li>docElem</li>
+<li>testPass</li>
+<li>mediaCookieA</li>
+<li>mediaCookieB</li>
+<li>toggledMedia</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">settings</span><span class="p">,</span> <span class="nx">body</span><span class="p">,</span> <span class="nx">fakeBody</span><span class="p">,</span> <span class="nx">windowLoaded</span><span class="p">,</span> <span class="nx">head</span><span class="p">,</span> 
+	<span class="nx">docElem</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">documentElement</span><span class="p">,</span>
+	<span class="nx">testPass</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+	<span class="nx">mediaCookieA</span><span class="p">,</span> <span class="nx">mediaCookieB</span><span class="p">,</span> 
+	<span class="nx">toggledMedia</span> <span class="o">=</span> <span class="p">[];</span>
+	
+<span class="k">if</span><span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">){</span> <span class="nx">head</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;head&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">||</span> <span class="nx">docElem</span><span class="p">;</span> <span class="p">}</span>
+<span class="k">else</span><span class="p">{</span> <span class="nx">head</span> <span class="o">=</span> <span class="nx">docElem</span><span class="p">;</span> <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p><code>mediaquery</code>测试是否支持某个media</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">mediaquery</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+	<span class="kd">var</span> <span class="nx">cache</span> <span class="o">=</span> <span class="p">{},</span>
+		<span class="nx">testDiv</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">);</span>
+	
+	<span class="nx">testDiv</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="s1">&#39;ejs-qtest&#39;</span><span class="p">);</span>
+	<span class="k">return</span> <span class="kd">function</span><span class="p">(</span><span class="nx">q</span><span class="p">){</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>如果没有cache的测试</p>             </td>             <td class="code">               <div class="highlight"><pre>		<span class="k">if</span> <span class="p">(</span><span class="nx">cache</span><span class="p">[</span><span class="nx">q</span><span class="p">]</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">addFakeBody</span><span class="p">();</span>
+			<span class="kd">var</span> <span class="nx">styleBlock</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;style&#39;</span><span class="p">);</span>
+			<span class="nx">styleBlock</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s2">&quot;text/css&quot;</span><span class="p">;</span>
+			<span class="nx">head</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">styleBlock</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p><a href="http://www.phpied.com/dynamic-script-and-style-elements-in-ie/">dynamic-script-and-style-elements-in-ie</a></p>             </td>             <td class="code">               <div class="highlight"><pre>			<span class="kd">var</span> <span class="nx">cssrule</span> <span class="o">=</span> <span class="s1">&#39;@media &#39;</span><span class="o">+</span><span class="nx">q</span><span class="o">+</span><span class="s1">&#39; { #ejs-qtest { position: absolute; width: 10px; } }&#39;</span><span class="p">;</span>
+			<span class="k">if</span> <span class="p">(</span><span class="nx">styleBlock</span><span class="p">.</span><span class="nx">styleSheet</span><span class="p">){</span> <span class="nx">styleBlock</span><span class="p">.</span><span class="nx">styleSheet</span><span class="p">.</span><span class="nx">cssText</span> <span class="o">=</span> <span class="nx">cssrule</span><span class="p">;</span> <span class="p">}</span>
+			<span class="k">else</span> <span class="p">{</span> <span class="nx">styleBlock</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">createTextNode</span><span class="p">(</span><span class="nx">cssrule</span><span class="p">));</span> <span class="p">}</span>     
+			<span class="nx">body</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">testDiv</span><span class="p">);</span>
+			<span class="kd">var</span> <span class="nx">divWidth</span> <span class="o">=</span> <span class="nx">testDiv</span><span class="p">.</span><span class="nx">offsetWidth</span><span class="p">;</span>
+			<span class="nx">body</span><span class="p">.</span><span class="nx">removeChild</span><span class="p">(</span><span class="nx">testDiv</span><span class="p">);</span>
+			<span class="nx">head</span><span class="p">.</span><span class="nx">removeChild</span><span class="p">(</span><span class="nx">styleBlock</span><span class="p">);</span>
+			<span class="nx">removeFakeBody</span><span class="p">();</span>
+			<span class="nx">cache</span><span class="p">[</span><span class="nx">q</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="nx">divWidth</span> <span class="o">==</span> <span class="mi">10</span><span class="p">);</span>
+		<span class="p">}</span>
+		<span class="k">return</span> <span class="nx">cache</span><span class="p">[</span><span class="nx">q</span><span class="p">];</span>
+	<span class="p">}</span>
+<span class="p">})();</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p><code>enhance</code>API</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">win</span><span class="p">.</span><span class="nx">enhance</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">options</span>  <span class="o">=</span> <span class="nx">options</span> <span class="o">||</span> <span class="p">{};</span>
+    <span class="nx">settings</span> <span class="o">=</span> <span class="p">{};</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>合并自定义配置和默认配置</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">name</span> <span class="k">in</span> <span class="nx">enhance</span><span class="p">.</span><span class="nx">defaultSettings</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">option</span> <span class="o">=</span> <span class="nx">options</span><span class="p">[</span><span class="nx">name</span><span class="p">];</span>
+        <span class="nx">settings</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">option</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">?</span> <span class="nx">option</span> <span class="o">:</span> <span class="nx">enhance</span><span class="p">.</span><span class="nx">defaultSettings</span><span class="p">[</span><span class="nx">name</span><span class="p">];</span>
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>合并自定义测试</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">test</span> <span class="k">in</span> <span class="nx">options</span><span class="p">.</span><span class="nx">addTests</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">settings</span><span class="p">.</span><span class="nx">tests</span><span class="p">[</span><span class="nx">test</span><span class="p">]</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">addTests</span><span class="p">[</span><span class="nx">test</span><span class="p">];</span>
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>add testName class immediately for FOUC prevention, remove later on fail</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="nx">docElem</span><span class="p">.</span><span class="nx">className</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">settings</span><span class="p">.</span><span class="nx">testName</span><span class="p">)</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">docElem</span><span class="p">.</span><span class="nx">className</span> <span class="o">+=</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nx">settings</span><span class="p">.</span><span class="nx">testName</span><span class="p">;</span>
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>cookie names for toggled media types</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">mediaCookieA</span> <span class="o">=</span> <span class="nx">settings</span><span class="p">.</span><span class="nx">testName</span> <span class="o">+</span> <span class="s1">&#39;-toggledmediaA&#39;</span><span class="p">;</span>
+	<span class="nx">mediaCookieB</span> <span class="o">=</span> <span class="nx">settings</span><span class="p">.</span><span class="nx">testName</span> <span class="o">+</span> <span class="s1">&#39;-toggledmediaB&#39;</span><span class="p">;</span>
+	<span class="nx">toggledMedia</span> <span class="o">=</span> <span class="p">[</span><span class="nx">readCookie</span><span class="p">(</span><span class="nx">mediaCookieA</span><span class="p">),</span> <span class="nx">readCookie</span><span class="p">(</span><span class="nx">mediaCookieB</span><span class="p">)];</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>fallback for removing testName class</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span> <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">testPass</span><span class="p">){</span> <span class="nx">removeHTMLClass</span><span class="p">();</span> <span class="p">}</span> <span class="p">},</span> <span class="mi">3000</span><span class="p">);</span>
+
+    <span class="nx">runTests</span><span class="p">();</span>
+    
+    <span class="nx">applyDocReadyHack</span><span class="p">();</span>
+    
+    <span class="nx">windowLoad</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">windowLoaded</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span> <span class="p">});</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <p><code>query</code>API</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">enhance</span><span class="p">.</span><span class="nx">query</span> <span class="o">=</span> <span class="nx">mediaquery</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <h4>默认测试</h4>
+
+<ul>
+<li>getById</li>
+<li>getByTagName</li>
+<li>createEl</li>
+<li>boxmodel</li>
+<li>position</li>
+<li>floatClear</li>
+<li>heightOverflow</li>
+<li>ajax</li>
+<li>resize</li>
+<li>print</li>
+</ul>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">enhance</span><span class="p">.</span><span class="nx">defaultTests</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">getById</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="o">!!</span><span class="nx">doc</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">;</span>
+    <span class="p">},</span>
+    <span class="nx">getByTagName</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="o">!!</span><span class="nx">doc</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">;</span>
+    <span class="p">},</span>
+    <span class="nx">createEl</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="o">!!</span><span class="nx">doc</span><span class="p">.</span><span class="nx">createElement</span><span class="p">;</span>
+    <span class="p">},</span>
+    <span class="nx">boxmodel</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">newDiv</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">);</span>
+        <span class="nx">newDiv</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">cssText</span> <span class="o">=</span> <span class="s1">&#39;width: 1px; padding: 1px;&#39;</span><span class="p">;</span>
+        <span class="nx">body</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">newDiv</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">divWidth</span> <span class="o">=</span> <span class="nx">newDiv</span><span class="p">.</span><span class="nx">offsetWidth</span><span class="p">;</span>
+        <span class="nx">body</span><span class="p">.</span><span class="nx">removeChild</span><span class="p">(</span><span class="nx">newDiv</span><span class="p">);</span>
+        <span class="k">return</span> <span class="nx">divWidth</span> <span class="o">===</span> <span class="mi">3</span><span class="p">;</span>
+    <span class="p">},</span>
+    <span class="nx">position</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">newDiv</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">);</span>
+        <span class="nx">newDiv</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">cssText</span> <span class="o">=</span> <span class="s1">&#39;position: absolute; left: 10px;&#39;</span><span class="p">;</span>
+        <span class="nx">body</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">newDiv</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">divLeft</span> <span class="o">=</span> <span class="nx">newDiv</span><span class="p">.</span><span class="nx">offsetLeft</span><span class="p">;</span>
+        <span class="nx">body</span><span class="p">.</span><span class="nx">removeChild</span><span class="p">(</span><span class="nx">newDiv</span><span class="p">);</span>
+        <span class="k">return</span> <span class="nx">divLeft</span> <span class="o">===</span> <span class="mi">10</span><span class="p">;</span>
+    <span class="p">},</span>
+    <span class="nx">floatClear</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">pass</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nx">newDiv</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">),</span>
+            <span class="nx">style</span> <span class="o">=</span> <span class="s1">&#39;style=&quot;width: 5px; height: 5px; float: left;&quot;&#39;</span><span class="p">;</span>
+        <span class="nx">newDiv</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="s1">&#39;&lt;div &#39;</span> <span class="o">+</span> <span class="nx">style</span> <span class="o">+</span> <span class="s1">&#39;&gt;&lt;/div&gt;&lt;div &#39;</span> <span class="o">+</span> <span class="nx">style</span> <span class="o">+</span> <span class="s1">&#39;&gt;&lt;/div&gt;&#39;</span><span class="p">;</span>
+        <span class="nx">body</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">newDiv</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">childNodes</span> <span class="o">=</span> <span class="nx">newDiv</span><span class="p">.</span><span class="nx">childNodes</span><span class="p">,</span>
+            <span class="nx">topA</span> <span class="o">=</span> <span class="nx">childNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">offsetTop</span><span class="p">,</span>
+            <span class="nx">divB</span> <span class="o">=</span> <span class="nx">childNodes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="nx">topB</span> <span class="o">=</span> <span class="nx">divB</span><span class="p">.</span><span class="nx">offsetTop</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">topA</span> <span class="o">===</span> <span class="nx">topB</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">divB</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">clear</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">;</span>
+            <span class="nx">topB</span> <span class="o">=</span> <span class="nx">divB</span><span class="p">.</span><span class="nx">offsetTop</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">topA</span> <span class="o">!==</span> <span class="nx">topB</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">pass</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="nx">body</span><span class="p">.</span><span class="nx">removeChild</span><span class="p">(</span><span class="nx">newDiv</span><span class="p">);</span>
+        <span class="k">return</span> <span class="nx">pass</span><span class="p">;</span>
+    <span class="p">},</span>
+    <span class="nx">heightOverflow</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">newDiv</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">);</span>
+        <span class="nx">newDiv</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="s1">&#39;&lt;div style=&quot;height: 10px;&quot;&gt;&lt;/div&gt;&#39;</span><span class="p">;</span>
+        <span class="nx">newDiv</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">cssText</span> <span class="o">=</span> <span class="s1">&#39;overflow: hidden; height: 0;&#39;</span><span class="p">;</span>
+        <span class="nx">body</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">newDiv</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">divHeight</span> <span class="o">=</span> <span class="nx">newDiv</span><span class="p">.</span><span class="nx">offsetHeight</span><span class="p">;</span>
+        <span class="nx">body</span><span class="p">.</span><span class="nx">removeChild</span><span class="p">(</span><span class="nx">newDiv</span><span class="p">);</span>
+        <span class="k">return</span> <span class="nx">divHeight</span> <span class="o">===</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">},</span>
+    <span class="nx">ajax</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <p>factory test borrowed from quirksmode.org</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="kd">var</span> <span class="nx">xmlhttp</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span> <span class="nx">index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nx">factory</span><span class="p">,</span>
+            <span class="nx">XMLHttpFactories</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">()</span> <span class="p">},</span>
+                <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="k">new</span> <span class="nx">ActiveXObject</span><span class="p">(</span><span class="s2">&quot;Msxml2.XMLHTTP&quot;</span><span class="p">)</span> <span class="p">},</span>
+                <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="k">new</span> <span class="nx">ActiveXObject</span><span class="p">(</span><span class="s2">&quot;Msxml3.XMLHTTP&quot;</span><span class="p">)</span> <span class="p">},</span>
+                <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="k">new</span> <span class="nx">ActiveXObject</span><span class="p">(</span><span class="s2">&quot;Microsoft.XMLHTTP&quot;</span><span class="p">)</span> <span class="p">}</span>
+            <span class="p">];</span>
+        <span class="k">while</span> <span class="p">((</span><span class="nx">factory</span> <span class="o">=</span> <span class="nx">XMLHttpFactories</span><span class="p">[</span><span class="o">++</span><span class="nx">index</span><span class="p">]))</span> <span class="p">{</span>
+            <span class="k">try</span> <span class="p">{</span> <span class="nx">xmlhttp</span> <span class="o">=</span> <span class="nx">factory</span><span class="p">();</span> <span class="p">}</span>
+            <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span> <span class="k">continue</span><span class="p">;</span> <span class="p">}</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="o">!!</span><span class="nx">xmlhttp</span><span class="p">;</span>
+    <span class="p">},</span>
+    <span class="nx">resize</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">win</span><span class="p">.</span><span class="nx">onresize</span> <span class="o">!=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="p">},</span>
+    <span class="nx">print</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="o">!!</span><span class="nx">win</span><span class="p">.</span><span class="nx">print</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <p>默认设置</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">enhance</span><span class="p">.</span><span class="nx">defaultSettings</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">testName</span><span class="o">:</span> <span class="s1">&#39;enhanced&#39;</span><span class="p">,</span>
+    <span class="nx">loadScripts</span><span class="o">:</span> <span class="p">[],</span>
+    <span class="nx">loadStyles</span><span class="o">:</span> <span class="p">[],</span>
+    <span class="nx">queueLoading</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nx">appendToggleLink</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nx">forcePassText</span><span class="o">:</span> <span class="s1">&#39;View high-bandwidth version&#39;</span><span class="p">,</span>
+    <span class="nx">forceFailText</span><span class="o">:</span> <span class="s1">&#39;View low-bandwidth version&#39;</span><span class="p">,</span>
+    <span class="nx">tests</span><span class="o">:</span> <span class="nx">enhance</span><span class="p">.</span><span class="nx">defaultTests</span><span class="p">,</span>
+    <span class="nx">media</span><span class="o">:</span> <span class="p">{</span>
+    	<span class="s1">&#39;-ejs-desktop&#39;</span><span class="o">:</span> <span class="nx">enhance</span><span class="p">.</span><span class="nx">query</span><span class="p">(</span><span class="s1">&#39;screen and (max-device-width: 1024px)&#39;</span><span class="p">)</span> <span class="o">?</span> <span class="s1">&#39;not screen and (max-device-width: 1024px)&#39;</span> <span class="o">:</span> <span class="s1">&#39;screen&#39;</span><span class="p">,</span>
+    	<span class="s1">&#39;-ejs-handheld&#39;</span><span class="o">:</span> <span class="s1">&#39;screen and (max-device-width: 1024px)&#39;</span>
+    <span class="p">},</span>
+    <span class="nx">addTests</span><span class="o">:</span> <span class="p">{},</span>
+    <span class="nx">alertOnFailure</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nx">onPass</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){},</span>
+    <span class="nx">onFail</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){},</span>
+    <span class="nx">onLoadError</span><span class="o">:</span> <span class="nx">addIncompleteClass</span><span class="p">,</span>
+    <span class="nx">onScriptsLoaded</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){}</span>
+<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <p>支持cookie</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">cookiesSupported</span><span class="p">(){</span>
+	<span class="k">return</span> <span class="o">!!</span><span class="nx">doc</span><span class="p">.</span><span class="nx">cookie</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nx">enhance</span><span class="p">.</span><span class="nx">cookiesSupported</span> <span class="o">=</span> <span class="nx">cookiesSupported</span><span class="p">();</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>强制测试失败</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">forceFail</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">createCookie</span><span class="p">(</span><span class="nx">settings</span><span class="p">.</span><span class="nx">testName</span><span class="p">,</span> <span class="s1">&#39;fail&#39;</span><span class="p">);</span>
+    <span class="nx">win</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">reload</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="k">if</span><span class="p">(</span><span class="nx">enhance</span><span class="p">.</span><span class="nx">cookiesSupported</span><span class="p">){</span> <span class="nx">enhance</span><span class="p">.</span><span class="nx">forceFail</span> <span class="o">=</span> <span class="nx">forceFail</span><span class="p">;</span> <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-19">&#182;</a>               </div>               <p>强制测试通过</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">forcePass</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">createCookie</span><span class="p">(</span><span class="nx">settings</span><span class="p">.</span><span class="nx">testName</span><span class="p">,</span> <span class="s1">&#39;pass&#39;</span><span class="p">);</span>
+    <span class="nx">win</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">reload</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="k">if</span><span class="p">(</span><span class="nx">enhance</span><span class="p">.</span><span class="nx">cookiesSupported</span><span class="p">){</span> <span class="nx">enhance</span><span class="p">.</span><span class="nx">forcePass</span> <span class="o">=</span> <span class="nx">forcePass</span><span class="p">;</span> <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-20">&#182;</a>               </div>               <p>重新测试</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">reTest</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">eraseCookie</span><span class="p">(</span><span class="nx">settings</span><span class="p">.</span><span class="nx">testName</span><span class="p">);</span>
+    <span class="nx">win</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">reload</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="k">if</span><span class="p">(</span><span class="nx">enhance</span><span class="p">.</span><span class="nx">cookiesSupported</span><span class="p">){</span> <span class="nx">enhance</span><span class="p">.</span><span class="nx">reTest</span> <span class="o">=</span> <span class="nx">reTest</span><span class="p">;</span> <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-21">&#182;</a>               </div>               <p>创建一个假的body</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">addFakeBody</span><span class="p">(){</span>
+	<span class="nx">fakeBody</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">);</span> 
+	<span class="nx">docElem</span><span class="p">.</span><span class="nx">insertBefore</span><span class="p">(</span><span class="nx">fakeBody</span><span class="p">,</span> <span class="nx">docElem</span><span class="p">.</span><span class="nx">firstChild</span><span class="p">);</span>
+	<span class="nx">body</span> <span class="o">=</span> <span class="nx">fakeBody</span><span class="p">;</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-22">&#182;</a>               </div>               <p>移除假的body</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">removeFakeBody</span><span class="p">(){</span>
+	<span class="nx">docElem</span><span class="p">.</span><span class="nx">removeChild</span><span class="p">(</span><span class="nx">fakeBody</span><span class="p">);</span>
+	<span class="nx">body</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">body</span><span class="p">;</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-23">&#182;</a>               </div>               <p><code>runTests</code>运行测试</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">runTests</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">readCookie</span><span class="p">(</span><span class="nx">settings</span><span class="p">.</span><span class="nx">testName</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-24">&#182;</a>               </div>               <p>check for cookies from a previous test</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">result</span> <span class="o">===</span> <span class="s1">&#39;pass&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">enhancePage</span><span class="p">();</span>
+            <span class="nx">settings</span><span class="p">.</span><span class="nx">onPass</span><span class="p">();</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nx">settings</span><span class="p">.</span><span class="nx">onFail</span><span class="p">();</span>
+            <span class="nx">removeHTMLClass</span><span class="p">();</span>
+        <span class="p">}</span>
+        </pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-25">&#182;</a>               </div>               <p>append toggle link</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span><span class="nx">settings</span><span class="p">.</span><span class="nx">appendToggleLink</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">windowLoad</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> 
+                <span class="nx">appendToggleLinks</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+    <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-26">&#182;</a>               </div>               <p>no cookies - run tests</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">else</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">pass</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="nx">addFakeBody</span><span class="p">();</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">name</span> <span class="k">in</span> <span class="nx">settings</span><span class="p">.</span><span class="nx">tests</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">pass</span> <span class="o">=</span> <span class="nx">settings</span><span class="p">.</span><span class="nx">tests</span><span class="p">[</span><span class="nx">name</span><span class="p">]();</span>
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">pass</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">settings</span><span class="p">.</span><span class="nx">alertOnFailure</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">alert</span><span class="p">(</span><span class="nx">name</span> <span class="o">+</span> <span class="s1">&#39; failed&#39;</span><span class="p">);</span>
+                <span class="p">}</span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="nx">removeFakeBody</span><span class="p">();</span>
+        <span class="nx">result</span> <span class="o">=</span> <span class="nx">pass</span> <span class="o">?</span> <span class="s1">&#39;pass&#39;</span> <span class="o">:</span> <span class="s1">&#39;fail&#39;</span><span class="p">;</span>
+        <span class="nx">createCookie</span><span class="p">(</span><span class="nx">settings</span><span class="p">.</span><span class="nx">testName</span><span class="p">,</span> <span class="nx">result</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">pass</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">enhancePage</span><span class="p">();</span>
+            <span class="nx">settings</span><span class="p">.</span><span class="nx">onPass</span><span class="p">();</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span>
+            <span class="nx">settings</span><span class="p">.</span><span class="nx">onFail</span><span class="p">();</span>
+            <span class="nx">removeHTMLClass</span><span class="p">();</span>
+        <span class="p">}</span>
+                    
+        <span class="k">if</span> <span class="p">(</span><span class="nx">settings</span><span class="p">.</span><span class="nx">appendToggleLink</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">windowLoad</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> 
+                <span class="nx">appendToggleLinks</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-27">&#182;</a>               </div>               <p>添加<code>onload</code>事件队列</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">windowLoad</span><span class="p">(</span><span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">windowLoaded</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">callback</span><span class="p">();</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">oldonload</span> <span class="o">=</span> <span class="nx">win</span><span class="p">.</span><span class="nx">onload</span>
+        <span class="nx">win</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">oldonload</span><span class="p">)</span> <span class="p">{</span> <span class="nx">oldonload</span><span class="p">();</span> <span class="p">}</span>
+            <span class="nx">callback</span><span class="p">();</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-28">&#182;</a>               </div>               <p>添加切换链接</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">appendToggleLinks</span><span class="p">(</span><span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">settings</span><span class="p">.</span><span class="nx">appendToggleLink</span> <span class="o">||</span> <span class="o">!</span><span class="nx">enhance</span><span class="p">.</span><span class="nx">cookiesSupported</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">);</span>
+        <span class="nx">a</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> <span class="s2">&quot;#&quot;</span><span class="p">;</span>
+        <span class="nx">a</span><span class="p">.</span><span class="nx">className</span> <span class="o">=</span> <span class="nx">settings</span><span class="p">.</span><span class="nx">testName</span> <span class="o">+</span> <span class="s1">&#39;_toggleResult&#39;</span><span class="p">;</span>
+        <span class="nx">a</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="nx">result</span> <span class="o">===</span> <span class="s1">&#39;pass&#39;</span> <span class="o">?</span> <span class="nx">settings</span><span class="p">.</span><span class="nx">forceFailText</span> <span class="o">:</span> <span class="nx">settings</span><span class="p">.</span><span class="nx">forcePassText</span><span class="p">;</span>
+        <span class="nx">a</span><span class="p">.</span><span class="nx">onclick</span>   <span class="o">=</span> <span class="nx">result</span> <span class="o">===</span> <span class="s1">&#39;pass&#39;</span> <span class="o">?</span> <span class="nx">enhance</span><span class="p">.</span><span class="nx">forceFail</span> <span class="o">:</span> <span class="nx">enhance</span><span class="p">.</span><span class="nx">forcePass</span><span class="p">;</span>
+        <span class="nx">doc</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">].</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-29">&#182;</a>               </div>               <p>删除HTML的样式类</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">removeHTMLClass</span><span class="p">(){</span>
+	<span class="nx">docElem</span><span class="p">.</span><span class="nx">className</span> <span class="o">=</span> <span class="nx">docElem</span><span class="p">.</span><span class="nx">className</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="nx">settings</span><span class="p">.</span><span class="nx">testName</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-30">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-30">&#182;</a>               </div>               <p>增强</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">enhancePage</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">testPass</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">settings</span><span class="p">.</span><span class="nx">loadStyles</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+    	<span class="nx">appendStyles</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">settings</span><span class="p">.</span><span class="nx">loadScripts</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+    	<span class="nx">appendScripts</span><span class="p">();</span>        
+    <span class="p">}</span>
+    <span class="k">else</span><span class="p">{</span>
+    	<span class="nx">settings</span><span class="p">.</span><span class="nx">onScriptsLoaded</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-31">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-31">&#182;</a>               </div>               <p>media toggling methods and storage</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">toggleMedia</span><span class="p">(</span><span class="nx">mediaA</span><span class="p">,</span><span class="nx">mediaB</span><span class="p">){</span>
+	<span class="k">if</span><span class="p">(</span><span class="nx">readCookie</span><span class="p">(</span><span class="nx">mediaCookieA</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">readCookie</span><span class="p">(</span><span class="nx">mediaCookieB</span><span class="p">)){</span>
+		<span class="nx">eraseCookie</span><span class="p">(</span><span class="nx">mediaCookieA</span><span class="p">);</span>
+		<span class="nx">eraseCookie</span><span class="p">(</span><span class="nx">mediaCookieB</span><span class="p">);</span>
+	<span class="p">}</span>
+	<span class="k">else</span><span class="p">{</span>
+		<span class="nx">createCookie</span><span class="p">(</span><span class="nx">mediaCookieA</span><span class="p">,</span> <span class="nx">mediaA</span><span class="p">);</span>
+		<span class="nx">createCookie</span><span class="p">(</span><span class="nx">mediaCookieB</span><span class="p">,</span> <span class="nx">mediaB</span><span class="p">);</span>
+	<span class="p">}</span>
+	<span class="nx">win</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">reload</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="nx">enhance</span><span class="p">.</span><span class="nx">toggleMedia</span> <span class="o">=</span> <span class="nx">toggleMedia</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-32">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-32">&#182;</a>               </div>               <p>return a toggled media type/query</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">mediaSwitch</span><span class="p">(</span><span class="nx">q</span><span class="p">){</span>
+	<span class="k">if</span><span class="p">(</span><span class="nx">toggledMedia</span><span class="p">.</span><span class="nx">length</span> <span class="o">==</span> <span class="mi">2</span><span class="p">){</span>
+		<span class="k">if</span><span class="p">(</span><span class="nx">q</span> <span class="o">==</span> <span class="nx">toggledMedia</span><span class="p">[</span><span class="mi">0</span><span class="p">]){</span> <span class="nx">q</span> <span class="o">=</span> <span class="nx">toggledMedia</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span> <span class="p">}</span>
+		<span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">q</span> <span class="o">==</span> <span class="nx">toggledMedia</span><span class="p">[</span><span class="mi">1</span><span class="p">]){</span> <span class="nx">q</span> <span class="o">=</span> <span class="nx">toggledMedia</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span> <span class="p">}</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">q</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">addIncompleteClass</span> <span class="p">(){</span>
+	<span class="kd">var</span> <span class="nx">errorClass</span> <span class="o">=</span> <span class="nx">settings</span><span class="p">.</span><span class="nx">testName</span> <span class="o">+</span> <span class="s1">&#39;-incomplete&#39;</span><span class="p">;</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">docElem</span><span class="p">.</span><span class="nx">className</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">errorClass</span><span class="p">)</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">docElem</span><span class="p">.</span><span class="nx">className</span> <span class="o">+=</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nx">errorClass</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">checkifsupported</span><span class="p">(</span><span class="nx">ifsupported</span><span class="p">){</span>
+	<span class="k">if</span><span class="p">(</span><span class="nx">ifsupported</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">===</span> <span class="nb">Array</span><span class="p">){</span> 
+		<span class="kd">var</span> <span class="nx">allGood</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">item</span> <span class="k">in</span> <span class="nx">ifsupported</span><span class="p">){</span>
+        	<span class="k">if</span><span class="p">(</span><span class="nx">allGood</span><span class="p">){</span> <span class="nx">allGood</span> <span class="o">=</span> <span class="o">!!</span><span class="nx">ifsupported</span><span class="p">[</span><span class="nx">item</span><span class="p">];</span> <span class="p">}</span>
+        <span class="p">}</span>   
+        <span class="k">return</span> <span class="nx">allGood</span><span class="p">;</span>
+	<span class="p">}</span>	
+	<span class="k">else</span> <span class="p">{</span>	
+		<span class="k">return</span> <span class="o">!!</span><span class="nx">ifsupported</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">appendStyles</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="nx">item</span><span class="p">;</span>
+    <span class="k">while</span> <span class="p">((</span><span class="nx">item</span> <span class="o">=</span> <span class="nx">settings</span><span class="p">.</span><span class="nx">loadStyles</span><span class="p">[</span><span class="o">++</span><span class="nx">index</span><span class="p">]))</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">link</span>  <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;link&#39;</span><span class="p">);</span>
+        <span class="nx">link</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s1">&#39;text/css&#39;</span><span class="p">;</span>
+        <span class="nx">link</span><span class="p">.</span><span class="nx">rel</span>  <span class="o">=</span> <span class="s1">&#39;stylesheet&#39;</span><span class="p">;</span>
+        <span class="nx">link</span><span class="p">.</span><span class="nx">onerror</span> <span class="o">=</span> <span class="nx">settings</span><span class="p">.</span><span class="nx">onLoadError</span><span class="p">;</span>
+        
+        <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">item</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">link</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> <span class="nx">item</span><span class="p">;</span>
+            <span class="nx">head</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">link</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span>
+        	<span class="k">if</span><span class="p">(</span><span class="nx">item</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">]){</span>
+        		<span class="nx">item</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">mediaSwitch</span><span class="p">(</span><span class="nx">item</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">]);</span> 
+        		<span class="k">if</span><span class="p">(</span><span class="nx">settings</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">]){</span>
+        			<span class="k">if</span><span class="p">(</span><span class="nx">settings</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">][</span><span class="nx">item</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">]]</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">){</span>
+        				<span class="nx">item</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">settings</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">][</span><span class="nx">item</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">]];</span>
+        			<span class="p">}</span>
+        		<span class="p">}</span> 
+        	<span class="p">}</span>
+        	<span class="k">if</span><span class="p">(</span><span class="nx">item</span><span class="p">[</span><span class="s1">&#39;excludemedia&#39;</span><span class="p">]){</span> <span class="nx">item</span><span class="p">[</span><span class="s1">&#39;excludemedia&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">mediaSwitch</span><span class="p">(</span><span class="nx">item</span><span class="p">[</span><span class="s1">&#39;excludemedia&#39;</span><span class="p">]);</span> <span class="p">}</span>
+        	
+            <span class="kd">var</span> <span class="nx">applies</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="k">if</span><span class="p">(</span><span class="nx">item</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="nx">item</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">]</span> <span class="o">!==</span> <span class="s1">&#39;print&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">item</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">]</span> <span class="o">!==</span> <span class="s1">&#39;projection&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">item</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">]</span> <span class="o">!==</span> <span class="s1">&#39;speech&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">item</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">]</span> <span class="o">!==</span> <span class="s1">&#39;aural&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">item</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">]</span> <span class="o">!==</span> <span class="s1">&#39;braille&#39;</span><span class="p">){</span>
+	        	<span class="nx">applies</span> <span class="o">=</span> <span class="nx">mediaquery</span><span class="p">(</span><span class="nx">item</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">]);</span>
+	        <span class="p">}</span>
+            <span class="k">if</span><span class="p">(</span><span class="nx">applies</span> <span class="o">&amp;&amp;</span> <span class="nx">item</span><span class="p">[</span><span class="s1">&#39;excludemedia&#39;</span><span class="p">]){</span>
+            	<span class="nx">applies</span> <span class="o">=</span> <span class="o">!</span><span class="nx">mediaquery</span><span class="p">(</span><span class="nx">item</span><span class="p">[</span><span class="s1">&#39;excludemedia&#39;</span><span class="p">]);</span>
+	        <span class="p">}</span>
+	        <span class="k">if</span> <span class="p">(</span><span class="nx">applies</span> <span class="o">&amp;&amp;</span> <span class="nx">item</span><span class="p">[</span><span class="s1">&#39;iecondition&#39;</span><span class="p">])</span> <span class="p">{</span>
+                <span class="nx">applies</span> <span class="o">=</span> <span class="nx">isIE</span><span class="p">(</span><span class="nx">item</span><span class="p">[</span><span class="s1">&#39;iecondition&#39;</span><span class="p">]);</span>
+            <span class="p">}</span>
+            <span class="k">if</span><span class="p">(</span><span class="nx">applies</span> <span class="o">&amp;&amp;</span> <span class="nx">item</span><span class="p">[</span><span class="s1">&#39;ifsupported&#39;</span><span class="p">]</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">){</span>
+            	<span class="nx">applies</span> <span class="o">=</span> <span class="nx">checkifsupported</span><span class="p">(</span><span class="nx">item</span><span class="p">[</span><span class="s1">&#39;ifsupported&#39;</span><span class="p">]);</span>
+            	<span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">applies</span> <span class="o">&amp;&amp;</span> <span class="nx">item</span><span class="p">[</span><span class="s1">&#39;fallback&#39;</span><span class="p">]</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">){</span>
+					<span class="nx">item</span><span class="p">[</span><span class="s1">&#39;href&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">item</span><span class="p">[</span><span class="s1">&#39;fallback&#39;</span><span class="p">];</span>
+					<span class="nx">applies</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+				<span class="p">}</span>
+            <span class="p">}</span>
+	        <span class="k">if</span><span class="p">(</span><span class="nx">applies</span><span class="p">){</span> 	        	
+	        	<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">attr</span> <span class="k">in</span> <span class="nx">item</span><span class="p">)</span> <span class="p">{</span>
+	                <span class="k">if</span> <span class="p">(</span><span class="nx">attr</span> <span class="o">!==</span> <span class="s1">&#39;iecondition&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">attr</span> <span class="o">!==</span> <span class="s1">&#39;excludemedia&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">attr</span> <span class="o">!==</span> <span class="s1">&#39;ifsupported&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">attr</span> <span class="o">!==</span> <span class="s1">&#39;fallback&#39;</span><span class="p">)</span> <span class="p">{</span>
+	                    <span class="nx">link</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="nx">attr</span><span class="p">,</span> <span class="nx">item</span><span class="p">[</span><span class="nx">attr</span><span class="p">]);</span>
+	                <span class="p">}</span>    
+	            <span class="p">}</span>
+	            <span class="nx">head</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">link</span><span class="p">);</span> 
+	        <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">isIE</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">cache</span> <span class="o">=</span> <span class="p">{},</span>
+		<span class="nx">b</span><span class="p">;</span>
+    <span class="k">return</span> <span class="kd">function</span><span class="p">(</span><span class="nx">condition</span><span class="p">)</span> <span class="p">{</span>	
+    	<span class="k">if</span><span class="p">(</span><span class="cm">/*@cc_on!@*/</span><span class="kc">true</span><span class="p">){</span><span class="k">return</span> <span class="kc">false</span><span class="p">;}</span>
+		<span class="kd">var</span> <span class="nx">cc</span> <span class="o">=</span> <span class="s1">&#39;IE&#39;</span><span class="p">;</span>
+		<span class="k">if</span><span class="p">(</span><span class="nx">condition</span><span class="p">){</span> 
+			<span class="k">if</span><span class="p">(</span><span class="nx">condition</span> <span class="o">!==</span> <span class="s1">&#39;all&#39;</span><span class="p">){</span> <span class="c1">//deprecated support for &#39;all&#39; keyword</span>
+				<span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="nb">isNaN</span><span class="p">(</span><span class="nb">parseFloat</span><span class="p">(</span><span class="nx">condition</span><span class="p">))</span> <span class="p">){</span> 
+					<span class="nx">cc</span> <span class="o">+=</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nx">condition</span><span class="p">;</span> <span class="c1">//deprecated support for straight version #</span>
+				<span class="p">}</span>
+				<span class="k">else</span> <span class="p">{</span>
+					<span class="nx">cc</span> <span class="o">=</span> <span class="nx">condition</span><span class="p">;</span> <span class="c1">//recommended (conditional comment syntax)</span>
+				<span class="p">}</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nx">cache</span><span class="p">[</span><span class="nx">cc</span><span class="p">]</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">b</span> <span class="o">=</span> <span class="nx">b</span> <span class="o">||</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">);</span>
+			<span class="nx">b</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="s1">&#39;&lt;!--[if &#39;</span><span class="o">+</span> <span class="nx">cc</span> <span class="o">+</span><span class="s1">&#39;]&gt;&lt;b&gt;&lt;/b&gt;&lt;![endif]--&gt;&#39;</span><span class="p">;</span>
+			<span class="nx">cache</span><span class="p">[</span><span class="nx">cc</span><span class="p">]</span> <span class="o">=</span> <span class="o">!!</span><span class="nx">b</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">).</span><span class="nx">length</span><span class="p">;</span>
+		<span class="p">}</span>
+		<span class="k">return</span> <span class="nx">cache</span><span class="p">[</span><span class="nx">cc</span><span class="p">];</span>
+	<span class="p">}</span>	
+<span class="p">})();</span>
+
+<span class="kd">function</span> <span class="nx">appendScripts</span><span class="p">(){</span>
+	<span class="nx">settings</span><span class="p">.</span><span class="nx">queueLoading</span> <span class="o">?</span> <span class="nx">appendScriptsSync</span><span class="p">()</span> <span class="o">:</span> <span class="nx">appendScriptsAsync</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">appendScriptsSync</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">queue</span> <span class="o">=</span> <span class="p">[].</span><span class="nx">concat</span><span class="p">(</span><span class="nx">settings</span><span class="p">.</span><span class="nx">loadScripts</span><span class="p">);</span>
+    <span class="kd">function</span> <span class="nx">next</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">queue</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="kd">var</span> <span class="nx">item</span>    <span class="o">=</span> <span class="nx">queue</span><span class="p">.</span><span class="nx">shift</span><span class="p">(),</span>
+            <span class="nx">script</span> <span class="o">=</span> <span class="nx">createScriptTag</span><span class="p">(</span><span class="nx">item</span><span class="p">),</span>
+            <span class="nx">done</span>   <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="nx">script</span><span class="p">){</span>
+	        <span class="nx">script</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="nx">script</span><span class="p">.</span><span class="nx">onreadystatechange</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+	            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">done</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">==</span> <span class="s1">&#39;loaded&#39;</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">==</span> <span class="s1">&#39;complete&#39;</span><span class="p">))</span> <span class="p">{</span>
+	                <span class="nx">done</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+	                <span class="k">if</span><span class="p">(</span><span class="nx">next</span><span class="p">()</span> <span class="o">===</span> <span class="kc">false</span><span class="p">){</span>
+	                	<span class="nx">settings</span><span class="p">.</span><span class="nx">onScriptsLoaded</span><span class="p">();</span>
+	                <span class="p">}</span>
+	                <span class="k">this</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">onreadystatechange</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+	            <span class="p">}</span>
+	        <span class="p">}</span>
+	        <span class="nx">head</span><span class="p">.</span><span class="nx">insertBefore</span><span class="p">(</span><span class="nx">script</span><span class="p">,</span> <span class="nx">head</span><span class="p">.</span><span class="nx">firstChild</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span><span class="p">{</span>
+        	<span class="k">return</span> <span class="nx">next</span><span class="p">();</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="nx">next</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">appendScriptsAsync</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="nx">item</span><span class="p">;</span>
+    <span class="k">while</span> <span class="p">((</span><span class="nx">item</span> <span class="o">=</span> <span class="nx">settings</span><span class="p">.</span><span class="nx">loadScripts</span><span class="p">[</span><span class="o">++</span><span class="nx">index</span><span class="p">]))</span> <span class="p">{</span>
+    	<span class="kd">var</span> <span class="nx">script</span> <span class="o">=</span> <span class="nx">createScriptTag</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+        <span class="k">if</span><span class="p">(</span><span class="nx">script</span><span class="p">){</span>
+        	<span class="nx">head</span><span class="p">.</span><span class="nx">insertBefore</span><span class="p">(</span><span class="nx">script</span><span class="p">,</span> <span class="nx">head</span><span class="p">.</span><span class="nx">firstChild</span><span class="p">);</span>
+        <span class="p">}</span>	
+    <span class="p">}</span>
+    <span class="nx">settings</span><span class="p">.</span><span class="nx">onScriptsLoaded</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">createScriptTag</span><span class="p">(</span><span class="nx">item</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">script</span>  <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;script&#39;</span><span class="p">);</span>
+    <span class="nx">script</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s1">&#39;text/javascript&#39;</span><span class="p">;</span>
+    <span class="nx">script</span><span class="p">.</span><span class="nx">onerror</span> <span class="o">=</span> <span class="nx">settings</span><span class="p">.</span><span class="nx">onLoadError</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">item</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">script</span><span class="p">.</span><span class="nx">src</span>  <span class="o">=</span> <span class="nx">item</span><span class="p">;</span>
+        <span class="k">return</span> <span class="nx">script</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+    	<span class="k">if</span><span class="p">(</span><span class="nx">item</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">]){</span> 
+    		<span class="nx">item</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">mediaSwitch</span><span class="p">(</span><span class="nx">item</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">]);</span> 
+    		<span class="k">if</span><span class="p">(</span><span class="nx">settings</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">]){</span>
+    			<span class="k">if</span><span class="p">(</span><span class="nx">settings</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">][</span><span class="nx">item</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">]]){</span>
+    				<span class="nx">item</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">settings</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">][</span><span class="nx">item</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">]];</span>
+    			<span class="p">}</span>
+    		<span class="p">}</span>  
+    	<span class="p">}</span>
+        <span class="k">if</span><span class="p">(</span><span class="nx">item</span><span class="p">[</span><span class="s1">&#39;excludemedia&#39;</span><span class="p">]){</span> <span class="nx">item</span><span class="p">[</span><span class="s1">&#39;excludemedia&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">mediaSwitch</span><span class="p">(</span><span class="nx">item</span><span class="p">[</span><span class="s1">&#39;excludemedia&#39;</span><span class="p">]);</span> <span class="p">}</span>
+        	
+        <span class="kd">var</span> <span class="nx">applies</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="nx">item</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">]){</span>
+        	<span class="nx">applies</span> <span class="o">=</span> <span class="nx">mediaquery</span><span class="p">(</span><span class="nx">item</span><span class="p">[</span><span class="s1">&#39;media&#39;</span><span class="p">]);</span>
+        <span class="p">}</span>
+        <span class="k">if</span><span class="p">(</span><span class="nx">applies</span> <span class="o">&amp;&amp;</span> <span class="nx">item</span><span class="p">[</span><span class="s1">&#39;excludemedia&#39;</span><span class="p">]){</span>
+        	<span class="nx">applies</span> <span class="o">=</span> <span class="o">!</span><span class="nx">mediaquery</span><span class="p">(</span><span class="nx">item</span><span class="p">[</span><span class="s1">&#39;excludemedia&#39;</span><span class="p">]);</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">applies</span> <span class="o">&amp;&amp;</span> <span class="nx">item</span><span class="p">[</span><span class="s1">&#39;iecondition&#39;</span><span class="p">])</span> <span class="p">{</span>
+                <span class="nx">applies</span> <span class="o">=</span> <span class="nx">isIE</span><span class="p">(</span><span class="nx">item</span><span class="p">[</span><span class="s1">&#39;iecondition&#39;</span><span class="p">]);</span>
+        <span class="p">}</span>
+        <span class="k">if</span><span class="p">(</span><span class="nx">applies</span> <span class="o">&amp;&amp;</span> <span class="nx">item</span><span class="p">[</span><span class="s1">&#39;ifsupported&#39;</span><span class="p">]</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">){</span>
+        	<span class="nx">applies</span> <span class="o">=</span> <span class="nx">checkifsupported</span><span class="p">(</span><span class="nx">item</span><span class="p">[</span><span class="s1">&#39;ifsupported&#39;</span><span class="p">]);</span>
+        	<span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">applies</span> <span class="o">&amp;&amp;</span> <span class="nx">item</span><span class="p">[</span><span class="s1">&#39;fallback&#39;</span><span class="p">]</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">){</span>
+				<span class="nx">item</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">item</span><span class="p">[</span><span class="s1">&#39;fallback&#39;</span><span class="p">];</span>
+				<span class="nx">applies</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+			<span class="p">}</span>
+        <span class="p">}</span>
+        
+        <span class="k">if</span><span class="p">(</span><span class="nx">applies</span><span class="p">){</span>
+        	<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">attr</span> <span class="k">in</span> <span class="nx">item</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">attr</span> <span class="o">!==</span> <span class="s1">&#39;iecondition&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">attr</span> <span class="o">!==</span> <span class="s1">&#39;media&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">attr</span> <span class="o">!==</span> <span class="s1">&#39;excludemedia&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">attr</span> <span class="o">!==</span> <span class="s1">&#39;ifsupported&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">attr</span> <span class="o">!==</span> <span class="s1">&#39;fallback&#39;</span><span class="p">)</span> <span class="p">{</span>
+	            	<span class="nx">script</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="nx">attr</span><span class="p">,</span> <span class="nx">item</span><span class="p">[</span><span class="nx">attr</span><span class="p">]);</span>
+	            <span class="p">}</span>    
+	        <span class="p">}</span>
+	        <span class="k">return</span> <span class="nx">script</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">else</span><span class="p">{</span>
+        	<span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="cm">/* cookie functions from quirksmode.org (modified) */</span>
+<span class="kd">function</span> <span class="nx">createCookie</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">value</span><span class="p">,</span> <span class="nx">days</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">days</span> <span class="o">=</span> <span class="nx">days</span> <span class="o">||</span> <span class="mi">90</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">date</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">();</span>
+    <span class="nx">date</span><span class="p">.</span><span class="nx">setTime</span><span class="p">(</span><span class="nx">date</span><span class="p">.</span><span class="nx">getTime</span><span class="p">()</span><span class="o">+</span><span class="p">(</span><span class="nx">days</span><span class="o">*</span><span class="mi">24</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">1000</span><span class="p">));</span>
+    <span class="kd">var</span> <span class="nx">expires</span> <span class="o">=</span> <span class="s2">&quot;; expires=&quot;</span><span class="o">+</span><span class="nx">date</span><span class="p">.</span><span class="nx">toGMTString</span><span class="p">();</span>
+    <span class="nx">doc</span><span class="p">.</span><span class="nx">cookie</span> <span class="o">=</span> <span class="nx">name</span><span class="o">+</span><span class="s2">&quot;=&quot;</span><span class="o">+</span><span class="nx">value</span><span class="o">+</span><span class="nx">expires</span><span class="o">+</span><span class="s2">&quot;; path=/&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">readCookie</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">nameEQ</span> <span class="o">=</span> <span class="nx">name</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">ca</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">cookie</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">ca</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="nx">ca</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+        <span class="k">while</span> <span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">charAt</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">==</span><span class="s1">&#39; &#39;</span><span class="p">)</span> <span class="nx">c</span> <span class="o">=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nx">c</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">nameEQ</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="nx">c</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="nx">nameEQ</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span><span class="nx">c</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+			<span class="p">}</span>
+    <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+<span class="p">}</span>
+	
+<span class="kd">function</span> <span class="nx">eraseCookie</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">createCookie</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">applyDocReadyHack</span><span class="p">()</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-33">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-33">&#182;</a>               </div>               <p>via http://webreflection.blogspot.com/2009/11/195-chars-to-help-lazy-loading.html
+verify that document.readyState is undefined
+verify that document.addEventListener is there
+these two conditions are basically telling us
+we are using Firefox &lt; 3.6</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">){</span></pre></div>             </td>           </tr>                               <tr id="section-34">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-34">&#182;</a>               </div>               <p>on DOMContentLoaded event, supported since ages</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">doc</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;DOMContentLoaded&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="nx">DOMContentLoaded</span><span class="p">(){</span></pre></div>             </td>           </tr>                               <tr id="section-35">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-35">&#182;</a>               </div>               <p>remove the listener itself</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="nx">doc</span><span class="p">.</span><span class="nx">removeEventListener</span><span class="p">(</span><span class="s2">&quot;DOMContentLoaded&quot;</span><span class="p">,</span> <span class="nx">DOMContentLoaded</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-36">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-36">&#182;</a>               </div>               <p>assign readyState as complete</p>             </td>             <td class="code">               <div class="highlight"><pre>            <span class="nx">doc</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">=</span> <span class="s2">&quot;complete&quot;</span><span class="p">;</span>
+        <span class="p">},</span> <span class="kc">false</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-37">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-37">&#182;</a>               </div>               <p>set readyState = loading or interactive
+it does not really matter for this purpose</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="nx">doc</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">=</span> <span class="s2">&quot;loading&quot;</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>		
+<span class="p">})(</span><span class="nb">window</span><span class="p">,</span> <span class="nb">document</span><span class="p">);</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
