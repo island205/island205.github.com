@@ -26,7 +26,7 @@
 <div role="main" id="main">
 	<div class="post">
 	<div class='back'><a href='/tlboc/'>&laquo; 返回目录</a></div>
-<h1 id='id24'>创建应用程序</h1>
+<h1 id='id570'>创建应用程序</h1>
 
 <p>既然你基本已经了解了CoffeeScript的语法，那现在让我们来探索下如何使用它来真枪实弹的创建应用程序。本节内容对所有的CoffeeScript开发者都有用，无论你是新人还是老手，实际上，这对只写JavaScript的人来说也非常有用。</p>
 
@@ -40,15 +40,15 @@
 
 <p>实际上，模块能保证你的代码运行在局部作用域中（代码分装），你可以通过<code>require()</code>函数来载入模块，而且通过<code>module.exports</code>来暴露模块。让我们更加深入的研究下。</p>
 
-<h3 id='id25'>导入文件</h3>
+<h3 id='id571'>导入文件</h3>
 
 <p>你可是使用<code>require()</code>来载入其他模块和类库。只给它传递一个模块名即可，而且如果该模块正加载目录中，<code>require()</code>会返回一个代表该模块的对象。例如：</p>
-<div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>User = </span><span class='nx'>require</span><span class='p'>(</span><span class='s2'>&quot;models/user&quot;</span><span class='p'>)</span>
+<div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>User = </span><span class='nx'>require</span><span class='p'>(</span><span class='s'>&quot;models/user&quot;</span><span class='p'>)</span>
 </code></pre>
 </div>
 <p>同步的<code>require</code>是一个颇具争议的问题，但是主流的类库加载器和CommonJS的预案中已经解决了这个问题。如果你不想使用我下面推荐的Stitch而想另走一条路的话，你可能需要看一下它。</p>
 
-<h3 id='id26'>暴露属性</h3>
+<h3 id='id572'>暴露属性</h3>
 
 <p>默认情况下，模块不会暴露任何属性，因此模块内的东西对于<code>require()</code>调用来说不可见。如果你想访问模块的某个属性，你需要将它挂到<code>module.exports</code>：</p>
 <div class='highlight'><pre><code class='coffeescript'>    <span class='c1'># random_module.js</span>
@@ -57,7 +57,7 @@
 </code></pre>
 </div>
 <p>现在，<code>require</code>这个模块的时候<code>myFineProperty</code>就会暴露出来：</p>
-<div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>myFineProperty = </span><span class='nx'>require</span><span class='p'>(</span><span class='s2'>&quot;random_module&quot;</span><span class='p'>).</span><span class='nx'>myFineProperty</span>
+<div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>myFineProperty = </span><span class='nx'>require</span><span class='p'>(</span><span class='s'>&quot;random_module&quot;</span><span class='p'>).</span><span class='nx'>myFineProperty</span>
 </code></pre>
 </div>
 <h2 id='stitch'>使用Stitch打包</h2>
@@ -78,14 +78,14 @@
 </code></pre>
 </div>
 <p>接着，为了启动我们的Stitch服务，让我们创建一个名为<code>index.coffee</code>的文件，添加如下脚本：</p>
-<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nx'>require</span><span class='p'>(</span><span class='s2'>&quot;coffee-script&quot;</span><span class='p'>)</span>
-    <span class='nv'>stitch  = </span><span class='nx'>require</span><span class='p'>(</span><span class='s2'>&quot;stitch&quot;</span><span class='p'>)</span>
-    <span class='nv'>express = </span><span class='nx'>require</span><span class='p'>(</span><span class='s2'>&quot;express&quot;</span><span class='p'>)</span>
+<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nx'>require</span><span class='p'>(</span><span class='s'>&quot;coffee-script&quot;</span><span class='p'>)</span>
+    <span class='nv'>stitch  = </span><span class='nx'>require</span><span class='p'>(</span><span class='s'>&quot;stitch&quot;</span><span class='p'>)</span>
+    <span class='nv'>express = </span><span class='nx'>require</span><span class='p'>(</span><span class='s'>&quot;express&quot;</span><span class='p'>)</span>
     <span class='nv'>argv    = </span><span class='nx'>process</span><span class='p'>.</span><span class='nx'>argv</span><span class='p'>.</span><span class='nx'>slice</span><span class='p'>(</span><span class='mi'>2</span><span class='p'>)</span>
     
     <span class='nv'>package = </span><span class='nx'>stitch</span><span class='p'>.</span><span class='nx'>createPackage</span><span class='p'>(</span>
       <span class='c1'># Specify the paths you want Stitch to automatically bundle up</span>
-      <span class='nv'>paths: </span><span class='p'>[</span> <span class='nx'>__dirname</span> <span class='o'>+</span> <span class='s2'>&quot;/app&quot;</span> <span class='p'>]</span>
+      <span class='nv'>paths: </span><span class='p'>[</span> <span class='nx'>__dirname</span> <span class='o'>+</span> <span class='s'>&quot;/app&quot;</span> <span class='p'>]</span>
       
       <span class='c1'># Specify your base libraries</span>
       <span class='nv'>dependencies: </span><span class='p'>[</span>
@@ -95,13 +95,13 @@
     <span class='nv'>app = </span><span class='nx'>express</span><span class='p'>.</span><span class='nx'>createServer</span><span class='p'>()</span>
     
     <span class='nx'>app</span><span class='p'>.</span><span class='nx'>configure</span> <span class='o'>-&gt;</span>
-      <span class='nx'>app</span><span class='p'>.</span><span class='nx'>set</span> <span class='s2'>&quot;views&quot;</span><span class='p'>,</span> <span class='nx'>__dirname</span> <span class='o'>+</span> <span class='s2'>&quot;/views&quot;</span>
+      <span class='nx'>app</span><span class='p'>.</span><span class='nx'>set</span> <span class='s'>&quot;views&quot;</span><span class='p'>,</span> <span class='nx'>__dirname</span> <span class='o'>+</span> <span class='s'>&quot;/views&quot;</span>
       <span class='nx'>app</span><span class='p'>.</span><span class='nx'>use</span> <span class='nx'>app</span><span class='p'>.</span><span class='nx'>router</span>
-      <span class='nx'>app</span><span class='p'>.</span><span class='nx'>use</span> <span class='nx'>express</span><span class='p'>.</span><span class='nx'>static</span><span class='p'>(</span><span class='nx'>__dirname</span> <span class='o'>+</span> <span class='s2'>&quot;/public&quot;</span><span class='p'>)</span>
-      <span class='nx'>app</span><span class='p'>.</span><span class='nx'>get</span> <span class='s2'>&quot;/application.js&quot;</span><span class='p'>,</span> <span class='nx'>package</span><span class='p'>.</span><span class='nx'>createServer</span><span class='p'>()</span>
+      <span class='nx'>app</span><span class='p'>.</span><span class='nx'>use</span> <span class='nx'>express</span><span class='p'>.</span><span class='nx'>static</span><span class='p'>(</span><span class='nx'>__dirname</span> <span class='o'>+</span> <span class='s'>&quot;/public&quot;</span><span class='p'>)</span>
+      <span class='nx'>app</span><span class='p'>.</span><span class='nx'>get</span> <span class='s'>&quot;/application.js&quot;</span><span class='p'>,</span> <span class='nx'>package</span><span class='p'>.</span><span class='nx'>createServer</span><span class='p'>()</span>
 
     <span class='nv'>port = </span><span class='nx'>argv</span><span class='p'>[</span><span class='mi'>0</span><span class='p'>]</span> <span class='o'>or</span> <span class='nx'>process</span><span class='p'>.</span><span class='nx'>env</span><span class='p'>.</span><span class='nx'>PORT</span> <span class='o'>or</span> <span class='mi'>9294</span>
-    <span class='nx'>console</span><span class='p'>.</span><span class='nx'>log</span> <span class='s2'>&quot;Starting server on port: #{port}&quot;</span>
+    <span class='nx'>console</span><span class='p'>.</span><span class='nx'>log</span> <span class='s'>&quot;Starting server on port: </span><span class='si'>#{</span><span class='nx'>port</span><span class='si'>}</span><span class='s'>&quot;</span>
     <span class='nx'>app</span><span class='p'>.</span><span class='nx'>listen</span> <span class='nx'>port</span>
 </code></pre>
 </div>
@@ -159,7 +159,7 @@
       <span class='nv'>constructor: </span><span class='nf'>(@name) -&gt;</span>
       
     <span class='c1'># app/app.coffee</span>
-    <span class='nv'>User = </span><span class='nx'>require</span><span class='p'>(</span><span class='s2'>&quot;models/user&quot;</span><span class='p'>)</span>
+    <span class='nv'>User = </span><span class='nx'>require</span><span class='p'>(</span><span class='s'>&quot;models/user&quot;</span><span class='p'>)</span>
 </code></pre>
 </div>
 <h2 id='javascript'>JavaScript模板</h2>
@@ -171,8 +171,8 @@
 <p>例如：</p>
 <div class='highlight'><pre><code class='coffeescript'>    <span class='o'>&lt;%</span> <span class='k'>if</span> <span class='vi'>@projects.length: </span><span class='o'>%&gt;</span>
       <span class='o'>&lt;%</span> <span class='k'>for</span> <span class='nx'>project</span> <span class='k'>in</span> <span class='vi'>@projects: </span><span class='o'>%&gt;</span>
-        <span class='o'>&lt;</span><span class='nx'>a</span> <span class='nx'>href</span><span class='o'>=</span><span class='s2'>&quot;&lt;%= project.url %&gt;&quot;</span><span class='o'>&gt;&lt;%=</span> <span class='nx'>project</span><span class='p'>.</span><span class='nx'>name</span> <span class='o'>%&gt;&lt;</span><span class='err'>/a&gt;</span>
-        <span class='o'>&lt;</span><span class='nx'>p</span><span class='o'>&gt;&lt;%=</span> <span class='nx'>project</span><span class='p'>.</span><span class='nx'>description</span> <span class='o'>%&gt;&lt;</span><span class='err'>/p&gt;</span>
+        <span class='o'>&lt;</span><span class='nx'>a</span> <span class='nx'>href</span><span class='o'>=</span><span class='s'>&quot;&lt;%= project.url %&gt;&quot;</span><span class='o'>&gt;&lt;%=</span> <span class='nx'>project</span><span class='p'>.</span><span class='nx'>name</span> <span class='o'>%&gt;&lt;/</span><span class='nx'>a</span><span class='o'>&gt;</span>
+        <span class='o'>&lt;</span><span class='nx'>p</span><span class='o'>&gt;&lt;%=</span> <span class='nx'>project</span><span class='p'>.</span><span class='nx'>description</span> <span class='o'>%&gt;&lt;/</span><span class='nx'>p</span><span class='o'>&gt;</span>
       <span class='o'>&lt;%</span> <span class='nx'>end</span> <span class='o'>%&gt;</span>
     <span class='o'>&lt;%</span> <span class='k'>else</span><span class='o'>:</span> <span class='o'>%&gt;</span>
       <span class='nx'>No</span> <span class='nx'>projects</span>
@@ -211,28 +211,28 @@
 
 <p>而且你也可以使用<code>if</code>单行后缀表达式来实现：</p>
 
-<p><div class='highlight'><pre><code class='coffeescript'>    <span class='o'>&lt;%=</span> <span class='s2'>&quot;On Hold&quot;</span> <span class='k'>if</span> <span class='nx'>@project</span><span class='p'>.</span><span class='nx'>isOnHold</span><span class='p'>()</span> <span class='o'>%&gt;</span>
+<p><div class='highlight'><pre><code class='coffeescript'>    <span class='o'>&lt;%=</span> <span class='s'>&quot;On Hold&quot;</span> <span class='k'>if</span> <span class='nx'>@project</span><span class='p'>.</span><span class='nx'>isOnHold</span><span class='p'>()</span> <span class='o'>%&gt;</span>
 </code></pre>
 </div></p>
 
 <p>现在我们已经学习了语法，让我们在<code>views/users/show.eco</code>定义一个Eco模板吧：</p>
-<div class='highlight'><pre><code class='coffeescript'>    <span class='o'>&lt;</span><span class='nx'>label</span><span class='o'>&gt;</span><span class='nv'>Name: </span><span class='o'>&lt;%=</span> <span class='nx'>@name</span> <span class='o'>%&gt;&lt;</span><span class='err'>/label&gt;</span>
+<div class='highlight'><pre><code class='coffeescript'>    <span class='o'>&lt;</span><span class='nx'>label</span><span class='o'>&gt;</span><span class='nv'>Name: </span><span class='o'>&lt;%=</span> <span class='nx'>@name</span> <span class='o'>%&gt;&lt;/</span><span class='nx'>label</span><span class='o'>&gt;</span>
 </code></pre>
 </div>
 <p>Stitch会自动编译我们的模板且把它们打包到<code>application.js</code>中。然后，在程序控制器中我们就可以require模板，就像使用一个模块一样，传入所以的数据执行它。</p>
-<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nx'>require</span><span class='p'>(</span><span class='s2'>&quot;views/users/show&quot;</span><span class='p'>)(</span><span class='k'>new</span> <span class='nx'>User</span><span class='p'>(</span><span class='s2'>&quot;Brian&quot;</span><span class='p'>))</span>
+<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nx'>require</span><span class='p'>(</span><span class='s'>&quot;views/users/show&quot;</span><span class='p'>)(</span><span class='k'>new</span> <span class='nx'>User</span><span class='p'>(</span><span class='s'>&quot;Brian&quot;</span><span class='p'>))</span>
 </code></pre>
 </div>
 <p>我们的<code>app.coffee</code>文件现在看起来像下面这样，当文档加载完毕后，我们渲染这个模板并将其添加到页面中：</p>
-<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>User = </span><span class='nx'>require</span><span class='p'>(</span><span class='s2'>&quot;models/user&quot;</span><span class='p'>)</span>
+<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>User = </span><span class='nx'>require</span><span class='p'>(</span><span class='s'>&quot;models/user&quot;</span><span class='p'>)</span>
 
     <span class='nv'>App =</span>
       <span class='nv'>init: </span><span class='o'>-&gt;</span>
-        <span class='nv'>template = </span><span class='nx'>require</span><span class='p'>(</span><span class='s2'>&quot;views/users/show&quot;</span><span class='p'>)</span>
-        <span class='nv'>view     = </span><span class='nx'>template</span><span class='p'>(</span><span class='k'>new</span> <span class='nx'>User</span><span class='p'>(</span><span class='s2'>&quot;Brian&quot;</span><span class='p'>))</span>
+        <span class='nv'>template = </span><span class='nx'>require</span><span class='p'>(</span><span class='s'>&quot;views/users/show&quot;</span><span class='p'>)</span>
+        <span class='nv'>view     = </span><span class='nx'>template</span><span class='p'>(</span><span class='k'>new</span> <span class='nx'>User</span><span class='p'>(</span><span class='s'>&quot;Brian&quot;</span><span class='p'>))</span>
 
         <span class='c1'># Obviously this could be spruced up by jQuery</span>
-        <span class='nv'>element = </span><span class='nb'>document</span><span class='p'>.</span><span class='nx'>createElement</span><span class='p'>(</span><span class='s2'>&quot;div&quot;</span><span class='p'>)</span>
+        <span class='nv'>element = </span><span class='nb'>document</span><span class='p'>.</span><span class='nx'>createElement</span><span class='p'>(</span><span class='s'>&quot;div&quot;</span><span class='p'>)</span>
         <span class='nv'>element.innerHTML = </span><span class='nx'>view</span>
         <span class='nb'>document</span><span class='p'>.</span><span class='nx'>body</span><span class='p'>.</span><span class='nx'>appendChild</span><span class='p'>(</span><span class='nx'>element</span><span class='p'>)</span>
     
@@ -263,7 +263,7 @@
 </div>
 <p>好了，这样做就行了。没有比这还简单的Node主机的服务了。</p>
 
-<h2 id='id27'>其他类库</h2>
+<h2 id='id573'>其他类库</h2>
 
 <p><a href='https://github.com/sstephenson/stitch'>Stitch</a>和<a href='https://github.com/sstephenson/eco'>Eco</a>并不是唯一你可用于创建CoffeeScript和Node程序的类库，还有很多可作为替代的类库。</p>
 

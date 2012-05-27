@@ -43,21 +43,21 @@
 <p>你可以使用在一个名为<code>Cakefile</code>的文件中使用CoffeeScript来定义任务。Cake可以去读它，而且可以在当前目录中通过运行<code>cake[task][options]</code>来调用它。单单输入<code>cake</code>可以显示一个任务项以及参数的列表。</p>
 
 <p>可以使用<code>task()</code>函数来定义任务项，给它传递一个名字、参数以及回调函数即可。例如，创建一个名为<code>Cakefile</code>的文件，还有两个目录——<code>lib</code>和<code>src</code>。把下面的代码添加到Cake文件中；</p>
-<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>fs = </span><span class='nx'>require</span> <span class='s1'>&#39;fs&#39;</span>
+<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>fs = </span><span class='nx'>require</span> <span class='s'>&#39;fs&#39;</span>
 
-    <span class='p'>{</span><span class='nx'>print</span><span class='p'>}</span> <span class='o'>=</span> <span class='nx'>require</span> <span class='s1'>&#39;sys&#39;</span>
-    <span class='p'>{</span><span class='nx'>spawn</span><span class='p'>}</span> <span class='o'>=</span> <span class='nx'>require</span> <span class='s1'>&#39;child_process&#39;</span>
+    <span class='p'>{</span><span class='nx'>print</span><span class='p'>}</span> <span class='o'>=</span> <span class='nx'>require</span> <span class='s'>&#39;sys&#39;</span>
+    <span class='p'>{</span><span class='nx'>spawn</span><span class='p'>}</span> <span class='o'>=</span> <span class='nx'>require</span> <span class='s'>&#39;child_process&#39;</span>
 
     <span class='nv'>build = </span><span class='nf'>(callback) -&gt;</span>
-      <span class='nv'>coffee = </span><span class='nx'>spawn</span> <span class='s1'>&#39;coffee&#39;</span><span class='p'>,</span> <span class='p'>[</span><span class='s1'>&#39;-c&#39;</span><span class='p'>,</span> <span class='s1'>&#39;-o&#39;</span><span class='p'>,</span> <span class='s1'>&#39;lib&#39;</span><span class='p'>,</span> <span class='s1'>&#39;src&#39;</span><span class='p'>]</span>
-      <span class='nx'>coffee</span><span class='p'>.</span><span class='nx'>stderr</span><span class='p'>.</span><span class='kc'>on</span> <span class='s1'>&#39;data&#39;</span><span class='p'>,</span> <span class='nf'>(data) -&gt;</span>
+      <span class='nv'>coffee = </span><span class='nx'>spawn</span> <span class='s'>&#39;coffee&#39;</span><span class='p'>,</span> <span class='p'>[</span><span class='s'>&#39;-c&#39;</span><span class='p'>,</span> <span class='s'>&#39;-o&#39;</span><span class='p'>,</span> <span class='s'>&#39;lib&#39;</span><span class='p'>,</span> <span class='s'>&#39;src&#39;</span><span class='p'>]</span>
+      <span class='nx'>coffee</span><span class='p'>.</span><span class='nx'>stderr</span><span class='p'>.</span><span class='kc'>on</span> <span class='s'>&#39;data&#39;</span><span class='p'>,</span> <span class='nf'>(data) -&gt;</span>
         <span class='nx'>process</span><span class='p'>.</span><span class='nx'>stderr</span><span class='p'>.</span><span class='nx'>write</span> <span class='nx'>data</span><span class='p'>.</span><span class='nx'>toString</span><span class='p'>()</span>
-      <span class='nx'>coffee</span><span class='p'>.</span><span class='nx'>stdout</span><span class='p'>.</span><span class='kc'>on</span> <span class='s1'>&#39;data&#39;</span><span class='p'>,</span> <span class='nf'>(data) -&gt;</span>
+      <span class='nx'>coffee</span><span class='p'>.</span><span class='nx'>stdout</span><span class='p'>.</span><span class='kc'>on</span> <span class='s'>&#39;data&#39;</span><span class='p'>,</span> <span class='nf'>(data) -&gt;</span>
         <span class='nx'>print</span> <span class='nx'>data</span><span class='p'>.</span><span class='nx'>toString</span><span class='p'>()</span>
-      <span class='nx'>coffee</span><span class='p'>.</span><span class='kc'>on</span> <span class='s1'>&#39;exit&#39;</span><span class='p'>,</span> <span class='nf'>(code) -&gt;</span>
+      <span class='nx'>coffee</span><span class='p'>.</span><span class='kc'>on</span> <span class='s'>&#39;exit&#39;</span><span class='p'>,</span> <span class='nf'>(code) -&gt;</span>
         <span class='nx'>callback</span><span class='o'>?</span><span class='p'>()</span> <span class='k'>if</span> <span class='nx'>code</span> <span class='o'>is</span> <span class='mi'>0</span>
     
-    <span class='nx'>task</span> <span class='s1'>&#39;build&#39;</span><span class='p'>,</span> <span class='s1'>&#39;Build lib/ from src/&#39;</span><span class='p'>,</span> <span class='o'>-&gt;</span>
+    <span class='nx'>task</span> <span class='s'>&#39;build&#39;</span><span class='p'>,</span> <span class='s'>&#39;Build lib/ from src/&#39;</span><span class='p'>,</span> <span class='o'>-&gt;</span>
       <span class='nx'>build</span><span class='p'>()</span>
 </code></pre>
 </div>
@@ -74,30 +74,30 @@
 </code></pre>
 </div>
 <p>我们在CoffeeScript代码变了之后还需要手动的运行<code>cake build</code>命令，这很不理想。幸运的是，<code>coffee</code>命令接受另外一个<code>--watch</code>参数，指示它监视一个目录的变化并且按需重新编译。让我们用它来定义另外一个任务项：</p>
-<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>     <span class='nx'>task</span> <span class='s1'>&#39;watch&#39;</span><span class='p'>,</span> <span class='s1'>&#39;Watch src/ for changes&#39;</span><span class='p'>,</span> <span class='o'>-&gt;</span>
-        <span class='nv'>coffee = </span><span class='nx'>spawn</span> <span class='s1'>&#39;coffee&#39;</span><span class='p'>,</span> <span class='p'>[</span><span class='s1'>&#39;-w&#39;</span><span class='p'>,</span> <span class='s1'>&#39;-c&#39;</span><span class='p'>,</span> <span class='s1'>&#39;-o&#39;</span><span class='p'>,</span> <span class='s1'>&#39;lib&#39;</span><span class='p'>,</span> <span class='s1'>&#39;src&#39;</span><span class='p'>]</span>
-        <span class='nx'>coffee</span><span class='p'>.</span><span class='nx'>stderr</span><span class='p'>.</span><span class='kc'>on</span> <span class='s1'>&#39;data&#39;</span><span class='p'>,</span> <span class='nf'>(data) -&gt;</span>
+<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>     <span class='nx'>task</span> <span class='s'>&#39;watch&#39;</span><span class='p'>,</span> <span class='s'>&#39;Watch src/ for changes&#39;</span><span class='p'>,</span> <span class='o'>-&gt;</span>
+        <span class='nv'>coffee = </span><span class='nx'>spawn</span> <span class='s'>&#39;coffee&#39;</span><span class='p'>,</span> <span class='p'>[</span><span class='s'>&#39;-w&#39;</span><span class='p'>,</span> <span class='s'>&#39;-c&#39;</span><span class='p'>,</span> <span class='s'>&#39;-o&#39;</span><span class='p'>,</span> <span class='s'>&#39;lib&#39;</span><span class='p'>,</span> <span class='s'>&#39;src&#39;</span><span class='p'>]</span>
+        <span class='nx'>coffee</span><span class='p'>.</span><span class='nx'>stderr</span><span class='p'>.</span><span class='kc'>on</span> <span class='s'>&#39;data&#39;</span><span class='p'>,</span> <span class='nf'>(data) -&gt;</span>
           <span class='nx'>process</span><span class='p'>.</span><span class='nx'>stderr</span><span class='p'>.</span><span class='nx'>write</span> <span class='nx'>data</span><span class='p'>.</span><span class='nx'>toString</span><span class='p'>()</span>
-        <span class='nx'>coffee</span><span class='p'>.</span><span class='nx'>stdout</span><span class='p'>.</span><span class='kc'>on</span> <span class='s1'>&#39;data&#39;</span><span class='p'>,</span> <span class='nf'>(data) -&gt;</span>
+        <span class='nx'>coffee</span><span class='p'>.</span><span class='nx'>stdout</span><span class='p'>.</span><span class='kc'>on</span> <span class='s'>&#39;data&#39;</span><span class='p'>,</span> <span class='nf'>(data) -&gt;</span>
           <span class='nx'>print</span> <span class='nx'>data</span><span class='p'>.</span><span class='nx'>toString</span><span class='p'>()</span>
 </code></pre>
 </div>
 <p>如果一个任务项依赖了另一个，你是使用<code>invoke(name)</code>来运行其他任务项。让我添加一个实用懂得任务项到我们的<code>Cakefile</code>中，该任务首先打开<code>index.html</code>然后就开始监视源文件的改变了。</p>
-<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nx'>task</span> <span class='s1'>&#39;open&#39;</span><span class='p'>,</span> <span class='s1'>&#39;Open index.html&#39;</span><span class='p'>,</span> <span class='o'>-&gt;</span>
+<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nx'>task</span> <span class='s'>&#39;open&#39;</span><span class='p'>,</span> <span class='s'>&#39;Open index.html&#39;</span><span class='p'>,</span> <span class='o'>-&gt;</span>
       <span class='c1'># First open, then watch</span>
-      <span class='nx'>spawn</span> <span class='s1'>&#39;open&#39;</span><span class='p'>,</span> <span class='s1'>&#39;index.html&#39;</span>
-      <span class='nx'>invoke</span> <span class='s1'>&#39;watch&#39;</span>
+      <span class='nx'>spawn</span> <span class='s'>&#39;open&#39;</span><span class='p'>,</span> <span class='s'>&#39;index.html&#39;</span>
+      <span class='nx'>invoke</span> <span class='s'>&#39;watch&#39;</span>
 </code></pre>
 </div>
 <p>你可以使用<code>option()</code>函数来给你的任务项定义参数，它接受一个短名、长名和描述三个参数。</p>
-<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nx'>option</span> <span class='s1'>&#39;-o&#39;</span><span class='p'>,</span> <span class='s1'>&#39;--output [DIR]&#39;</span><span class='p'>,</span> <span class='s1'>&#39;output dir&#39;</span>
+<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nx'>option</span> <span class='s'>&#39;-o&#39;</span><span class='p'>,</span> <span class='s'>&#39;--output [DIR]&#39;</span><span class='p'>,</span> <span class='s'>&#39;output dir&#39;</span>
 
-    <span class='nx'>task</span> <span class='s1'>&#39;build&#39;</span><span class='p'>,</span> <span class='s1'>&#39;Build lib/ from src/&#39;</span><span class='p'>,</span> <span class='o'>-&gt;</span>
+    <span class='nx'>task</span> <span class='s'>&#39;build&#39;</span><span class='p'>,</span> <span class='s'>&#39;Build lib/ from src/&#39;</span><span class='p'>,</span> <span class='o'>-&gt;</span>
       <span class='c1'># Now we have access to a `options` object</span>
-      <span class='nv'>coffee = </span><span class='nx'>spawn</span> <span class='s1'>&#39;coffee&#39;</span><span class='p'>,</span> <span class='p'>[</span><span class='s1'>&#39;-c&#39;</span><span class='p'>,</span> <span class='s1'>&#39;-o&#39;</span><span class='p'>,</span> <span class='nx'>options</span><span class='p'>.</span><span class='nx'>output</span> <span class='o'>or</span> <span class='s1'>&#39;lib&#39;</span><span class='p'>,</span> <span class='s1'>&#39;src&#39;</span><span class='p'>]</span>
-      <span class='nx'>coffee</span><span class='p'>.</span><span class='nx'>stderr</span><span class='p'>.</span><span class='kc'>on</span> <span class='s1'>&#39;data&#39;</span><span class='p'>,</span> <span class='nf'>(data) -&gt;</span>
+      <span class='nv'>coffee = </span><span class='nx'>spawn</span> <span class='s'>&#39;coffee&#39;</span><span class='p'>,</span> <span class='p'>[</span><span class='s'>&#39;-c&#39;</span><span class='p'>,</span> <span class='s'>&#39;-o&#39;</span><span class='p'>,</span> <span class='nx'>options</span><span class='p'>.</span><span class='nx'>output</span> <span class='o'>or</span> <span class='s'>&#39;lib&#39;</span><span class='p'>,</span> <span class='s'>&#39;src&#39;</span><span class='p'>]</span>
+      <span class='nx'>coffee</span><span class='p'>.</span><span class='nx'>stderr</span><span class='p'>.</span><span class='kc'>on</span> <span class='s'>&#39;data&#39;</span><span class='p'>,</span> <span class='nf'>(data) -&gt;</span>
         <span class='nx'>process</span><span class='p'>.</span><span class='nx'>stderr</span><span class='p'>.</span><span class='nx'>write</span> <span class='nx'>data</span><span class='p'>.</span><span class='nx'>toString</span><span class='p'>()</span>
-      <span class='nx'>coffee</span><span class='p'>.</span><span class='nx'>stdout</span><span class='p'>.</span><span class='kc'>on</span> <span class='s1'>&#39;data&#39;</span><span class='p'>,</span> <span class='nf'>(data) -&gt;</span>
+      <span class='nx'>coffee</span><span class='p'>.</span><span class='nx'>stdout</span><span class='p'>.</span><span class='kc'>on</span> <span class='s'>&#39;data&#39;</span><span class='p'>,</span> <span class='nf'>(data) -&gt;</span>
         <span class='nx'>print</span> <span class='nx'>data</span><span class='p'>.</span><span class='nx'>toString</span><span class='p'>()</span>
 </code></pre>
 </div>

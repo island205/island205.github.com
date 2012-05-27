@@ -14,10 +14,10 @@ title:   CoffeeScript与Node.js
 与CoffeeScript一样，Node.js也是一个新项目（可追溯到2009年早些时候），它成长迅速，并催生出了很多激动人心的事物。看看Node.js Knockout 吧——一个受Rails Rumble 启发的编程竞赛，看谁能在48小时内开发出最好的Node程序。   
 已经有许多很棒的用Node和CoffeeScript写成的项目了。下面是挑选出来的几个示例项目。看完本书后你可以回过来看看这个列表，阅读真实的源码是把你的能力推向更高层次的一个好方法：
 
-- **Docco[Ash11]**：著名计算机科学家Donald Knuth提倡“文学化编程”的方法论。其涵义是编写的代码和注释要让那些第一次碰到这个程序的人，只要阅读一次源码就能理解这个程序。由Jeremy Ashkenas开发的Docco就支持这种方法论，它能生成漂亮的网页，并在网页中分列两边显示注释和代码。  
-- **Eco[Ste11]**：假设你正在编写一个基于Node的web程序。你手头上有了所有HTML框架和大堆程序代码，但是你却不知道如何把它们结合到一起。Eco允许你把CoffeeScript嵌到HTML标签中，使其成为一个服务器端的模板语言。  
-- **Zappa[NM11]**：从头开始创建一个web程序从来都没有如此的简单过。Zappa构建在Node的流行框架Express之上，你只需通过简单的描述就能定义服务器该如何处理任意HTTP请求 。它还能完美地集成Eco！  
-- **Zombie.js[Ark11]**：全栈式web程序测试模块领域又来了一个新小伙：Zombie.js。Zombie允许你运用Sizzle强大的能力验证你web程序的行为，而Sizzle同时也是jQuery的选择器引擎。它不仅好用，而且还异常的快。
+- **Docco\[Ash11\]**：著名计算机科学家Donald Knuth提倡“文学化编程”的方法论。其涵义是编写的代码和注释要让那些第一次碰到这个程序的人，只要阅读一次源码就能理解这个程序。由Jeremy Ashkenas开发的Docco就支持这种方法论，它能生成漂亮的网页，并在网页中分列两边显示注释和代码。  
+- **Eco\[Ste11\]**：假设你正在编写一个基于Node的web程序。你手头上有了所有HTML框架和大堆程序代码，但是你却不知道如何把它们结合到一起。Eco允许你把CoffeeScript嵌到HTML标签中，使其成为一个服务器端的模板语言。  
+- **Zappa\[NM11\]**：从头开始创建一个web程序从来都没有如此的简单过。Zappa构建在Node的流行框架Express之上，你只需通过简单的描述就能定义服务器该如何处理任意HTTP请求 。它还能完美地集成Eco！  
+- **Zombie.js\[Ark11\]**：全栈式web程序测试模块领域又来了一个新小伙：Zombie.js。Zombie允许你运用Sizzle强大的能力验证你web程序的行为，而Sizzle同时也是jQuery的选择器引擎。它不仅好用，而且还异常的快。
 
 你可以在https://github.com/jashkenas/coffee-script/wiki/In-The-Wild上找到一个非常完整程序列表，它包含了各种各样基于CoffeeScript的程序。
 

@@ -26,7 +26,7 @@
 <div role="main" id="main">
 	<div class="post">
 	<div class='back'><a href='/tlboc/'>&laquo; 返回目录</a></div>
-<h1 id='id28'>糟粕</h1>
+<h1 id='id574'>糟粕</h1>
 
 <p>JavaScript是一个让人头疼的怪物，知道你不能用什么和应该用什么同样重要。孙武有言：“知己知彼，百战百胜”，这就是本章的目的，探索JavaScript不好的一面，揭示所有暗伏着准备偷袭毫无防备的开发者的怪兽。</p>
 
@@ -52,7 +52,7 @@
 
 <p>这对性能损耗很大，而且意味着解析器必须关闭掉全部的JIT（运行时编译执行的技术）优化。还有，<code>with</code>语句并不能被像 <a href='https://github.com/mishoo/UglifyJS'>uglify-js</a>这样的压缩工具压缩掉。因此它在将来的JavaScript的版本中会被弃用和移除。综合考虑，避免使用它为妙，CoffeeScript更进一步，将其从自己的语法中拿掉了。换句话说，在CoffeeScript中使用<code>with</code>语句会报错。</p>
 
-<h2 id='id29'>全局变量</h2>
+<h2 id='id575'>全局变量</h2>
 
 <p>默认情况下，你的JavaScript程序是在全局作用域下运行的，并且任何创建出来的变量默认的也会都在全局作用域中。如果你想创建一个局部变量的话，JavaScript要求使用<code>var</code>关键字来显式的指明。</p>
 <div class='highlight'><pre><code class='javascript'>    <span class='nx'>usersCount</span> <span class='o'>=</span> <span class='mi'>1</span><span class='p'>;</span>        <span class='c1'>// Global</span>
@@ -84,7 +84,7 @@
 </code></pre>
 </div>
 <p>注意CoffeeScript是如何自动的在上下文中第一次使用时自动的初始化变量（使用<code>var</code>）的。同时，我们无法覆盖外层作用域的变量，你仍然可以引用和访问它们。这你就要当心了，在你编译一个嵌套比较深的函数或者类时你就要当心不要意外的重用某个外层变量的名字。例如，这样我们就不小心在一个类函数中复写掉了<code>package</code>变量。</p>
-<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>package = </span><span class='nx'>require</span><span class='p'>(</span><span class='s1'>&#39;./package&#39;</span><span class='p'>)</span>
+<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>package = </span><span class='nx'>require</span><span class='p'>(</span><span class='s'>&#39;./package&#39;</span><span class='p'>)</span>
     
     <span class='k'>class</span> <span class='nx'>Hem</span>
       <span class='nv'>build: </span><span class='o'>-&gt;</span>
@@ -102,7 +102,7 @@
 </div>
 <p>通过保证显式的全局变量而不是隐式的，CoffeeScript移除了JavaScript程序中主要的bug源之一。</p>
 
-<h2 id='id30'>分号</h2>
+<h2 id='id576'>分号</h2>
 
 <p>JavaScript并没有强制要求在源码中使用分号，因此可以省略分号。但是，在后台JavaScript还是需要分号的，因此当遇到由缺少分号造成的错误时解析器会自动的插入分号。换句话说，解析器首先对一个无分号的语句进行求值，如果失败的话，加上分号再试一次。</p>
 
@@ -117,13 +117,13 @@
 </div>
 <p>现在你可以看到问题在哪里，知道为什么解析器会抱怨了。当你写JavaScript的时候，你因该在语句后面加上分号。CoffeeScript通过在其语法中不使用分号来绕靠了这些麻烦。相反会在CoffeeScript编译为JavaScript时在把分号自动的插入到正确的位置上。</p>
 
-<h2 id='id31'>保留字</h2>
+<h2 id='id577'>保留字</h2>
 
 <p>某些关键字被JavaScript保留下来，以便将来新版本的JavaScript使用。比如说<code>const</code>、<code>enum</code>和<code>class</code>等。在你的JavaScript程序中使用这些保留字作为变量可能会导致不可预料的错误。有些浏览器可以很好的处理它们，而其他浏览器就会卡壳。CoffeeScript通过检测你使用的是否是保留字，在需要的时候将其转义，巧妙的绕过了这个问题。</p>
 
 <p>例如，让我们把<code>class</code>保留字用作对象的属性，CoffeeScript代码可能是像下面这样：</p>
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>myObj = </span><span class='p'>{</span>
-      <span class='k'>delete</span><span class='o'>:</span> <span class='s2'>&quot;I am a keyword!&quot;</span>
+      <span class='k'>delete</span><span class='o'>:</span> <span class='s'>&quot;I am a keyword!&quot;</span>
     <span class='p'>}</span>
     <span class='nv'>myObj.class = </span><span class='o'>-&gt;</span>
 </code></pre>
@@ -136,18 +136,18 @@
     <span class='nx'>myObj</span><span class='p'>[</span><span class='s2'>&quot;class&quot;</span><span class='p'>]</span> <span class='o'>=</span> <span class='kd'>function</span><span class='p'>()</span> <span class='p'>{};</span>
 </code></pre>
 </div>
-<h2 id='id32'>相等比较</h2>
+<h2 id='id578'>相等比较</h2>
 
 <p>JavaScript的非严格等于比较会产生一些莫名其妙的行为，往往能引起bug。下面这个例子来自<a href='http://bonsaiden.github.com/JavaScript-Garden/#types.equality'>JavaScript Garden&#8217;s equality section</a> ，对这个问题进行过深入的研究。</p>
-<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='s2'>&quot;&quot;</span>           <span class='o'>==</span>   <span class='s2'>&quot;0&quot;</span>           <span class='o'>/</span><span class='err'>/ false</span>
-    <span class='mi'>0</span>            <span class='o'>==</span>   <span class='s2'>&quot;&quot;</span>            <span class='o'>/</span><span class='err'>/ true</span>
-    <span class='mi'>0</span>            <span class='o'>==</span>   <span class='s2'>&quot;0&quot;</span>           <span class='o'>/</span><span class='err'>/ true</span>
-    <span class='kc'>false</span>        <span class='o'>==</span>   <span class='s2'>&quot;false&quot;</span>       <span class='o'>/</span><span class='err'>/ false</span>
-    <span class='kc'>false</span>        <span class='o'>==</span>   <span class='s2'>&quot;0&quot;</span>           <span class='o'>/</span><span class='err'>/ true</span>
-    <span class='kc'>false</span>        <span class='o'>==</span>   <span class='kc'>undefined</span>     <span class='o'>/</span><span class='err'>/ false</span>
-    <span class='kc'>false</span>        <span class='o'>==</span>   <span class='kc'>null</span>          <span class='o'>/</span><span class='err'>/ false</span>
-    <span class='kc'>null</span>         <span class='o'>==</span>   <span class='kc'>undefined</span>     <span class='o'>/</span><span class='err'>/ true</span>
-    <span class='s2'>&quot; \t\r\n&quot;</span>    <span class='o'>==</span>   <span class='mi'>0</span>             <span class='o'>/</span><span class='err'>/ true</span>
+<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='s'>&quot;&quot;</span>           <span class='o'>==</span>   <span class='s'>&quot;0&quot;</span>           <span class='o'>//</span> <span class='kc'>false</span>
+    <span class='mi'>0</span>            <span class='o'>==</span>   <span class='s'>&quot;&quot;</span>            <span class='o'>//</span> <span class='kc'>true</span>
+    <span class='mi'>0</span>            <span class='o'>==</span>   <span class='s'>&quot;0&quot;</span>           <span class='o'>//</span> <span class='kc'>true</span>
+    <span class='kc'>false</span>        <span class='o'>==</span>   <span class='s'>&quot;false&quot;</span>       <span class='o'>//</span> <span class='kc'>false</span>
+    <span class='kc'>false</span>        <span class='o'>==</span>   <span class='s'>&quot;0&quot;</span>           <span class='o'>//</span> <span class='kc'>true</span>
+    <span class='kc'>false</span>        <span class='o'>==</span>   <span class='kc'>undefined</span>     <span class='o'>//</span> <span class='kc'>false</span>
+    <span class='kc'>false</span>        <span class='o'>==</span>   <span class='kc'>null</span>          <span class='o'>//</span> <span class='kc'>false</span>
+    <span class='kc'>null</span>         <span class='o'>==</span>   <span class='kc'>undefined</span>     <span class='o'>//</span> <span class='kc'>true</span>
+    <span class='s'>&quot; \t\r\n&quot;</span>    <span class='o'>==</span>   <span class='mi'>0</span>             <span class='o'>//</span> <span class='kc'>true</span>
 </code></pre>
 </div>
 <p>这些行为背后的原因是非严格等于会自动的强制类型转换。我相信你也同意这中方式是多么的模糊不清，而且会导致不可预料的结果和bug。</p>
@@ -157,18 +157,18 @@
 <p>CoffeeScript通过简单的将非严格的比较替换为严格的来解决这个问题，也就是把所有的<code>==</code>比较转换为<code>===</code>。在CoffeeScript中无法使用非严格的比较，如果需要的话你应该事先显式地进行类型转换。</p>
 
 <p>这并不意味着在你可以忽略CoffeeScript中所有的类型转换，尤其是在流程控制检测变量是否为“真值”时。空字符串、<code>null</code>、<code>undefined</code>和数字<code>0</code>都将转换为<code>false</code>。</p>
-<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nx'>alert</span><span class='p'>(</span><span class='s2'>&quot;Empty Array&quot;</span><span class='p'>)</span>  <span class='nx'>unless</span> <span class='p'>[].</span><span class='nx'>length</span>
-    <span class='nx'>alert</span><span class='p'>(</span><span class='s2'>&quot;Empty String&quot;</span><span class='p'>)</span> <span class='nx'>unless</span> <span class='s2'>&quot;&quot;</span>
-    <span class='nx'>alert</span><span class='p'>(</span><span class='s2'>&quot;Number 0&quot;</span><span class='p'>)</span>     <span class='nx'>unless</span> <span class='mi'>0</span>
+<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nx'>alert</span><span class='p'>(</span><span class='s'>&quot;Empty Array&quot;</span><span class='p'>)</span>  <span class='nx'>unless</span> <span class='p'>[].</span><span class='nx'>length</span>
+    <span class='nx'>alert</span><span class='p'>(</span><span class='s'>&quot;Empty String&quot;</span><span class='p'>)</span> <span class='nx'>unless</span> <span class='s'>&quot;&quot;</span>
+    <span class='nx'>alert</span><span class='p'>(</span><span class='s'>&quot;Number 0&quot;</span><span class='p'>)</span>     <span class='nx'>unless</span> <span class='mi'>0</span>
 </code></pre>
 </div>
 <p>如果你想显式的检查<code>null</code>和<code>undefined</code>的话，你可以使用CoffeeScript的存在操作符：</p>
-<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nx'>alert</span><span class='p'>(</span><span class='s2'>&quot;This is not called&quot;</span><span class='p'>)</span> <span class='nx'>unless</span> <span class='s2'>&quot;&quot;</span><span class='o'>?</span>
+<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nx'>alert</span><span class='p'>(</span><span class='s'>&quot;This is not called&quot;</span><span class='p'>)</span> <span class='nx'>unless</span> <span class='s'>&quot;&quot;</span><span class='o'>?</span>
 </code></pre>
 </div>
 <p>在上例中，由于空字符串不等于<code>null</code>，所以<code>alert()</code>不会被调用。</p>
 
-<h2 id='id33'>函数定义</h2>
+<h2 id='id579'>函数定义</h2>
 
 <p>在JavaScript有一点非常奇怪，函数可以在定义之前调用。例如，下面的代码能够正常运行，尽管<code>wem</code>实在被调用之后才被定义的：</p>
 <div class='highlight'><pre><code class='javascript'>    <span class='nx'>wem</span><span class='p'>();</span>
@@ -197,7 +197,7 @@
 </div>
 <p>CoffeeScript通过彻底地移除函数定义式而只是用函数表达式来解决此问题。</p>
 
-<h2 id='id34'>读取数值对象的属性</h2>
+<h2 id='id580'>读取数值对象的属性</h2>
 
 <p>JavaScript解释器的一个瑕疵是数值对象的<em>点表示法</em>会被解释为一个浮点数，而不是一个属性的查找。比如，下面的JavaScript会产生一个语法错误：</p>
 <div class='highlight'><pre><code class='javascript'>    <span class='mi'>5</span><span class='p'>.</span><span class='nx'>toString</span><span class='p'>();</span>
@@ -210,7 +210,7 @@
 </div>
 <p>还好CoffeeScript解析器非常聪明，当你访问一个数字的属性时，自动地使用两个点标记来处理这个问题（如上面的例子所示）。</p>
 
-<h1 id='id35'>没有修正的部分</h1>
+<h1 id='id581'>没有修正的部分</h1>
 
 <p>CoffeeScript竭尽全力解决了JavaScript设计上的一些缺陷，但是也就到这一步了。如前所述，出于性能的考虑，CoffeeScript仅严格地限于静态的分析，在运行时不做任何的检查。CoffeeScript使用一个直接的源到源的编译器，其思想就是每句CoffeeScript代码都编译为等价的JavaScript语句。CoffeeScript并不针对JavaScript的关键字提供一层抽象，比方说<code>typeof</code>,因此JavaScript设计中的一些缺陷同样被带到了CoffeeScirpt中。</p>
 
@@ -231,7 +231,7 @@
 <h2 id='typeof'>使用typeof</h2>
 
 <p><code>typeof</code>操作符是JavaScript最坑爹的设计，因为它完全就是鸡肋。事实上，它只有一个用途，就是检测一个值是否是<code>undefined</code>。</p>
-<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='k'>typeof</span> <span class='nx'>undefinedVar</span> <span class='o'>is</span> <span class='s2'>&quot;undefined&quot;</span>
+<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='k'>typeof</span> <span class='nx'>undefinedVar</span> <span class='o'>is</span> <span class='s'>&quot;undefined&quot;</span>
 </code></pre>
 </div>
 <p>对于其他所有的类型检测，<code>typeof</code>非常失败。依赖于浏览器和实例初始化方式不同会返回不一致的结果。于此CoffeeScript也无能为力，因为这语言用的是静态检查没有运行时的类型判断。你只能自食其力了。</p>
@@ -240,8 +240,8 @@
 <div class='highlight'><pre><code class='coffeescript'>  
     <span class='nx'>Value</span>               <span class='nx'>Class</span>      <span class='nx'>Type</span>
     <span class='o'>-------------------------------------</span>
-    <span class='s2'>&quot;foo&quot;</span>               <span class='nb'>String</span>     <span class='nx'>string</span>
-    <span class='k'>new</span> <span class='nb'>String</span><span class='p'>(</span><span class='s2'>&quot;foo&quot;</span><span class='p'>)</span>   <span class='nb'>String</span>     <span class='nx'>object</span>
+    <span class='s'>&quot;foo&quot;</span>               <span class='nb'>String</span>     <span class='nx'>string</span>
+    <span class='k'>new</span> <span class='nb'>String</span><span class='p'>(</span><span class='s'>&quot;foo&quot;</span><span class='p'>)</span>   <span class='nb'>String</span>     <span class='nx'>object</span>
     <span class='mf'>1.2</span>                 <span class='nb'>Number</span>     <span class='nx'>number</span>
     <span class='k'>new</span> <span class='nb'>Number</span><span class='p'>(</span><span class='mf'>1.2</span><span class='p'>)</span>     <span class='nb'>Number</span>     <span class='nx'>object</span>
     <span class='kc'>true</span>                <span class='nb'>Boolean</span>    <span class='nx'>boolean</span>
@@ -250,9 +250,9 @@
     <span class='k'>new</span> <span class='nb'>Error</span><span class='p'>()</span>         <span class='nb'>Error</span>      <span class='nx'>object</span>
     <span class='p'>[</span><span class='mi'>1</span><span class='p'>,</span><span class='mi'>2</span><span class='p'>,</span><span class='mi'>3</span><span class='p'>]</span>             <span class='nb'>Array</span>      <span class='nx'>object</span>
     <span class='k'>new</span> <span class='nb'>Array</span><span class='p'>(</span><span class='mi'>1</span><span class='p'>,</span> <span class='mi'>2</span><span class='p'>,</span> <span class='mi'>3</span><span class='p'>)</span>  <span class='nb'>Array</span>      <span class='nx'>object</span>
-    <span class='k'>new</span> <span class='nb'>Function</span><span class='p'>(</span><span class='s2'>&quot;&quot;</span><span class='p'>)</span>    <span class='nb'>Function</span>   <span class='nx'>function</span>
+    <span class='k'>new</span> <span class='nb'>Function</span><span class='p'>(</span><span class='s'>&quot;&quot;</span><span class='p'>)</span>    <span class='nb'>Function</span>   <span class='nx'>function</span>
     <span class='sr'>/abc/g</span>              <span class='nb'>RegExp</span>     <span class='nx'>object</span>
-    <span class='k'>new</span> <span class='nb'>RegExp</span><span class='p'>(</span><span class='s2'>&quot;meow&quot;</span><span class='p'>)</span>  <span class='nb'>RegExp</span>     <span class='nx'>object</span>
+    <span class='k'>new</span> <span class='nb'>RegExp</span><span class='p'>(</span><span class='s'>&quot;meow&quot;</span><span class='p'>)</span>  <span class='nb'>RegExp</span>     <span class='nx'>object</span>
     <span class='p'>{}</span>                  <span class='nb'>Object</span>     <span class='nx'>object</span>
     <span class='k'>new</span> <span class='nb'>Object</span><span class='p'>()</span>        <span class='nb'>Object</span>     <span class='nx'>object</span>
 </code></pre>
@@ -262,15 +262,15 @@
 <p>那在JavaScript中我们如何做类型检查呢？还好有<code>Object.prototype.toString()</code>来解围。如果我们以某个特别的对象为上下文来调用该函数，它会返回正确的类型。我们所需要做的就是手动处理其返回的字符串，这样最终我们就能获得<code>typeof</code>返回的那种字符串。下面是从jQuery的<code>$.type</code>移植过来的例子：</p>
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>type = </span><span class='nx'>do</span> <span class='o'>-&gt;</span>
       <span class='nv'>classToType = </span><span class='p'>{}</span>
-      <span class='k'>for</span> <span class='nx'>name</span> <span class='k'>in</span> <span class='s2'>&quot;Boolean Number String Function Array Date RegExp Undefined Null&quot;</span><span class='p'>.</span><span class='nx'>split</span><span class='p'>(</span><span class='s2'>&quot; &quot;</span><span class='p'>)</span>
-        <span class='nx'>classToType</span><span class='p'>[</span><span class='s2'>&quot;[object &quot;</span> <span class='o'>+</span> <span class='nx'>name</span> <span class='o'>+</span> <span class='s2'>&quot;]&quot;</span><span class='p'>]</span> <span class='o'>=</span> <span class='nx'>name</span><span class='p'>.</span><span class='nx'>toLowerCase</span><span class='p'>()</span>
+      <span class='k'>for</span> <span class='nx'>name</span> <span class='k'>in</span> <span class='s'>&quot;Boolean Number String Function Array Date RegExp Undefined Null&quot;</span><span class='p'>.</span><span class='nx'>split</span><span class='p'>(</span><span class='s'>&quot; &quot;</span><span class='p'>)</span>
+        <span class='nx'>classToType</span><span class='p'>[</span><span class='s'>&quot;[object &quot;</span> <span class='o'>+</span> <span class='nx'>name</span> <span class='o'>+</span> <span class='s'>&quot;]&quot;</span><span class='p'>]</span> <span class='o'>=</span> <span class='nx'>name</span><span class='p'>.</span><span class='nx'>toLowerCase</span><span class='p'>()</span>
       
       <span class='nf'>(obj) -&gt;</span>
         <span class='nv'>strType = </span><span class='nb'>Object</span><span class='o'>::</span><span class='nx'>toString</span><span class='p'>.</span><span class='nx'>call</span><span class='p'>(</span><span class='nx'>obj</span><span class='p'>)</span>
-        <span class='nx'>classToType</span><span class='p'>[</span><span class='nx'>strType</span><span class='p'>]</span> <span class='o'>or</span> <span class='s2'>&quot;object&quot;</span>
+        <span class='nx'>classToType</span><span class='p'>[</span><span class='nx'>strType</span><span class='p'>]</span> <span class='o'>or</span> <span class='s'>&quot;object&quot;</span>
     
     <span class='c1'># Returns the sort of types we&#39;d expect:</span>
-    <span class='nx'>type</span><span class='p'>(</span><span class='s2'>&quot;&quot;</span><span class='p'>)</span>         <span class='c1'># &quot;string&quot;</span>
+    <span class='nx'>type</span><span class='p'>(</span><span class='s'>&quot;&quot;</span><span class='p'>)</span>         <span class='c1'># &quot;string&quot;</span>
     <span class='nx'>type</span><span class='p'>(</span><span class='k'>new</span> <span class='nb'>String</span><span class='p'>)</span> <span class='c1'># &quot;string&quot;</span>
     <span class='nx'>type</span><span class='p'>([])</span>         <span class='c1'># &quot;array&quot;</span>
     <span class='nx'>type</span><span class='p'>(</span><span class='sr'>/\d/</span><span class='p'>)</span>       <span class='c1'># &quot;regexp&quot;</span>
@@ -281,7 +281,7 @@
 </code></pre>
 </div>
 <p>如果你想检查某个变量是否被定义，你仍然需要使用<code>typeof</code>，否则你会得到一个<code>ReferenceError</code>的错误。</p>
-<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='k'>if</span> <span class='k'>typeof</span> <span class='nx'>aVar</span> <span class='o'>isnt</span> <span class='s2'>&quot;undefined&quot;</span>
+<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='k'>if</span> <span class='k'>typeof</span> <span class='nx'>aVar</span> <span class='o'>isnt</span> <span class='s'>&quot;undefined&quot;</span>
       <span class='nv'>objectType = </span><span class='nx'>type</span><span class='p'>(</span><span class='nx'>aVar</span><span class='p'>)</span>
 </code></pre>
 </div>
@@ -298,8 +298,8 @@
 <h2 id='instanceof'>使用instanceof</h2>
 
 <p>JavaScript的<code>instanceof</code>关键字几乎就和<code>typeof</code>一样不给力。理想的<code>instanceof</code>将比较两个对象的构造器，看其中一个是否另外一个的实例而返回真假值。实际上<code>instanceof</code>只在比较自定义的对象上工作正常。如果用来比较内置类型时，就像<code>typeof</code>一样废。</p>
-<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='k'>new</span> <span class='nb'>String</span><span class='p'>(</span><span class='s2'>&quot;foo&quot;</span><span class='p'>)</span> <span class='k'>instanceof</span> <span class='nb'>String</span> <span class='c1'># true</span>
-    <span class='s2'>&quot;foo&quot;</span> <span class='k'>instanceof</span> <span class='nb'>String</span>             <span class='c1'># false</span>
+<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='k'>new</span> <span class='nb'>String</span><span class='p'>(</span><span class='s'>&quot;foo&quot;</span><span class='p'>)</span> <span class='k'>instanceof</span> <span class='nb'>String</span> <span class='c1'># true</span>
+    <span class='s'>&quot;foo&quot;</span> <span class='k'>instanceof</span> <span class='nb'>String</span>             <span class='c1'># false</span>
 </code></pre>
 </div>
 <p>而且，<code>instanceof</code>当比较不用浏览器里不同frame中的对象时也不能正常工作。实际上，<code>instanceof</code>对于自定义的对象才会返回正确的值，比方说CoffeeScript的类型。</p>
@@ -318,7 +318,7 @@
 <p><code>delete</code>关键字只能用来移除对象内部的属性。</p>
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>anObject = </span><span class='p'>{</span><span class='nv'>one: </span><span class='mi'>1</span><span class='p'>,</span> <span class='nv'>two: </span><span class='mi'>2</span><span class='p'>}</span>
     <span class='k'>delete</span> <span class='nx'>anObject</span><span class='p'>.</span><span class='nx'>one</span>
-    <span class='nx'>anObject</span><span class='p'>.</span><span class='nx'>hasOwnProperty</span><span class='p'>(</span><span class='s2'>&quot;one&quot;</span><span class='p'>)</span> <span class='c1'># false</span>
+    <span class='nx'>anObject</span><span class='p'>.</span><span class='nx'>hasOwnProperty</span><span class='p'>(</span><span class='s'>&quot;one&quot;</span><span class='p'>)</span> <span class='c1'># false</span>
 </code></pre>
 </div>
 <p>用于其他地方，比方说删除一个变量或者函数，就完全不行。</p>
@@ -336,12 +336,12 @@
 
 <p>如果你给JavaScript的<code>parseInt()</code>函数传递一个字符串而没有指明基数的话它会返回一个让你意外的值，例如：</p>
 <div class='highlight'><pre><code class='coffeescript'>    <span class='c1'># Returns 8, not 10!</span>
-    <span class='nb'>parseInt</span><span class='p'>(</span><span class='s1'>&#39;010&#39;</span><span class='p'>)</span> <span class='o'>is</span> <span class='mi'>8</span>
+    <span class='nb'>parseInt</span><span class='p'>(</span><span class='s'>&#39;010&#39;</span><span class='p'>)</span> <span class='o'>is</span> <span class='mi'>8</span>
 </code></pre>
 </div>
 <p>给该函数传递一个基数让它能够正常工作：</p>
 <div class='highlight'><pre><code class='coffeescript'>    <span class='c1'># Use base 10 for the correct result</span>
-    <span class='nb'>parseInt</span><span class='p'>(</span><span class='s1'>&#39;010&#39;</span><span class='p'>,</span> <span class='mi'>10</span><span class='p'>)</span> <span class='o'>is</span> <span class='mi'>10</span>
+    <span class='nb'>parseInt</span><span class='p'>(</span><span class='s'>&#39;010&#39;</span><span class='p'>,</span> <span class='mi'>10</span><span class='p'>)</span> <span class='o'>is</span> <span class='mi'>10</span>
 </code></pre>
 </div>
 <p>这些用法CoffeeScript并不能为你做，每次当你使用<code>parseInt()</code>函数的时候别忘了给它传递一个基数。</p>
@@ -402,14 +402,14 @@
 
 <p>为了开启严格的检查，你只需要在你的脚本或者函数中添加像下面这样的字符串即可：</p>
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='o'>-&gt;</span>
-      <span class='s2'>&quot;use strict&quot;</span>
+      <span class='s'>&quot;use strict&quot;</span>
     
       <span class='c1'># ... your code ...</span>
 </code></pre>
 </div>
 <p>就是这样，直接使用<code>&#39;use strict&#39;</code>字符串。没有比这更简单的了，而且它完全向后兼容。让我们实际试试严格模式。下面的代码在严格模式下会引起一个语法错误，而在普通模式下就没问题：</p>
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nx'>do</span> <span class='o'>-&gt;</span>
-      <span class='s2'>&quot;use strict&quot;</span>
+      <span class='s'>&quot;use strict&quot;</span>
       <span class='nx'>console</span><span class='p'>.</span><span class='nx'>log</span><span class='p'>(</span><span class='nx'>arguments</span><span class='p'>.</span><span class='nx'>callee</span><span class='p'>)</span>
 </code></pre>
 </div>
@@ -417,13 +417,13 @@
 
 <p>在使用严格模式的时候，有个地方你需要额外小心。即使用<code>this</code>来创建全局变量。下面的例子在严格模式下会抛出一个<code>TypeError</code>的错误，但是在普通模式下能正常运行，产生一个全局变量：</p>
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nx'>do</span> <span class='o'>-&gt;</span>
-      <span class='s2'>&quot;use strict&quot;</span>
+      <span class='s'>&quot;use strict&quot;</span>
       <span class='k'>class</span> <span class='nx'>@Spine</span>
 </code></pre>
 </div>
 <p>这背后的原因是不一致性，即在严格模式下<code>this</code>是<code>undefined</code>的，而在普通模式下它指向<code>window</code>对象。解决办法就是像这样显式的在<code>window</code>对象上设置全局变量。</p>
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nx'>do</span> <span class='o'>-&gt;</span>
-      <span class='s2'>&quot;use strict&quot;</span>
+      <span class='s'>&quot;use strict&quot;</span>
       <span class='k'>class</span> <span class='nb'>window</span><span class='p'>.</span><span class='nx'>Spine</span>
 </code></pre>
 </div>

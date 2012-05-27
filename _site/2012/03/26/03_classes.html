@@ -26,7 +26,7 @@
 <div role="main" id="main">
 	<div class="post">
 	<div class='back'><a href='/tlboc/'>&laquo; 返回目录</a></div>
-<h1 id='id13'>类</h1>
+<h1 id='id559'>类</h1>
 
 <p>JavaScript中的类对于纯粹主义者来说有点像大蒜对Dracula的感觉，诚实点吧，如果你喜欢那样的方式，那你应该不会想读这本关于CoffeeScript的书。可事实是类在JavaScript中就如在其他语言中一样地有用。因此，CoffeeScript为此提供了一个很棒的抽象。</p>
 
@@ -50,11 +50,11 @@
 </code></pre>
 </div>
 <p>如你所愿，每个实例化传入的参数都被代理给了构造函数。</p>
-<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>animal = </span><span class='k'>new</span> <span class='nx'>Animal</span><span class='p'>(</span><span class='s2'>&quot;Parrot&quot;</span><span class='p'>)</span>
-    <span class='nx'>alert</span> <span class='s2'>&quot;Animal is a #{animal.name}&quot;</span>
+<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>animal = </span><span class='k'>new</span> <span class='nx'>Animal</span><span class='p'>(</span><span class='s'>&quot;Parrot&quot;</span><span class='p'>)</span>
+    <span class='nx'>alert</span> <span class='s'>&quot;Animal is a </span><span class='si'>#{</span><span class='nx'>animal</span><span class='p'>.</span><span class='nx'>name</span><span class='si'>}</span><span class='s'>&quot;</span>
 </code></pre>
 </div>
-<h2 id='id14'>实例属性</h2>
+<h2 id='id560'>实例属性</h2>
 
 <p>可以非常直接地为类添加实例属性，与为对象添加属性的语法一样。只需要在类体内对属性采用合理的缩进即可。</p>
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='k'>class</span> <span class='nx'>Animal</span>
@@ -71,28 +71,28 @@
       <span class='nv'>price: </span><span class='mi'>5</span>
 
       <span class='nv'>sell: </span><span class='o'>=&gt;</span>
-        <span class='nx'>alert</span> <span class='s2'>&quot;Give me #{@price} shillings!&quot;</span>
+        <span class='nx'>alert</span> <span class='s'>&quot;Give me </span><span class='si'>#{</span><span class='nx'>@price</span><span class='si'>}</span><span class='s'> shillings!&quot;</span>
         
     <span class='nv'>animal = </span><span class='k'>new</span> <span class='nx'>Animal</span>
-    <span class='nx'>$</span><span class='p'>(</span><span class='s2'>&quot;#sell&quot;</span><span class='p'>).</span><span class='nx'>click</span><span class='p'>(</span><span class='nx'>animal</span><span class='p'>.</span><span class='nx'>sell</span><span class='p'>)</span>
+    <span class='nx'>$</span><span class='p'>(</span><span class='s'>&quot;</span><span class='err'>#</span><span class='s'>sell&quot;</span><span class='p'>).</span><span class='nx'>click</span><span class='p'>(</span><span class='nx'>animal</span><span class='p'>.</span><span class='nx'>sell</span><span class='p'>)</span>
 </code></pre>
 </div>
 <p>如上例所示，这在事件回调是尤其有用。正常情况下<code>sell()</code>函数会以<code>#sell</code>元素为上下文调用。然而，通过使用胖箭头来定义<code>sell()</code>，我们能保证能保持正确的上下文，所以<code>this.price</code>等于<code>5</code>。</p>
 
-<h2 id='id15'>静态变量</h2>
+<h2 id='id561'>静态变量</h2>
 
 <p>可以定义类（静态）变量吗？当然，事实证明在类的定义中，<code>this</code>引用的就是类。也就是说你可以通过直接在这个<code>this</code>上设置类属性。</p>
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='k'>class</span> <span class='nx'>Animal</span>
       <span class='k'>this</span><span class='p'>.</span><span class='nv'>find = </span><span class='nf'>(name) -&gt;</span>      
 
-    <span class='nx'>Animal</span><span class='p'>.</span><span class='nx'>find</span><span class='p'>(</span><span class='s2'>&quot;Parrot&quot;</span><span class='p'>)</span>
+    <span class='nx'>Animal</span><span class='p'>.</span><span class='nx'>find</span><span class='p'>(</span><span class='s'>&quot;Parrot&quot;</span><span class='p'>)</span>
 </code></pre>
 </div>
 <p>实际上，如你所知，CoffeeScript使用<code>@</code>作为<code>this</code>的别名，这能让你更加便捷的定义静态属性：</p>
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='k'>class</span> <span class='nx'>Animal</span>
       <span class='vi'>@find: </span><span class='nf'>(name) -&gt;</span>
       
-    <span class='nx'>Animal</span><span class='p'>.</span><span class='nx'>find</span><span class='p'>(</span><span class='s2'>&quot;Parrot&quot;</span><span class='p'>)</span>
+    <span class='nx'>Animal</span><span class='p'>.</span><span class='nx'>find</span><span class='p'>(</span><span class='s'>&quot;Parrot&quot;</span><span class='p'>)</span>
 </code></pre>
 </div>
 <h2 id='super'>继承与Super</h2>
@@ -106,7 +106,7 @@
 
     <span class='k'>class</span> <span class='nx'>Parrot</span> <span class='k'>extends</span> <span class='nx'>Animal</span>
       <span class='nv'>constructor: </span><span class='o'>-&gt;</span>
-        <span class='k'>super</span><span class='p'>(</span><span class='s2'>&quot;Parrot&quot;</span><span class='p'>)</span>
+        <span class='k'>super</span><span class='p'>(</span><span class='s'>&quot;Parrot&quot;</span><span class='p'>)</span>
       
       <span class='nv'>dead: </span><span class='o'>-&gt;</span>
         <span class='o'>not</span> <span class='nx'>@alive</span><span class='p'>()</span>
@@ -124,8 +124,8 @@
     
     <span class='nv'>Animal::rip = </span><span class='kc'>true</span>
     
-    <span class='nv'>parrot = </span><span class='k'>new</span> <span class='nx'>Parrot</span><span class='p'>(</span><span class='s2'>&quot;Macaw&quot;</span><span class='p'>)</span>
-    <span class='nx'>alert</span><span class='p'>(</span><span class='s2'>&quot;This parrot is no more&quot;</span><span class='p'>)</span> <span class='k'>if</span> <span class='nx'>parrot</span><span class='p'>.</span><span class='nx'>rip</span>
+    <span class='nv'>parrot = </span><span class='k'>new</span> <span class='nx'>Parrot</span><span class='p'>(</span><span class='s'>&quot;Macaw&quot;</span><span class='p'>)</span>
+    <span class='nx'>alert</span><span class='p'>(</span><span class='s'>&quot;This parrot is no more&quot;</span><span class='p'>)</span> <span class='k'>if</span> <span class='nx'>parrot</span><span class='p'>.</span><span class='nx'>rip</span>
 </code></pre>
 </div>
 <p>值得一提的是，静态变量是直接拷贝给子类的，而不是像实例属性那样通过原型来实现。这都是JavaScript原型架构的实现细节所致，而且这是一个比较难解决的问题。</p>
@@ -149,25 +149,25 @@
 </div>
 <p>在继承不合适时Mixins是一种不错的在模块间共享通用逻辑的的模式。较之于继承只能实现从单一的父类继承，Mixins的优势是能够实现多个继承。</p>
 
-<h2 id='id16'>扩展类</h2>
+<h2 id='id562'>扩展类</h2>
 
 <p>Mixins很棒，只是看起来并不那么地面向对象。让我们把Mixins集成到CoffeeScript的类中吧。我们将会定义一个名为<code>Module</code>的类，然后可以继承这个类来获得对Mixins的支持。<code>Module</code>会有两个静态方法，<code>@extend()</code>和<code>@include()</code>，可以用它们来实现对类的静态属性和实例属性的扩展。</p>
-<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>moduleKeywords = </span><span class='p'>[</span><span class='s1'>&#39;extended&#39;</span><span class='p'>,</span> <span class='s1'>&#39;included&#39;</span><span class='p'>]</span>
+<span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>moduleKeywords = </span><span class='p'>[</span><span class='s'>&#39;extended&#39;</span><span class='p'>,</span> <span class='s'>&#39;included&#39;</span><span class='p'>]</span>
 
     <span class='k'>class</span> <span class='nx'>Module</span>
       <span class='vi'>@extend: </span><span class='nf'>(obj) -&gt;</span>
         <span class='k'>for</span> <span class='nx'>key</span><span class='p'>,</span> <span class='nx'>value</span> <span class='k'>of</span> <span class='nx'>obj</span> <span class='k'>when</span> <span class='nx'>key</span> <span class='o'>not</span> <span class='k'>in</span> <span class='nx'>moduleKeywords</span>
-          <span class='err'>@</span><span class='p'>[</span><span class='nx'>key</span><span class='p'>]</span> <span class='o'>=</span> <span class='nx'>value</span>
+          <span class='nx'>@</span><span class='p'>[</span><span class='nx'>key</span><span class='p'>]</span> <span class='o'>=</span> <span class='nx'>value</span>
 
-        <span class='nx'>obj</span><span class='p'>.</span><span class='nx'>extended</span><span class='o'>?</span><span class='p'>.</span><span class='nx'>apply</span><span class='p'>(</span><span class='err'>@</span><span class='p'>)</span>
+        <span class='nx'>obj</span><span class='p'>.</span><span class='nx'>extended</span><span class='o'>?</span><span class='p'>.</span><span class='nx'>apply</span><span class='p'>(</span><span class='nx'>@</span><span class='p'>)</span>
         <span class='k'>this</span>
         
       <span class='vi'>@include: </span><span class='nf'>(obj) -&gt;</span>
         <span class='k'>for</span> <span class='nx'>key</span><span class='p'>,</span> <span class='nx'>value</span> <span class='k'>of</span> <span class='nx'>obj</span> <span class='k'>when</span> <span class='nx'>key</span> <span class='o'>not</span> <span class='k'>in</span> <span class='nx'>moduleKeywords</span>
           <span class='c1'># Assign properties to the prototype</span>
-          <span class='err'>@</span><span class='o'>::</span><span class='p'>[</span><span class='nx'>key</span><span class='p'>]</span> <span class='o'>=</span> <span class='nx'>value</span>
+          <span class='nx'>@</span><span class='o'>::</span><span class='p'>[</span><span class='nx'>key</span><span class='p'>]</span> <span class='o'>=</span> <span class='nx'>value</span>
 
-        <span class='nx'>obj</span><span class='p'>.</span><span class='nx'>included</span><span class='o'>?</span><span class='p'>.</span><span class='nx'>apply</span><span class='p'>(</span><span class='err'>@</span><span class='p'>)</span>
+        <span class='nx'>obj</span><span class='p'>.</span><span class='nx'>included</span><span class='o'>?</span><span class='p'>.</span><span class='nx'>apply</span><span class='p'>(</span><span class='nx'>@</span><span class='p'>)</span>
         <span class='k'>this</span>
 </code></pre>
 </div>
