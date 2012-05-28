@@ -5,7 +5,7 @@ title:   浏览器缓存和CDN
 
 #浏览器缓存和CDN
 
-*作者：[island205](http://island205.github.com)* 时间：2012-05-27
+*作者：[island205](http://island205.github.com) 时间：2012-05-27*
 
 ##引子
 
