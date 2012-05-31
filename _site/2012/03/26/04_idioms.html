@@ -65,7 +65,7 @@
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>result = </span><span class='p'>(</span><span class='nx'>item</span><span class='p'>.</span><span class='nx'>name</span> <span class='k'>for</span> <span class='nx'>item</span> <span class='k'>in</span> <span class='nx'>array</span><span class='p'>)</span>
 </code></pre>
 </div>
-<h2 id='id563'>筛选</h2>
+<h2 id='id689'>筛选</h2>
 
 <p>ES5还提供了工具函数 <a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/array/filter'><code>filter()</code></a> 来过滤数组：</p>
 <div class='highlight'><pre><code class='coffeescript'>    
@@ -99,7 +99,7 @@
       <span class='p'>(</span><span class='k'>if</span> <span class='nx'>score</span> <span class='o'>&gt;</span> <span class='mi'>60</span> <span class='k'>then</span> <span class='nx'>passed</span> <span class='k'>else</span> <span class='nx'>failed</span><span class='p'>).</span><span class='nx'>push</span> <span class='nx'>score</span>
 </code></pre>
 </div>
-<h2 id='id564'>包含</h2>
+<h2 id='id690'>包含</h2>
 
 <p>通常使用<code>indexOf()</code>来测试一个数组中是否包含某个值。不过真让人惊讶, Internet Explorer并没有实现该函数，这还要做一些兼容。</p>
 <div class='highlight'><pre><code class='coffeescript'>    <span class='nx'>var</span> <span class='nv'>included = </span><span class='p'>(</span><span class='nx'>array</span><span class='p'>.</span><span class='nx'>indexOf</span><span class='p'>(</span><span class='s'>&quot;test&quot;</span><span class='p'>)</span> <span class='o'>!=</span> <span class='o'>-</span><span class='mi'>1</span><span class='p'>)</span>
@@ -120,7 +120,7 @@
     <span class='nv'>included = </span><span class='o'>!!~</span> <span class='nx'>string</span><span class='p'>.</span><span class='nx'>indexOf</span> <span class='s'>&quot;test&quot;</span>
 </code></pre>
 </div>
-<h2 id='id565'>属性迭代</h2>
+<h2 id='id691'>属性迭代</h2>
 
 <p>在JavaScript中，你应该使用<code>in</code>操作符来迭代属性集，例如：</p>
 <div class='highlight'><pre><code class='coffeescript'>    <span class='nx'>var</span> <span class='nv'>object = </span><span class='p'>{</span><span class='nv'>one: </span><span class='mi'>1</span><span class='p'>,</span> <span class='nv'>two: </span><span class='mi'>2</span><span class='p'>}</span>
@@ -144,7 +144,7 @@
 </div>
 <p>请注意，这个技巧对于超大的数组也会失败，因为浏览器对传递个函数的参数数量有限制。</p>
 
-<h2 id='id566'>多个参数</h2>
+<h2 id='id692'>多个参数</h2>
 
 <p>在上面的<code>Math.max</code>示例中，我们使用<code>...</code>来结构数组作为多个参数传递给<code>max</code>方法。在背后，CoffeeScript将其转化为一个使用<code>appply()</code>的函数调用，以确保数组能够作为多个参数传递给<code>max</code>。在别的地方也可以使用这个特性，比方说代理函数：</p>
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>Log =</span>
@@ -181,7 +181,7 @@
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nx'>hash</span> <span class='o'>?=</span> <span class='p'>{}</span>
 </code></pre>
 </div>
-<h2 id='id567'>解构赋值</h2>
+<h2 id='id693'>解构赋值</h2>
 
 <p>解构赋值对任意深度嵌套的数组或对象都适用，方便从嵌套的属性中抽取值。</p>
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>someObject = </span><span class='p'>{</span> <span class='nv'>a: </span><span class='s'>&#39;value for a&#39;</span><span class='p'>,</span> <span class='nv'>b: </span><span class='s'>&#39;value for b&#39;</span> <span class='p'>}</span>
@@ -195,7 +195,7 @@
     <span class='nx'>join</span><span class='p'>(</span><span class='s'>&#39;/Users&#39;</span><span class='p'>,</span> <span class='s'>&#39;Alex&#39;</span><span class='p'>)</span>
 </code></pre>
 </div>
-<h2 id='id568'>其他类库</h2>
+<h2 id='id694'>其他类库</h2>
 
 <p>既然所有的东西都会编译为JavaScript，那么使用其他类库与调用CoffeeScript类库的函数并没有什么差别。在CoffeeScript中使用 <a href='http://jquery.com'>jQuery</a>显得非常优雅，因为jQuery的API中有很多回调函数。</p>
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='c1'># Use local alias</span>
@@ -209,7 +209,7 @@
 </div>
 <p>既然CoffeeScript编译输出的所有代码都被包裹在一个匿名函数中，因此我们可以使用一个局部变量<code>$</code>来代替<code>jQuery</code>。就算在jQuery的<code>no confict</code>模式或者<code>$</code>被重定义的情况下，我们的脚本能按预想的一样正常工作。</p>
 
-<h2 id='id569'>私有变量</h2>
+<h2 id='id695'>私有变量</h2>
 
 <p>CoffeeScript中的<code>do</code>关键字能够让我们立即运行函数，这是一种非常有效的包装作用域和受保护变量的方式。在下面的例子中，我在被<code>do</code>立刻调用的匿名函数的上下文中定义了一个变量<code>classToType</code>。该匿名函数返回了另外一个匿名函数，它才是<code>type</code>最终的值。既然<code>classType</code>是在一个不保存引用的上下文中，因此在外部作用域中不可访问。</p>
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='c1'># Execute function immediately</span>

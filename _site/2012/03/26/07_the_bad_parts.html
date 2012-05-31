@@ -26,7 +26,7 @@
 <div role="main" id="main">
 	<div class="post">
 	<div class='back'><a href='/tlboc/'>&laquo; 返回目录</a></div>
-<h1 id='id574'>糟粕</h1>
+<h1 id='id700'>糟粕</h1>
 
 <p>JavaScript是一个让人头疼的怪物，知道你不能用什么和应该用什么同样重要。孙武有言：“知己知彼，百战百胜”，这就是本章的目的，探索JavaScript不好的一面，揭示所有暗伏着准备偷袭毫无防备的开发者的怪兽。</p>
 
@@ -52,7 +52,7 @@
 
 <p>这对性能损耗很大，而且意味着解析器必须关闭掉全部的JIT（运行时编译执行的技术）优化。还有，<code>with</code>语句并不能被像 <a href='https://github.com/mishoo/UglifyJS'>uglify-js</a>这样的压缩工具压缩掉。因此它在将来的JavaScript的版本中会被弃用和移除。综合考虑，避免使用它为妙，CoffeeScript更进一步，将其从自己的语法中拿掉了。换句话说，在CoffeeScript中使用<code>with</code>语句会报错。</p>
 
-<h2 id='id575'>全局变量</h2>
+<h2 id='id701'>全局变量</h2>
 
 <p>默认情况下，你的JavaScript程序是在全局作用域下运行的，并且任何创建出来的变量默认的也会都在全局作用域中。如果你想创建一个局部变量的话，JavaScript要求使用<code>var</code>关键字来显式的指明。</p>
 <div class='highlight'><pre><code class='javascript'>    <span class='nx'>usersCount</span> <span class='o'>=</span> <span class='mi'>1</span><span class='p'>;</span>        <span class='c1'>// Global</span>
@@ -102,7 +102,7 @@
 </div>
 <p>通过保证显式的全局变量而不是隐式的，CoffeeScript移除了JavaScript程序中主要的bug源之一。</p>
 
-<h2 id='id576'>分号</h2>
+<h2 id='id702'>分号</h2>
 
 <p>JavaScript并没有强制要求在源码中使用分号，因此可以省略分号。但是，在后台JavaScript还是需要分号的，因此当遇到由缺少分号造成的错误时解析器会自动的插入分号。换句话说，解析器首先对一个无分号的语句进行求值，如果失败的话，加上分号再试一次。</p>
 
@@ -117,7 +117,7 @@
 </div>
 <p>现在你可以看到问题在哪里，知道为什么解析器会抱怨了。当你写JavaScript的时候，你因该在语句后面加上分号。CoffeeScript通过在其语法中不使用分号来绕靠了这些麻烦。相反会在CoffeeScript编译为JavaScript时在把分号自动的插入到正确的位置上。</p>
 
-<h2 id='id577'>保留字</h2>
+<h2 id='id703'>保留字</h2>
 
 <p>某些关键字被JavaScript保留下来，以便将来新版本的JavaScript使用。比如说<code>const</code>、<code>enum</code>和<code>class</code>等。在你的JavaScript程序中使用这些保留字作为变量可能会导致不可预料的错误。有些浏览器可以很好的处理它们，而其他浏览器就会卡壳。CoffeeScript通过检测你使用的是否是保留字，在需要的时候将其转义，巧妙的绕过了这个问题。</p>
 
@@ -136,7 +136,7 @@
     <span class='nx'>myObj</span><span class='p'>[</span><span class='s2'>&quot;class&quot;</span><span class='p'>]</span> <span class='o'>=</span> <span class='kd'>function</span><span class='p'>()</span> <span class='p'>{};</span>
 </code></pre>
 </div>
-<h2 id='id578'>相等比较</h2>
+<h2 id='id704'>相等比较</h2>
 
 <p>JavaScript的非严格等于比较会产生一些莫名其妙的行为，往往能引起bug。下面这个例子来自<a href='http://bonsaiden.github.com/JavaScript-Garden/#types.equality'>JavaScript Garden&#8217;s equality section</a> ，对这个问题进行过深入的研究。</p>
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='s'>&quot;&quot;</span>           <span class='o'>==</span>   <span class='s'>&quot;0&quot;</span>           <span class='o'>//</span> <span class='kc'>false</span>
@@ -168,7 +168,7 @@
 </div>
 <p>在上例中，由于空字符串不等于<code>null</code>，所以<code>alert()</code>不会被调用。</p>
 
-<h2 id='id579'>函数定义</h2>
+<h2 id='id705'>函数定义</h2>
 
 <p>在JavaScript有一点非常奇怪，函数可以在定义之前调用。例如，下面的代码能够正常运行，尽管<code>wem</code>实在被调用之后才被定义的：</p>
 <div class='highlight'><pre><code class='javascript'>    <span class='nx'>wem</span><span class='p'>();</span>
@@ -197,7 +197,7 @@
 </div>
 <p>CoffeeScript通过彻底地移除函数定义式而只是用函数表达式来解决此问题。</p>
 
-<h2 id='id580'>读取数值对象的属性</h2>
+<h2 id='id706'>读取数值对象的属性</h2>
 
 <p>JavaScript解释器的一个瑕疵是数值对象的<em>点表示法</em>会被解释为一个浮点数，而不是一个属性的查找。比如，下面的JavaScript会产生一个语法错误：</p>
 <div class='highlight'><pre><code class='javascript'>    <span class='mi'>5</span><span class='p'>.</span><span class='nx'>toString</span><span class='p'>();</span>
@@ -210,7 +210,7 @@
 </div>
 <p>还好CoffeeScript解析器非常聪明，当你访问一个数字的属性时，自动地使用两个点标记来处理这个问题（如上面的例子所示）。</p>
 
-<h1 id='id581'>没有修正的部分</h1>
+<h1 id='id707'>没有修正的部分</h1>
 
 <p>CoffeeScript竭尽全力解决了JavaScript设计上的一些缺陷，但是也就到这一步了。如前所述，出于性能的考虑，CoffeeScript仅严格地限于静态的分析，在运行时不做任何的检查。CoffeeScript使用一个直接的源到源的编译器，其思想就是每句CoffeeScript代码都编译为等价的JavaScript语句。CoffeeScript并不针对JavaScript的关键字提供一层抽象，比方说<code>typeof</code>,因此JavaScript设计中的一些缺陷同样被带到了CoffeeScirpt中。</p>
 

@@ -27,8 +27,7 @@ title:   浏览器缓存和CDN
 
 用`Node.js`快速搭建一个最简单的服务器：
 
-**server.coffee**
-
+**server.coffee**  
 {% highlight coffeescript %}
 	http=require "http"
 	server=http.createServer (req,res)->
@@ -50,5 +49,94 @@ title:   浏览器缓存和CDN
 然后这是Chrome的缓存（同样之后直接使用关键的文本）：
 
 ![chrome缓存](http://pic.yupoo.com/island205/BZRkOCtV/medish.jpg)
+
+
+可以看出新增了两条缓存，第二条忽略（详情可看[Favicon](http://zh.wikipedia.org/wiki/Favicon)）,第一条的详细信息：
+
+>Filename:		127.0.0.1_1337  
+>URL:			http://127.0.0.1:1337  
+>Filesize:		55   
+>Last Accessed:		2012/5/27 下午 11:54:19  
+>Server Response:	HTTP/1.1 200 OK
+
+那这就是缓存吗？刷新就不再访问服务器直接使用这个缓存吗？我们刷新试试看，页面上的结果：
+
+>Thu May 31 2012 22:35:16 GMT+0800 (China Standard Time)
+
+（由多个时间段写成，实验时间虽不连贯，但是是正确的）
+
+再看看缓存察看器里的结果：  
+>Filename:		127.0.0.1_1337  
+>URL:			http://127.0.0.1:1337  
+>Filesize:		55   
+>Last Accessed:		2012/5/31 下午 10:35:16  
+>Server Response:	HTTP/1.1 200 OK	  
+
+这是什么意思？再一次请求的时候并没有直接使用缓存，而是发出了新的请求，且更新了缓存。这些缓存既然不用保存着有什么用？
+
+在我们的node服务器上添加一行：
+
+**server.coffee**  
+{% highlight coffeescript %}
+	http=require "http"
+	server=http.createServer (req,res)->
+		#返回一个链接 跳转到/index
+		res.write("<a href='http://127.0.0.1:1337/index'>goto /index</a><br />")
+		#返回服务器当前的处理时间
+		res.end (new Date()).toString()
+	server.listen 1337,'127.0.0.1'
+
+	console.log "Sever runing at http://127.0.0.1:1337"
+{% endhighlight %}
+
+现在访问[http://127.0.0.1:1337](http://127.0.0.1:1337)，点击链接`goto /index`，页面跳转到了http:127.0.0.1:1337页面。察看缓存，多了一条数据：  
+>Filename:		index  
+>URL:			http://127.0.0.1:1337/index  
+>Filesize:		110  
+>Last Accessed:		2012/5/31 下午 11:41:05	  
+>Server Response:	HTTP/1.1 200 OK	   
+
+按浏览器的back按钮，然后forward，往复，你会发现页面的时间一直没变。即你在翻找浏览历史的时候，浏览器并不会去请求服务器，而是直接从缓存中拿内容。我们先不讨论如何让浏览器在back或者forward的时候也访问服务器，先讨论下如何让浏览器在刷新时拿的也是缓存中的的数据？
+
+##Expires
+
+HTTP还处于洪荒时期，如何让客户端缓存（使用缓存，不访问服务器）请求呢？我们在HTTP的头中加入了一个Expires（过期时间），当给缓存设定一个未来的时间点，告诉浏览器，在这个时间点以前，你就使用缓存吧，别来请求我了：  
+**server.coffee**  
+{% highlight coffeescript %}
+http=require "http"
+server=http.createServer (req,res)->
+	scriptResHeader=
+		Expires:new Date((new Date()).getTime()+30*1000)
+		if req.url.indexOf("/script")>-1
+			#设置脚本的返回头
+			for own key,value of scriptResHeader
+				res.setHeader key,value
+			#返回一段JS代码 例如：alert('Fri Jun 01 2012 00:03:37 GMT+0800 (China Standard Time)');
+			res.end "alert('#{(new Date()).toString()}');"
+		else
+			#返回一个script标签，引用/script脚本
+			res.write("<script src='/script'></script>")
+			#返回服务器当前的处理时间
+			res.end (new Date()).toString()
+server.listen 1337,'127.0.0.1'
+
+console.log "Sever runing at http://127.0.0.1:1337"
+{% endhighlight %}
+
+现在我们访问[http://127.0.0.1:1337](http://127.0.0.1:1337)时，会请求发两次请求，还有一个是[http://127.0.0.1:1337/script](http://127.0.0.1:1337/script)，并且现在我们为这个脚本请求返回头加了一个过期时间，就是当前服务器时间的30秒以后，如果现在服务器时间是  
+>Fri Jun 01 2012 00:17:44 GMT+0800 (China Standard Time)  
+那过期时间就是：  
+>Fri Jun 01 2012 00:18:14 GMT+0800 (China Standard Time)  
+如下图所示：  
+![script的过期时间](http://pic.yupoo.com/island205/C0td8x0C/medish.jpg )
+
+
+
+				
+
+			
+
+
+
 
 

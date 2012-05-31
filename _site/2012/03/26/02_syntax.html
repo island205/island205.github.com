@@ -48,7 +48,7 @@
 </div>
 <p>正如我简单的提过，CoffeeScript对空格是敏感的。实际说来，就是你可以使用制表符来替换花括号（{}）。这受到了Python语法的影响，而且还能确保你的脚本有一个清晰的格式，否则连编译都通不过。</p>
 
-<h2 id='id548'>变量与作用域</h2>
+<h2 id='id674'>变量与作用域</h2>
 
 <p>CoffeeScript修复了JavaScript中一个最让人头疼的问题——全局变量。在JavaScript中，一不小心的话，就很容易在定义变量时遗漏<code>var</code>关键字导致产生全局变量。CoffeeScript通过简单的剔除全局变量来解决这个问题。在背后，CoffeeScript使用一个匿名函数把所有脚本都包裹起来，将其限定在局部作用域中，并且为所有的变量赋值前自动添加<code>var</code>。比如，下面是在CoffeeScript中简单的定义一个变量：</p>
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>myVariable = </span><span class='s'>&quot;test&quot;</span>
@@ -65,7 +65,7 @@
 </div>
 <p>在顶级作用域中，<code>this</code>就相当于全局对象，你可以创建一个局部变量<code>exports</code>让阅读你代码的人能够分清楚哪个是脚本创建的全局变量。而且，这还能为支持CommonJS模块铺平了道路，这在本书的后面会做介绍。</p>
 
-<h2 id='id549'>函数</h2>
+<h2 id='id675'>函数</h2>
 
 <p>CoffeeScript移除了冗长的<code>function</code>语句，以瘦箭头<code>-&gt;</code>替之。函数可以是一行也可以是多行。函数的最后一个表达式会作为隐式的返回值。换句话说，你不再需要使用<code>return</code>关键字，除非你想早一点从函数中返回。</p>
 
@@ -81,7 +81,7 @@
       <span class='s'>&quot;bar&quot;</span>
 </code></pre>
 </div>
-<h3 id='id550'>函数参数</h3>
+<h3 id='id676'>函数参数</h3>
 
 <p>如何指定参数？CoffeeScript允许你通过在箭头前面的括号中指定参数。</p>
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>times = </span><span class='nf'>(a, b) -&gt;</span> <span class='nx'>a</span> <span class='o'>*</span> <span class='nx'>b</span>
@@ -104,7 +104,7 @@
       <span class='k'>this</span><span class='p'>.</span><span class='nx'>constructor</span><span class='p'>.</span><span class='nx'>trigger</span><span class='p'>.</span><span class='nx'>apply</span><span class='p'>(</span><span class='nx'>events</span><span class='p'>)</span>
 </code></pre>
 </div>
-<h3 id='id551'>函数调用</h3>
+<h3 id='id677'>函数调用</h3>
 
 <p>在JavaScript中，可以通过括弧<code>()</code>、<code>apply()</code>和<code>call()</code>来调用函数。然而，像Ruby一样，如果函数被至少一个参数跟着的话，CoffeeScript会自动的调用这个函数。</p>
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>a = </span><span class='s'>&quot;Howdy!&quot;</span>
@@ -124,7 +124,7 @@
 </div>
 <p>如果在调用一个函数时你没有传递参数，CoffeeScript就没有办法判断出你打算调用这个函数，还是只是把它当作一个变。从这点来看，CoffeeScript的行为与Ruby有些差异，后者总是会调用引用函数的变量，CoffeeScript更像Python。这已经变成了我的CoffeeScript程序中常见的错误。因此，在你打算无参数调用函数时多留个心眼，别忘了加上括号。</p>
 
-<h3 id='id552'>函数上下文</h3>
+<h3 id='id678'>函数上下文</h3>
 
 <p>在JavaScript上下文会频繁的变化。尤其是在回调函数中，CoffeeScript为此提供了一些辅助。其中之一就是<code>-&gt;</code>的变种胖箭头的函数<code>=&gt;</code></p>
 
@@ -137,7 +137,7 @@
 
 <p>这中绑定的思想与jQuery的 <a href='http://api.jquery.com/jQuery.proxy/'><code>proxy()</code></a>或者<a href='https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Function/bind'>ES5&#8217;s</a>的<code>bind()</code>函数是类似的概念。</p>
 
-<h2 id='id553'>对象字面量与数组定义</h2>
+<h2 id='id679'>对象字面量与数组定义</h2>
 
 <p>就如在JavaScript中一样，可以使用一对大括号以及键/值来明确定义对象字面量。然而，与函数调用类似，CoffeeScript使得可以省略括号。事实上，你还可以使用缩进和换行来代替起分割作用的逗号。</p>
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>object1 = </span><span class='p'>{</span><span class='nv'>one: </span><span class='mi'>1</span><span class='p'>,</span> <span class='nv'>two: </span><span class='mi'>2</span><span class='p'>}</span>
@@ -167,7 +167,7 @@
 </div>
 <p>像你在上例看到的那样，CoffeeScript还能去掉<code>array3</code>末尾多余的逗号，这也是一个常见的跨浏览器错误源。</p>
 
-<h2 id='id554'>流程控制</h2>
+<h2 id='id680'>流程控制</h2>
 
 <p>这种可省略括号的便捷方式延续到了CoffeeScript中的<code>if</code>和<code>else</code>关键字。</p>
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='k'>if</span> <span class='kc'>true</span> <span class='o'>==</span> <span class='kc'>true</span>
@@ -207,7 +207,7 @@
 </div>
 <p>在上面的例子中你可以已经注意到了，CoffeeScript会把<code>==</code>操作符转化为<code>===</code>,把<code>!=</code>转化为<code>!==</code>。这是这门语言中我最喜欢的一个特性，也是最简单的一个。那这背后有什么原因呢？坦白的讲JavaScript强制的类型转换有点奇怪，并且等于操作符为了比较它们会强制类型转换，这会导致很多令人迷惑的行为和很多的bug。在第7章中还是对此有有更多的讨论。</p>
 
-<h2 id='id555'>字符串插值法</h2>
+<h2 id='id681'>字符串插值法</h2>
 
 <p>CoffeeScript将Ruby风格的字符串插值法引入到了JavaScript中。在双引号的字符串中可以包含<code>#{}</code>标记，这些标记中可以包含被插入到字符串中的表达式。</p>
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>favourite_color = </span><span class='s'>&quot;Blue. No, yel...&quot;</span>
@@ -219,7 +219,7 @@
 </div>
 <p>就上例所示，多行字符串是允许的，不需要在没一行前添加<code>+</code>。</p>
 
-<h2 id='id556'>循环和列表解析</h2>
+<h2 id='id682'>循环和列表解析</h2>
 
 <p>JavaScript中的数组迭代使用一种相当古老的语法，看上去更像一个类似于C之类的老语言，而不是现代的面向对象的语言。ES5引入<code>forEach()</code>函数来稍微改善了下这种情况，但是这样的话每次迭代都需要调用一次函数，因此运行速度会变慢。再一次，CoffeeScript给出一种漂亮的语法拯救了我们：</p>
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='k'>for</span> <span class='nx'>name</span> <span class='k'>in</span> <span class='p'>[</span><span class='s'>&quot;Roger&quot;</span><span class='p'>,</span> <span class='s'>&quot;Roderick&quot;</span><span class='p'>,</span> <span class='s'>&quot;Brian&quot;</span><span class='p'>]</span>
@@ -251,7 +251,7 @@
       <span class='nx'>num</span> <span class='o'>+</span> <span class='s'>&quot; Brave Sir Robin ran away&quot;</span>
 </code></pre>
 </div>
-<h2 id='id557'>数组</h2>
+<h2 id='id683'>数组</h2>
 
 <p>说到使用区间来分割数组，CoffeeScript是受到了Ruby的影响。使用两个数字来定义区间，分别代表区间的第一个和最后一个位置。这两个数字之间使用<code>..</code>或<code>...</code>来分隔。如果区间之前没有任何东西，CoffeeScript会将其转换为一个数组。</p>
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>range = </span><span class='p'>[</span><span class='mi'>1</span><span class='p'>..</span><span class='mi'>5</span><span class='p'>]</span>
@@ -275,7 +275,7 @@
     <span class='nx'>alert</span> <span class='s'>&quot;Stop wagging me&quot;</span> <span class='k'>if</span> <span class='s'>&quot;ranks&quot;</span> <span class='k'>in</span> <span class='nx'>words</span> 
 </code></pre>
 </div>
-<h2 id='id558'>别名和存在操作符</h2>
+<h2 id='id684'>别名和存在操作符</h2>
 
 <p>CoffeeScript采用了一些有用的别名来减少输入量。其中一个就是<code>@</code>，是<code>this</code>的别名。</p>
 <span class='csscript' />

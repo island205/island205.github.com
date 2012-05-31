@@ -26,7 +26,7 @@
 <div role="main" id="main">
 	<div class="post">
 	<div class='back'><a href='/tlboc/'>&laquo; 返回目录</a></div>
-<h1 id='id570'>创建应用程序</h1>
+<h1 id='id696'>创建应用程序</h1>
 
 <p>既然你基本已经了解了CoffeeScript的语法，那现在让我们来探索下如何使用它来真枪实弹的创建应用程序。本节内容对所有的CoffeeScript开发者都有用，无论你是新人还是老手，实际上，这对只写JavaScript的人来说也非常有用。</p>
 
@@ -40,7 +40,7 @@
 
 <p>实际上，模块能保证你的代码运行在局部作用域中（代码分装），你可以通过<code>require()</code>函数来载入模块，而且通过<code>module.exports</code>来暴露模块。让我们更加深入的研究下。</p>
 
-<h3 id='id571'>导入文件</h3>
+<h3 id='id697'>导入文件</h3>
 
 <p>你可是使用<code>require()</code>来载入其他模块和类库。只给它传递一个模块名即可，而且如果该模块正加载目录中，<code>require()</code>会返回一个代表该模块的对象。例如：</p>
 <div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>User = </span><span class='nx'>require</span><span class='p'>(</span><span class='s'>&quot;models/user&quot;</span><span class='p'>)</span>
@@ -48,7 +48,7 @@
 </div>
 <p>同步的<code>require</code>是一个颇具争议的问题，但是主流的类库加载器和CommonJS的预案中已经解决了这个问题。如果你不想使用我下面推荐的Stitch而想另走一条路的话，你可能需要看一下它。</p>
 
-<h3 id='id572'>暴露属性</h3>
+<h3 id='id698'>暴露属性</h3>
 
 <p>默认情况下，模块不会暴露任何属性，因此模块内的东西对于<code>require()</code>调用来说不可见。如果你想访问模块的某个属性，你需要将它挂到<code>module.exports</code>：</p>
 <div class='highlight'><pre><code class='coffeescript'>    <span class='c1'># random_module.js</span>
@@ -263,7 +263,7 @@
 </div>
 <p>好了，这样做就行了。没有比这还简单的Node主机的服务了。</p>
 
-<h2 id='id573'>其他类库</h2>
+<h2 id='id699'>其他类库</h2>
 
 <p><a href='https://github.com/sstephenson/stitch'>Stitch</a>和<a href='https://github.com/sstephenson/eco'>Eco</a>并不是唯一你可用于创建CoffeeScript和Node程序的类库，还有很多可作为替代的类库。</p>
 
