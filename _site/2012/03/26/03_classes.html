@@ -26,7 +26,7 @@
 <div role="main" id="main">
 	<div class="post">
 	<div class='back'><a href='/tlboc/'>&laquo; 返回目录</a></div>
-<h1 id='id685'>类</h1>
+<h1 id='id55'>类</h1>
 
 <p>JavaScript中的类对于纯粹主义者来说有点像大蒜对Dracula的感觉，诚实点吧，如果你喜欢那样的方式，那你应该不会想读这本关于CoffeeScript的书。可事实是类在JavaScript中就如在其他语言中一样地有用。因此，CoffeeScript为此提供了一个很棒的抽象。</p>
 
@@ -54,7 +54,7 @@
     <span class='nx'>alert</span> <span class='s'>&quot;Animal is a </span><span class='si'>#{</span><span class='nx'>animal</span><span class='p'>.</span><span class='nx'>name</span><span class='si'>}</span><span class='s'>&quot;</span>
 </code></pre>
 </div>
-<h2 id='id686'>实例属性</h2>
+<h2 id='id56'>实例属性</h2>
 
 <p>可以非常直接地为类添加实例属性，与为对象添加属性的语法一样。只需要在类体内对属性采用合理的缩进即可。</p>
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='k'>class</span> <span class='nx'>Animal</span>
@@ -79,7 +79,7 @@
 </div>
 <p>如上例所示，这在事件回调是尤其有用。正常情况下<code>sell()</code>函数会以<code>#sell</code>元素为上下文调用。然而，通过使用胖箭头来定义<code>sell()</code>，我们能保证能保持正确的上下文，所以<code>this.price</code>等于<code>5</code>。</p>
 
-<h2 id='id687'>静态变量</h2>
+<h2 id='id57'>静态变量</h2>
 
 <p>可以定义类（静态）变量吗？当然，事实证明在类的定义中，<code>this</code>引用的就是类。也就是说你可以通过直接在这个<code>this</code>上设置类属性。</p>
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='k'>class</span> <span class='nx'>Animal</span>
@@ -149,7 +149,7 @@
 </div>
 <p>在继承不合适时Mixins是一种不错的在模块间共享通用逻辑的的模式。较之于继承只能实现从单一的父类继承，Mixins的优势是能够实现多个继承。</p>
 
-<h2 id='id688'>扩展类</h2>
+<h2 id='id58'>扩展类</h2>
 
 <p>Mixins很棒，只是看起来并不那么地面向对象。让我们把Mixins集成到CoffeeScript的类中吧。我们将会定义一个名为<code>Module</code>的类，然后可以继承这个类来获得对Mixins的支持。<code>Module</code>会有两个静态方法，<code>@extend()</code>和<code>@include()</code>，可以用它们来实现对类的静态属性和实例属性的扩展。</p>
 <span class='csscript' /><div class='highlight'><pre><code class='coffeescript'>    <span class='nv'>moduleKeywords = </span><span class='p'>[</span><span class='s'>&#39;extended&#39;</span><span class='p'>,</span> <span class='s'>&#39;included&#39;</span><span class='p'>]</span>

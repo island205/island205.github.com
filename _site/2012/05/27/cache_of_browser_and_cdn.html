@@ -29,17 +29,17 @@
 
 <p><em>作者：<a href='http://island205.github.com'>island205</a> 时间：2012-05-27</em></p>
 
-<h2 id='id712'>引子</h2>
+<h2 id='id82'>引子</h2>
 
 <p>前不久QA的同事来问我公司与CDN相关的事情，版本号是什么？浏览器缓存，CDN缓存的一些细节，为什么静态资源要有版本号？版本号怎么来的？如何就能刷缓存的？我虽然一一作答，但还是觉得对细节了解得不够清楚，遂打算起一篇文章好好研究一下浏览器的缓存和CDN，来探讨一下二者的来龙去脉。</p>
 
-<h2 id='id713'>研究方法和工具</h2>
+<h2 id='id83'>研究方法和工具</h2>
 
 <p>从HTTP头讲起，一步步看看缓存是如何实现的，同时使用<a href='http://nodejs.org'>Node.js</a>来做实例服务器，使用<a href='http://coffeescript.org'>CoffeeScript</a>来做一些小实例，帮助大家理解，浏览器选定chrome，一是方面察看请求，二是浏览器间的对缓存的处理也不一致，仅用chrome理解原理为要。</p>
 
 <p>开始我的探索之旅吧！</p>
 
-<h2 id='id714'>第一个问题，浏览器一定会有缓存吗？</h2>
+<h2 id='id84'>第一个问题，浏览器一定会有缓存吗？</h2>
 
 <p>首先介绍一个工具<a href='http://www.nirsoft.net/utils/chrome_cache_view.html'>Chrome缓存察看器</a>，可以用它来察看Chrome的缓存数据。为了便于后续的实验，我们先清掉chrome的缓存数据（方法自寻），然后使用察看其察看如下：</p>
 
@@ -129,7 +129,7 @@
 			<span class='c1'>#返回一段JS代码 例如：alert(&#39;Fri Jun 01 2012 00:03:37 GMT+0800 (China Standard Time)&#39;);</span>
 			<span class='nx'>res</span><span class='p'>.</span><span class='nx'>end</span> <span class='s'>&quot;alert(&#39;</span><span class='si'>#{</span><span class='p'>(</span><span class='k'>new</span> <span class='nb'>Date</span><span class='p'>()).</span><span class='nx'>toString</span><span class='p'>()</span><span class='si'>}</span><span class='s'>&#39;);&quot;</span>
 		<span class='k'>else</span>
-			<span class='c1'>#返回一个链接 跳转到/index</span>
+			<span class='c1'>#返回一个script标签，引用/script脚本</span>
 			<span class='nx'>res</span><span class='p'>.</span><span class='nx'>write</span><span class='p'>(</span><span class='s'>&quot;&lt;script src=&#39;/script&#39;&gt;&lt;/script&gt;&quot;</span><span class='p'>)</span>
 			<span class='c1'>#返回服务器当前的处理时间</span>
 			<span class='nx'>res</span><span class='p'>.</span><span class='nx'>end</span> <span class='p'>(</span><span class='k'>new</span> <span class='nb'>Date</span><span class='p'>()).</span><span class='nx'>toString</span><span class='p'>()</span>

@@ -41,7 +41,7 @@
 </div>
 <p>别忘了对象上的每一个键都会被转化为字符串，因此<code>arr[1]</code>、<code>arr[“1”]</code>甚至包括<code>arr[{toString:-&gt;”1”}]</code>的含义都是一样的。（如果某个对象有一个<code>toString</code>方法，则在该对象被转化为字符串时会使用该方法的返回值。）<br />因为数组也是对象，所以你可以自由地为数组加上各种属性，尽管一般并不会这么做。更通常的做法是直接修改<code>Array</code>的原型，为所有的数组添加特殊的方法。例如，Prototype.js框架以此为数组添加了像<code>flatten</code>和<code>each</code>这类方法，使其更像Ruby的数组。</p>
 
-<h2 id='id708'><strong>区间</strong></h2>
+<h2 id='id78'><strong>区间</strong></h2>
 
 <p>打开REPL吧，因为熟悉CoffeeScript区间语法（以及在下一小节中即将介绍与之密切相关的切分（<code>slice</code>）和剪接（<code>splice</code>）语法）的最好方法就是<code>(&#39;practice&#39; for i in [1..3]).join(&#39;, &#39;)</code>。 CoffeeScript引入了Ruby式语法来定义一个连续的整数数组：</p>
 <div class='highlight'><pre><code class='bash'>    coffee&gt; <span class='o'>[</span>1..5<span class='o'>]</span>
@@ -65,7 +65,7 @@
 </div>
 <p>通常很少单独使用这种语法，我们很快就会发现，它是CoffeeScript<code>for</code>循环不可或缺的一部分。</p>
 
-<h2 id='id709'><strong>切分和剪接</strong></h2>
+<h2 id='id79'><strong>切分和剪接</strong></h2>
 
 <p>当你想从数组中切出一块时，需要使用听起来有点暴力的<code>slice</code>方法：</p>
 <div class='highlight'><pre><code class='bash'>    coffee&gt; <span class='o'>[</span><span class='s1'>&#39;a&#39;</span>, <span class='s1'>&#39;b&#39;</span>, <span class='s1'>&#39;c&#39;</span>, <span class='s1'>&#39;d&#39;</span><span class='o'>]</span>.slice 0, 3
