@@ -11,7 +11,7 @@ title:  介绍
 
 这本书是完全开源的，作者是[Alex MacCaw](http://alexmaccaw.co.uk) (或者 [@maccman](http://twitter.com/maccman))，[David Griffiths](https://github.com/dxgriffiths)、[Satoshi Murakami](http://github.com/satyr)和 [Jeremy Ashkenas](https://github.com/jashkenas)也做了不小的贡献。
 
-如果你有任何勘误和建议，千万别吝啬到本书的[GitHub page](https://github.com/arcturo/library)发个ticket。或许你们还对我的另外一本书感[JavaScript Web Applications by O'Reilly](http://oreilly.com/catalog/9781449307530/)兴趣，我在该书中对富JavaScript应用以及如何把状态转移到客户端进行了探索。
+如果你有任何勘误和建议，千万别吝啬到本书的[GitHub page](https://github.com/arcturo/library)发个ticket。或许你们还对我的另外一本书[JavaScript Web Applications by O'Reilly](http://oreilly.com/catalog/9781449307530/)感兴趣，我在该书中对富JavaScript应用以及如何把状态转移到客户端进行了探索。
 
 好了，开始我们的CoffeeScript探索之旅吧。为什么CoffeeScript要比原生的JavaScript好？首先，能够少写代码——CoffeeScript非常简洁，充分地利用空格。以我的经验来看，比起纯JavaScript的话，它能减少三分之一到一半的代码量。还有，CoffeeScript开有一些优雅的特性，比方说列表解析、原型符号别名和类等等，能够有效的减少需要你的输入。
 
