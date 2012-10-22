@@ -39,6 +39,6 @@ I am a fronteer working in <a href="http://www.dianping.com" target="_blank">dia
 <h2>posts</h2>
 <ol>
     {% for post in site.posts %}
-    <li>{{ post.date | date_to_string }} <a href="{{ post.url }}">{{ post.title }}</a></li>
+    <li><a href="{{ post.url }}">{{ post.title }}</a> {{ post.date | date_to_string }}</li>
     {% endfor %}
 </ol>
