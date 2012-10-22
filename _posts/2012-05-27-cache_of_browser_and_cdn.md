@@ -1,6 +1,6 @@
 ---
 layout:  post
-title:   浏览器缓存和CDN
+title:   浏览器缓存和CDN（未完成）
 ---
 
 #浏览器缓存和CDN
