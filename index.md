@@ -1,3 +1,8 @@
+---
+layout: content
+title: island205.github.com
+---
+
 <h1>island205<sub style="color:gray;">(ZhiCun)</sub></h1>
 
 <h2>Who am I?</h2>
