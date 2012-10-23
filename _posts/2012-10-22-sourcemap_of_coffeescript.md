@@ -13,20 +13,20 @@ Michael Ficarra创建的“better CoffeeScript compiler”的[kickstarter](http:
 
 {% highlight bash %}
     $ git clone git://github.com/michaelficarra/CoffeeScriptRedux.git
-{% endhightlight %}
+{% endhighlight %}
 
 安装依赖：
 
 {% highlight bash %}
     $ cd CoffeeScriptRedux
     $ make deps
-{% endhightlight %}
+{% endhighlight %}
 
 运行测试，保证没啥问题：
 
 {% highlight bash %}
     $make test
-{% endhightlight %}
+{% endhighlight %}
 
 ##把你的文件编译为JS吧
 
@@ -36,7 +36,7 @@ CoffeeScriptRedux没有使用与CofffeeScript一样的接口，所以可能这�
 
 {% highlight bash %}
     $ ./bin/coffee --js -i /path/to/test.coffee
-{% endhightlight %}
+{% endhighlight %}
 
 这会创建一个文件：`/path/to/test.js`。
 
@@ -44,13 +44,13 @@ CoffeeScriptRedux没有使用与CofffeeScript一样的接口，所以可能这�
 
 {% highlight bash %}
     $ ./bin/coffee --source-map -i /path/to/test.coffee > /path/to/test.js.map
-{% endhightlight %}
+{% endhighlight %}
 
 为了干成这事，我不得不安装了source-map：
 
 {% highlight bash %}
     $ npm install source-map
-{% endhightlight %}
+{% endhighlight %}
 
 ##把Source Map告诉浏览器
 
@@ -58,7 +58,7 @@ CoffeeScriptRedux没有使用与CofffeeScript一样的接口，所以可能这�
 
 {% highlight bash %}
     $ (echo; echo '//@ sourceMappingURL=test.js.map') >> /path/to/test.js
-{% endhightlight %}
+{% endhighlight %}
 
 ##打开Chrome开启Source Map功能
 
