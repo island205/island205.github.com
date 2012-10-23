@@ -1,0 +1,24 @@
+---
+layout: nil
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Mikael Lind</title>
+  <link href="http://elemel.se/atom.xml" rel="self"/>
+  <link href="http://elemel.se/"/>
+  <updated>{{ site.time | date_to_xmlschema }}</updated>
+  <id>http://elemel.se/</id>
+  <author>
+    <name>Mikael Lind</name>
+    <email>elemel@elemel.se</email>
+  </author>
+  {% for post in site.posts %}
+    <entry>
+      <title>{{ post.title }}</title>
+      <link href="http://elemel.se{{ post.url }}"/>
+      <updated>{{ post.date | date_to_xmlschema }}</updated>
+      <id>http://elemel.se{{ post.id }}</id>
+      <content type="html">{{ post.content | xml_escape }}</content>
+    </entry>
+  {% endfor %}
+</feed>
