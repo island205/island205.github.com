@@ -7,7 +7,7 @@ title: island205.github.com
 
 <h2>Who am I?</h2>
 <p>
-I am a fronteer working in <a href="http://www.dianping.com" target="_blank">dianping.com</a>. I like reading,coding,running,and sleeping.
+I am a fronteer working in <a href="http://www.dianping.com" target="_blank">Dianping.Inc</a>. I like reading,coding,running,and sleeping.
 </p>
 
 <h2>How to contact me ?</h2>
