@@ -1,6 +1,6 @@
 ---
 layout:  post
-title:  [翻译]CoffeeScript Source Maps 
+title:   [翻译]CoffeeScript Source Maps
 ---
 
 *作者：[Ryan Florence](http://ryanflorence.com/2012/coffeescript-source-maps/) 时间：2012-10-22*
