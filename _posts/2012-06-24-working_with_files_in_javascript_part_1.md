@@ -1,6 +1,6 @@
 ---
 layout:  post
-title:   [翻译]使用JavaScript处理文件，第1部分：基础（未完成）
+title:   【翻译】使用JavaScript处理文件，第1部分：基础（未完成）
 ---
 
 #使用JavaScript处理文件，第1部分：基础
