@@ -10,4 +10,20 @@ title:   CoffeeScript编译器研究（一）（未完成）
 目前，CoffeeScript编译器是使用CoffeeScript编写的，很多人会问，这是蛋生鸡呢，还是鸡生蛋？ 
 其实CoffeeScript编译器最初是使用Ruby编写的，CoffeeScript团队于2010年2月21号发布了[v0.5.0](http://coffeescript.org/#changelog)，使用CoffeeScript重写了编译器。
 
+#CoffeeScript编译器的整体架构
 
+{% highlight coffeescript %}
+                  -------------       -----------------
+                  -           -       -               -
+    cs code --->  -   Lexer   - --->  - Parser(Jison) - ---> AST ---> node.compile() ---> js code
+                  -           -       -               -
+                  -------------       -----------------
+                                              ^
+                                              -
+                                              -
+                                        -------------
+                                        -           -
+                                        -   Nodes   -
+                                        -           -
+                                        -------------
+{% endhighlight %}
