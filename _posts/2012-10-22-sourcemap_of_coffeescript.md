@@ -7,7 +7,7 @@ title:   【翻译】CoffeeScript Source Maps
 
 *作者：[Ryan Florence](http://ryanflorence.com/2012/coffeescript-source-maps/) 时间：2012-10-22*
 
-Michael Ficarra创建的“better CoffeeScript compiler”的[kickstarter](http://www.kickstarter.com/projects/michaelficarra/make-a-better-coffeescript-compiler)很成功，而且现在还反馈了和一个巨大的红利——[source maps](http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/)，CoffeeScript调试，作为不把CoffeeScript用在浏览器中最流行也是最强的反对意见，现在已经解决90%了。
+Michael Ficarra创建的“better CoffeeScript compiler”的[kickstarter](http://www.kickstarter.com/projects/michaelficarra/make-a-better-coffeescript-compiler)很成功，而且现在还给支持者们反馈了一个巨大的红利——[source maps](http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/)，CoffeeScript调试，作为不把CoffeeScript用在浏览器中最流行也是最强的反对意见，现在已经解决90%了。
 
 ##安装CoffeeScriptRedux
 
