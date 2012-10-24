@@ -13,17 +13,17 @@ title:   CoffeeScript编译器研究（一）（未完成）
 #CoffeeScript编译器的整体架构
 
 {% highlight coffeescript %}
-                  -------------       -----------------
-                  -           -       -               -
-    cs code --->  -   Lexer   - --->  - Parser(Jison) - ---> AST ---> node.compile() ---> js code
-                  -           -       -               -
-                  -------------       -----------------
-                                              ^
-                                              -
-                                              -
-                                        -------------
-                                        -           -
-                                        -   Nodes   -
-                                        -           -
-                                        -------------
+             -------------      -----------------
+             -           -      -               -
+cs code ---> -   Lexer   - ---> - Parser(Jison) - ---> AST ---> node.compile() ---> js code
+             -           -      -               -
+             -------------      -----------------
+                                        ^
+                                        -
+                                        -
+                                  -------------
+                                  -           -
+                                  -   Nodes   -
+                                  -           -
+                                  -------------
 {% endhighlight %}
