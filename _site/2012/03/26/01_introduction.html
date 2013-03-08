@@ -38,9 +38,9 @@
 
 <p>更重要的是，JavaScript有很多不为人知的 <a href='http://bonsaiden.github.com/JavaScript-Garden/'>秘密</a>，这些秘密往往让无经验的开发者摔跤。CoffeeScript有原则地选择了一些JavaScript的特性，巧妙地避开了这些不足，解决了该语言的怪癖。</p>
 
-<p>CoffeeScript<em>不是</em>JavaScript的超集，因此尽管你可以在CoffeeScript中的使用外部的JavaScript类库，但是如果你在没有转化之前而直接编译当前的JavaScript的话，会出现语法错误。编译器会把CoffeeScript代码转化为相对于的JavaScript，这样在运行时就不需要解释了。</p>
+<p>CoffeeScript<em>不是</em>JavaScript的超集，因此尽管你可以在CoffeeScript中的使用外部的JavaScript类库，但是如果你在没有转化之前而直接编译当前的JavaScript的话，会出现语法错误。编译器会把CoffeeScript代码转化为相对应的JavaScript，这样在运行时就不需要解释了。</p>
 
-<p>首先澄清一些误解。由于处理运行时错误需要JavaScript相关的知识，要写CoffeeScript就得了解JavaScript。但是话说回来，运行时错误通常比较明显，并且到目前位置，我没觉得从JavaScript映射到CoffeeSCript会有什么问题。第二个问题是我经常听到CoffeeScript相关的话题是速度。即，CoffScript编译后的JavaScript运行起来相比与之等价的纯JavaScript代码要慢。但实际情况证明并不是问题。CoffeeScript看起来与徒手写的JavaScript代码运行速度相当，甚至更快。</p>
+<p>首先澄清一些误解。由于处理运行时错误需要JavaScript相关的知识，要写CoffeeScript就得了解JavaScript。但是话说回来，运行时错误通常比较明显，并且到目前位置，我没觉得从JavaScript映射到CoffeeScript会有什么问题。第二个问题是我经常听到CoffeeScript相关的话题是速度。即，CoffScript编译后的JavaScript运行起来相比与之等价的纯JavaScript代码要慢。但实际情况证明并不是问题。CoffeeScript看起来与徒手写的JavaScript代码运行速度相当，甚至更快。</p>
 
 <p>CoffeeScript的劣势是什么？是的，在你和JavaScript之间介多了编译这一步。CoffeeScript也在尝试尽力通过产生优雅的可读性强的JavaScript，以及在服务器端集成自动编译来弥补这个问题。另外一个缺陷是，作为一个新的语言，事实上现阶段社区也还比较小，想找个懂这门语言的合伙人会花费你的大量你的时间。当然，CoffeeScript发展迅猛，相关的IRC列表也是人才济济，如果你有什么问题的话，都会得到迅速的解答。</p>
 
@@ -50,7 +50,7 @@
 
 <p>一种尝试这个类库最简单的方式就是直接在浏览器中使用它，访问<a href='http://coffeescript.org'>http://coffeescript.org</a>，点击<em>Try CoffeeScript</em>标签。这个网站使用浏览器版的CoffeeScript编译器，把在左边面板任意输入的CoffeeScript代码编译为JavaScriprt后显示在右边的面板中。</p>
 
-<p>你也可以使用<a href='http://coffee2js.org'>coffee2js</a>项目把JavaScript转变为CoffeeScirpt。这在把JavaScript项目迁移到CoffeeScript上时尤其有用。</p>
+<p>你也可以使用<a href='http://js2coffee.org/'>js2coffee</a>项目把JavaScript转变为CoffeeScirpt。这在把JavaScript项目迁移到CoffeeScript上时尤其有用。</p>
 
 <p>实际上，你自己都可以使用基于浏览器的CoffeeScirpt编译器，只需要在页面中包含<a href='http://jashkenas.github.com/coffee-script/extras/coffee-script.js'>这个脚本</a>，使用正确类型（type）的标标签记CoffeeScript脚本即可。</p>
 <div class='highlight'><pre><code class='html'>    <span class='nt'>&lt;script </span><span class='na'>src=</span><span class='s'>&quot;http://jashkenas.github.com/coffee-script/extras/coffee-script.js&quot;</span> <span class='na'>type=</span><span class='s'>&quot;text/javascript&quot;</span> <span class='na'>charset=</span><span class='s'>&quot;utf-8&quot;</span><span class='nt'>&gt;&lt;/script&gt;</span>
@@ -71,7 +71,7 @@
 </div>
 <p>如果没有指定<code>--output</code>参数，CoffeeScript会直接将编译后的代码写入到一个同名的JavaScript文件中，本例中就是<code>my-script.js</code>。已存在该文件的话会被复写掉，因此要当心你的JavaScript文件被覆盖。使用<code>--help</code>参数可以看到一个完整的可用命令行参数列表。</p>
 
-<p>就如你在之前看到的一样，CoffeeScirpt文件的默认扩展名是<code>.coffee</code>，除去其他原因之外，能让像<a href='http://macromates.com/'>TextMate</a>这样的编译器能够辨认出文件中包含的是什么语言的代码从而是用相对应的高亮也是其中之一。TextMate并不包含对CoffeeScript的支持，但是你可以安装这个<a href='https://github.com/jashkenas/coffee-script-tmbundle'>包</a>来提供支持。</p>
+<p>就如你在之前看到的一样，CoffeeScript文件的默认扩展名是<code>.coffee</code>，除去其他原因之外，能让像<a href='http://macromates.com/'>TextMate</a>这样的编译器能够辨认出文件中包含的是什么语言的代码从而是用相对应的高亮也是其中之一。TextMate并不包含对CoffeeScript的支持，但是你可以安装这个<a href='https://github.com/jashkenas/coffee-script-tmbundle'>包</a>来提供支持。</p>
 
 <p>编译看起来既不方便又很无聊。没办法，它就是这样。我们将会学习通过自动编译的方法来解决这个问题，不过首先我们先学习一下这门语言的语法。</p>
 <div>
