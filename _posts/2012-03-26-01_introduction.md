@@ -29,7 +29,7 @@ CoffeeScript的用途并不仅限于浏览器，把它用在JavaScript实现的�
 
 一种尝试这个类库最简单的方式就是直接在浏览器中使用它，访问[http://coffeescript.org](http://coffeescript.org)，点击*Try CoffeeScript*标签。这个网站使用浏览器版的CoffeeScript编译器，把在左边面板任意输入的CoffeeScript代码编译为JavaScriprt后显示在右边的面板中。
 
-你也可以使用[coffee2js](http://coffee2js.org)项目把JavaScript转变为CoffeeScirpt。这在把JavaScript项目迁移到CoffeeScript上时尤其有用。
+你也可以使用[js2coffee](http://js2coffee.org)项目把JavaScript转变为CoffeeScirpt。这在把JavaScript项目迁移到CoffeeScript上时尤其有用。
 
 实际上，你自己都可以使用基于浏览器的CoffeeScirpt编译器，只需要在页面中包含[这个脚本](http://jashkenas.github.com/coffee-script/extras/coffee-script.js)，使用正确类型（type）的标标签记CoffeeScript脚本即可。
 
