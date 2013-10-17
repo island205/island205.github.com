@@ -3,7 +3,9 @@ layout: chapter
 title:  感谢
 ---
 
-## 感谢
+<div class="back"><a href="/helloseajs/01-contents.html">&laquo; 返回目录</a></div>
+
+# 感谢
 
 首先当然得感谢JavaScript社区。在JavaScript的世界里，几乎都是开源的，社区的内的交流和碰撞，蓬勃发展。我也是量力从社区中汲取了知识，才能写出点一二来。
 

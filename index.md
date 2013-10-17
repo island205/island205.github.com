@@ -22,21 +22,21 @@ I am a fronteer working in <a href="http://www.dianping.com" target="_blank">Dia
 </ol>
 
 <h2>books I translated</h2>
-<style type="text/css">
-	img{
-		height:236px;
-		padding:5px;
-		border:1px solid #555;
-	}
-</style>
-<a href="/tlboc/">
+
+<a href="/tlboc/" class="face">
 <img src="/img/tlboc.gif" title="CoffeeScript中文手册（The Little Book On CoffeeScript中文版）">
 </a>
-<a href="/cs/">
+<a href="/cs/" class="face">
 <img src="/img/cs.jpg" title="深入浅出CoffeeScript（CoffeeScript Accelerated JavaScript Development）">
 </a>
-<a href="http://read.douban.com/ebook/198648/">
+<a href="http://read.douban.com/ebook/198648/" class="face">
 <img src="http://pic.yupoo.com/island205/CmtFoqUo/medium.jpg" title="CoffeeScript小书（The Little Book On CoffeeScript中文版 豆瓣阅读版）" style="height:236px;">
+</a>
+
+<h2>books I wrote</h2>
+
+<a href="/helloseajs/01-contents.html" class="face">
+<img src="http://pic.yupoo.com/island205/Df8YGtwK/medium.jpg" title="Hello Sea.js">
 </a>
 
 <h2>posts</h2>

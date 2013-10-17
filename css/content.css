@@ -1,7 +1,23 @@
-ol{
+ol {
 	padding:0;
 }
-ol li{
+ol li {
 	line-height:1.7em;
 	list-style-position: inside;
+}
+.face img {
+  height:236px;
+  padding:5px;
+  border:1px solid #ddd;
+  -webkit-transition: ease-out 0.5s;
+  -webkit-transform-origin: left;
+}
+
+.face img:hover {
+  -webkit-transform: rotateY(45deg);
+}
+
+.face:hover {
+  border:1px solid #aaa;
+  background-color: #ddd;
 }

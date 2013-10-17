@@ -3,7 +3,9 @@ layout: chapter
 title:  参考资料
 ---
 
-## 参考资料
+<div class="back"><a href="/helloseajs/01-contents.html">&laquo; 返回目录</a></div>
+
+# 参考资料
 
 - [seajs](https://github.com/)
 - [实例解析 SeaJS 内部执行过程 - 从 use 说起](https://github.com/seajs/seajs/issues/308)
