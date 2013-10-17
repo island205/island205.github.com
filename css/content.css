@@ -5,19 +5,25 @@ ol li {
 	line-height:1.7em;
 	list-style-position: inside;
 }
+
+.face {
+  display: inline-block;
+}
 .face img {
   height:236px;
-  padding:5px;
   border:1px solid #ddd;
-  -webkit-transition: ease-out 0.5s;
+  -moz-transition: ease-out 1s;
+  -moz-transform-origin: left;
+  -webkit-transition: ease-out 1s;
   -webkit-transform-origin: left;
 }
 
 .face img:hover {
-  -webkit-transform: rotateY(45deg);
+  -moz-transform: rotateY(60deg) skewY(-20deg);
+  -webkit-transform: rotateY(60deg) skewY(-20deg);
 }
 
-.face:hover {
-  border:1px solid #aaa;
+.face {
   background-color: #ddd;
+  border:1px solid #aaa;
 }
