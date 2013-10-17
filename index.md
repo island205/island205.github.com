@@ -21,6 +21,7 @@ I am a fronteer working in <a href="http://www.dianping.com" target="_blank">Dia
 	<li>this is my <a href="http://island205.com">blog</a>.</li>
 </ol>
 
+
 <h2>books I translated</h2>
 
 <a href="/tlboc/" class="face">
@@ -32,6 +33,7 @@ I am a fronteer working in <a href="http://www.dianping.com" target="_blank">Dia
 <a href="http://read.douban.com/ebook/198648/" class="face">
 <img src="http://pic.yupoo.com/island205/CmtFoqUo/medium.jpg" title="CoffeeScript小书（The Little Book On CoffeeScript中文版 豆瓣阅读版）" style="height:236px;">
 </a>
+
 
 <h2>books I wrote</h2>
 
