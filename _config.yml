@@ -78,4 +78,3 @@ duoshuo_shortname: 一寸之志
 deploy:
   type: git
   repo: git@github.com:island205/island205.github.com.git
-  branch: master
