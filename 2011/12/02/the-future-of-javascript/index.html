@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>JavaScript 未来是什么样的？ | 一寸之志</title>
+  <meta name="description" content="" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="一寸之志">
+
+  
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(//pic.yupoo.com/island205/EvKihhOO/asOBK.jpg)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="//pic2.zhimg.com/734f2d039_l.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">一寸之志</h1>
+            <h2 class="blog-description"></h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2011-12-01T16:00:00.000Z" itemprop="datePublished">
+          2011年 12月2日
+      </time>
+    
+</span>
+    <h1 class="post-title">JavaScript 未来是什么样的？</h1>
+    <section class="post-content">
+      <p>最近看了很多关于Javascript、ECMAScript、Node.js等等一些资料，且随着Javascript的广泛使用，V8带动JS引擎效率的提升，不禁会问：未来的Javascript是什么样子？</p>
+<p>以下是我的愚见：</p>
+<h2 id="语言特性">语言特性</h2><p>Javascript随着Ajax的概念的兴起，从2005年至今确实火了一大把，十多年前布兰登·艾克（Brendan Eich）十天搞定了它，应该想不到它如此的有影响力。然而Javascript将来走向何方，也完全看它自己的造化。</p>
+<p>CoffeeScript最近也很火，被称作JS的语法糖；也可以看看Move语言，同样也是编译为JS。使用CoffeeScript或者是Move来编写JS程序会更加方便，代码清晰易读，模块化组织（Move包含客户端的模块化组织），一些Ruby/Python的语法与思想精髓在这两个语法糖里若影若现，这代表什么？看看Node.js吧，遵循CommonJS的模块组织标准，真的，模块化在客户端也非常需要！</p>
+<p>从脚本加载器LABjs到模块加载器RequireJS甚至到玉伯SeaJS到其推出的模块组织工具，说明了什么？我们需要一个JS模块的标准，不单单服务端，在客户端我们也需要，我们需要jquery，我们就require(“jquery.js”)进来，这是趋势，这也是玉伯想干的事情，SeaJS不是一个简单的模块加载器，最终是一个客户端模块化的解决方案或者是事实标准。</p>
+<p>因此，从语言特性方面看，我们需要JS在语法上，代码组织上更加完善，足以挑起重担。Brendan Eich在文章中六次提到CoffeeScript，他喜欢它；ECMAScript6草稿中有为客户端模块化进行思考；这就是我们需要的，就是运行在浏览器上的类似Ruby/Python的JS，而JS不会逊色于它们。</p>
+<p>有人觉得CoffeeScript/Move这类语言没用，还要编译为JS，效率低下。但是我得说，它们是烈士，是JS发展方向上的先行者。当然随着JS的成熟，它们的使命也就达成了。</p>
+<h2 id="执行速度">执行速度</h2><p>实话说，Javascript的执行速度真是慢的可怜。在社区里，有人叫喊，我们在意且需要的是它的执行速度。是的，我们需要，Javascript未来有hold住大型程序、3D游戏的能力。</p>
+<p>谷歌chrome一出江湖就左突右闯，直接拿下了20%以上的市场份额，冲上老二的宝座，版本号如脱缰的野马，早将IE抛之脑后，搞得Firefox也耐不住寂寞，生生追赶。随着chrome横空出世的还有其JS引擎V8，它的JS执行速度还在继续优化，各浏览器厂商自觉提高自家的JS效率。基于V8的server-side JS Node.js高并发测评文章，抢眼不少。</p>
+<p>我敢说，JS的执行速度在将来会提高一百倍，毫无压力。</p>
+<p>标准的不断完善，JS语言趋于完备，加上高效的执行速度，不管是在server端还是客户端，它hold住。</p>
+<h2 id="富API">富API</h2><p>全屏与鼠标锁定API正在出台，地理位置API等等，JS有很多很酷的API，由于浏览器的跨平台，HTML的多变，html5/css3的支持，多变的程序和功能不在话下。</p>
+<p>将来，会有更多更酷的API出现，重力感应，加速度等等更多LBS物联网特性都将经过浏览器传递为JS API。</p>
+<h2 id="跨平台">跨平台</h2><p>跨平台是什么概念，Java称自己垮平台，一份代码，到处执行。JS跨平台么？当然，各种系统，很多设备都有浏览器，这就是跨平台。想想在HP WebOS夭折的Palm，我们可以用JS和HTML5开发程序。windows8说我们也支持Nodejs，我们也可以用HTML5开发本地程序。JS将来会无处不在，无所不能，有木有？</p>
+<h2 id="现在">现在</h2><p>展望的同时，看看现在。有没有觉得关于JS的好书已经很久没有出版了，不是没有优秀的人。之前大家发现了JS，现在JS在等待，等待下一次涅磐。现在JavaScript需要的不是解决浏览器的兼容问题，因为已经有jQuery等等；我们还在网络速度、浏览器渲染速度、JS文件并行加载、延迟加载、模块化做斗争，我们需要标准来解决问题；我们需要更多的是在标准之上、效率至上扩展和实现。这些问题搞定了，就有好书了。</p>
+<p>因此，未来的JS将更易用，更普遍，更多的表现和空间将由它开启，谁说它与Java不像呢？</p>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>寸志</h4>
+    <p>为什么我的眼里常含泪水? 因为我对这土地爱得深沉</p>
+</section>
+      <section class="share">
+    <h4>分享本文</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://island205.com/2011/12/02/the-future-of-javascript/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://island205.com/2011/12/02/the-future-of-javascript/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://island205.com/2011/12/02/the-future-of-javascript/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <a class="newer-posts" href="/2012/04/13/how-mdc-implement-bind/">
+        ← MDC上是如何实现bind函数的
+    </a>
+    
+    <span class="page-number">•</span>
+    
+</nav>
+  <div id="comment" class="comments-area">
+    <h1 class="title">
+      <a href="#disqus_comments" name="disqus_comments">
+        留言
+      </a>
+    </h1>
+
+    
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+    
+</div>
+</main>
+
+
+  
+<footer class="site-footer">
+  
+  <a class="subscribe icon-feed" href="/atom.xml"><span class="tooltip">RSS 订阅</span></a>
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">一寸之志</a> &copy; 2015 &bull; All rights reserved.</section>
+     <section class="poweredby">使用 <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a> 驱动</section>
+  </div>
+</footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+<script type="text/javascript">
+    var disqus_shortname = 'island205';
+
+    (function(){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+</body>
+</html>

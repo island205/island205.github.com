@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>MDC上是如何实现bind函数的 | 一寸之志</title>
+  <meta name="description" content="" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="一寸之志">
+
+  
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(//pic.yupoo.com/island205/EvKihhOO/asOBK.jpg)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="//pic2.zhimg.com/734f2d039_l.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">一寸之志</h1>
+            <h2 class="blog-description"></h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2012-04-12T16:00:00.000Z" itemprop="datePublished">
+          2012年 4月13日
+      </time>
+    
+</span>
+    <h1 class="post-title">MDC上是如何实现bind函数的</h1>
+    <section class="post-content">
+      <p>在平时开发过程中想必都有把函数绑定到某个上下文 this 上 JavaScript 1.8.5 中引入了 <code>Function.prototype.bind</code> 来满足这个需求今天就来说一说这个函数 什么时候使用 <code>bind</code> 函数 先看这个例子：</p>
+<pre><code>$(<span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+  <span class="keyword">var</span> me;
+  me = {
+    name: <span class="string">"mee"</span>
+    init: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+      <span class="keyword">this</span>.bind();
+    }
+    bind: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+      $(<span class="built_in">window</span>).click(<span class="keyword">this</span>.sayHello);
+    }
+    sayHello: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+      alert(<span class="string">"Hello I am "</span>
+        <span class="keyword">this</span>.name <span class="string">" !"</span>);
+    }
+  };
+  me.init();
+});
+</code></pre><p>单击窗口之后结果是 <code>Hello I am result !</code> 这并不是我们想要的我们希望的是 <code>Hello I am meee !</code> 为什么会这样因为<code>$(window).click(this.sayHello)</code> 改变了 <code>sayHello</code> 的上下文如果我们使用如下的方法给 <code>sayHello</code> 绑定上正确的上下文即可：</p>
+<pre><code>$(<span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+  <span class="keyword">var</span> me;
+  me = {
+    name: <span class="string">"mee"</span>
+    init: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+      <span class="keyword">this</span>.bind();
+    }
+    bind: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+      $(<span class="built_in">window</span>).click(<span class="keyword">this</span>.sayHello.bind(<span class="keyword">this</span>));
+    }
+    sayHello: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+      alert(<span class="string">"HelloI am "</span>
+        <span class="keyword">this</span>.name <span class="string">" !"</span>);
+    }
+  };
+  me.init();
+}); 
+</code></pre><p><code>bind</code> 函数到底是什么 在 JavaScript 中函数是非常灵活的函数执行时都是在某个特定的上下文中并且在 JavaScript 中可直接通过 <code>apply</code> 或者 <code>call</code> 函数来修改函数的上下文在较老的不支持bind函数的浏览器中我们可以通过如下的方式实现 <code>bind</code>：</p>
+<pre><code><span class="keyword">if</span> (!<span class="built_in">Function</span>.prototype.bind) {
+  <span class="built_in">Function</span>.prototype.bind = <span class="function"><span class="keyword">function</span><span class="params">(context)</span> </span>{
+    <span class="keyword">var</span> toBind;
+    toBind = <span class="keyword">this</span>;
+    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+      <span class="keyword">return</span> toBind.apply(context <span class="built_in">arguments</span>);
+    };
+  };
+}
+</code></pre><p>MDC 是如何实现 <code>bind</code> 函数的 实话是上面 <code>bind</code> 的实现和 MDC 的比起来弱爆了先看看 MDC 的实现：</p>
+<pre><code><span class="keyword">if</span> (!<span class="built_in">Function</span>.prototype.bind) {
+  <span class="built_in">Function</span>.prototype.bind = <span class="function"><span class="keyword">function</span><span class="params">(oThis)</span> </span>{
+    <span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="keyword">this</span> !== <span class="string">'function'</span>) {
+      <span class="comment">// closest thing possible to the ECMAScript 5</span>
+      <span class="comment">// internal IsCallable function</span>
+      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'Function.prototype.bind - what is trying to be bound is not callable'</span>);
+    }
+
+    <span class="keyword">var</span> aArgs   = <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>, <span class="number">1</span>),
+        fToBind = <span class="keyword">this</span>,
+        fNOP    = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{},
+        fBound  = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+          <span class="keyword">return</span> fToBind.apply(<span class="keyword">this</span> <span class="keyword">instanceof</span> fNOP
+                 ? <span class="keyword">this</span>
+                 : oThis,
+                 aArgs.concat(<span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>)));
+        };
+
+    fNOP.prototype = <span class="keyword">this</span>.prototype;
+    fBound.prototype = <span class="keyword">new</span> fNOP();
+
+    <span class="keyword">return</span> fBound;
+  };
+}
+</code></pre><p> MDC 的实现做了如下的处理 <code>typeof this !== function</code> 首先确定上下文是否是一个函数 <code>aArgs = Array.prototype.slice.call(arguments 1)</code> 标准里的一部分 <code>fun.bind(thisArg[ arg1[ arg2[ ...]]])</code> 可传入一些固定的参数 <code>this instanceof fNOP ? this : oThis || window</code> 这一句非常细节处理的问题是当使用 <code>new</code> 关键字调用绑定的函数后还能以新的 <code>this</code> 调用构造函数而不被绑定到特定的上下文中 <code>fNOP.prototype = this.prototype; fBound.prototype = new fNOP();</code> 这两句也很细节保证生成的绑定的新函数继承了原来函数的所有原型属性且对新函数原型的修改不会影响到原来的函数 总之只能调用函数的 <code>bind</code> 方法 <code>Function.prototype.bind.call({})</code> 就会报错即处理 1 生成的新函数包含了原函数的所有功能甚至包括元函数的原型但是对新函数的修改不会影响原函数新函数与原函数唯一的区别就是前者绑定了上下文而这个绑定的上下文并不影响 <code>new</code> 新函数。</p>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>寸志</h4>
+    <p>为什么我的眼里常含泪水? 因为我对这土地爱得深沉</p>
+</section>
+      <section class="share">
+    <h4>分享本文</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://island205.com/2012/04/13/how-mdc-implement-bind/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://island205.com/2012/04/13/how-mdc-implement-bind/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://island205.com/2012/04/13/how-mdc-implement-bind/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <a class="newer-posts" href="/2012/07/04/alternative-stylesheet/">
+        ← 可选择样式表
+    </a>
+    
+    <span class="page-number">•</span>
+    
+    <a class="older-posts" href="/2011/12/02/the-future-of-javascript/">
+        JavaScript 未来是什么样的？ →
+    </a>
+    
+</nav>
+  <div id="comment" class="comments-area">
+    <h1 class="title">
+      <a href="#disqus_comments" name="disqus_comments">
+        留言
+      </a>
+    </h1>
+
+    
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+    
+</div>
+</main>
+
+
+  
+<footer class="site-footer">
+  
+  <a class="subscribe icon-feed" href="/atom.xml"><span class="tooltip">RSS 订阅</span></a>
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">一寸之志</a> &copy; 2015 &bull; All rights reserved.</section>
+     <section class="poweredby">使用 <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a> 驱动</section>
+  </div>
+</footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+<script type="text/javascript">
+    var disqus_shortname = 'island205';
+
+    (function(){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title><![CDATA[一寸之志]]></title>
+  
+  <link href="/atom.xml" rel="self"/>
+  <link href="http://island205.com/"/>
+  <updated>2015-03-18T23:48:05.000Z</updated>
+  <id>http://island205.com/</id>
+  
+  <author>
+    <name><![CDATA[寸志]]></name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[豆瓣阅读《CoffeeScript小书》上架啦！]]></title>
+    <link href="http://island205.com/2012/07/19/the-little-book-of-coffeescript-on-douban/"/>
+    <id>http://island205.com/2012/07/19/the-little-book-of-coffeescript-on-douban/</id>
+    <published>2012-07-18T16:00:00.000Z</published>
+    <updated>2015-03-18T23:48:05.000Z</updated>
+    <content type="html"><![CDATA[<p>今天D2，豆瓣的石岩给我们带来豆瓣阅读在开发方面的心得，有一张PPT还用到了上周我在豆瓣阅读上架的一本书《CoffeeScript小书》。其实就是本博之前翻译的<a href="http://arcturo.github.com/library/coffeescript/" target="_blank" rel="external">the-little-book-on-coffeescript</a>的中文合集。</p>
+<p>豆瓣阅读的体验真的很不错，这是本书在豆瓣阅读Web版上的一张预览图：</p>
+<p><img src="http://pic.yupoo.com/island205/C65pIc2W/W8G6w.png" alt="douban"></p>
+<p>在其他平台上，比如说Android，iPad，Kindle Fire上体验也很好。大家可以访问<a href="http://read.douban.com/ebook/198648/" target="_blank" rel="external">《CoffeeScript小书》</a>试读，喜欢可以购买（才1.9RMB）啊，而且可通过豆瓣阅读App同步到各种平台上，阅读起来很方便的。</p>
+<p>但是到<a href="http://island205.github.com/tlboc/" target="_blank" rel="external">这里</a>也可以读到本书完整的内容，希望大家喜欢。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>今天D2，豆瓣的石岩给我们带来豆瓣阅读在开发方面的心得，有一张PPT还用到了上周我在豆瓣阅读上架的一本书《CoffeeScript小书》。其实就是本博之前翻译的<a href="http://arcturo.github.com/library/coffeescript/"]]>
+    </summary>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[可选择样式表]]></title>
+    <link href="http://island205.com/2012/07/04/alternative-stylesheet/"/>
+    <id>http://island205.com/2012/07/04/alternative-stylesheet/</id>
+    <published>2012-07-03T16:00:00.000Z</published>
+    <updated>2015-03-18T23:56:07.000Z</updated>
+    <content type="html"><![CDATA[<p>可选择样式表这个问题，有点绕，之前看懂了，后来忘记，现在就把它记下来。 这个问题与样式表的rel和title属性的值和组合有关：</p>
+<p>1.默认样式表，指定rel属性为stylesheet，会在页面上一直存在的样式，不受用户选择其他可选择样式表的影响：</p>
+<pre><code><span class="tag">&lt;<span class="title">link</span> <span class="attribute">href</span>=<span class="value">”default.css”</span> <span class="attribute">rel</span>=<span class="value">”stylesheet”</span> <span class="attribute">type</span>=<span class="value">”text</span>/<span class="attribute">css</span>”&gt;</span>
+</code></pre><p>2.可选择默认样式表，指定rel属性为stylesheet，指定title的值，默认会应用到页面上，会出现在用户可选择样式表列表内，且用户选了其他可替换样式表后，会去掉该样式表：</p>
+<pre><code><span class="tag">&lt;<span class="title">link</span> <span class="attribute">href</span>=<span class="value">”default.css”</span> <span class="attribute">rel</span>=<span class="value">”stylesheet”</span> <span class="attribute">type</span>=<span class="value">”text</span>/<span class="attribute">css</span>” <span class="attribute">title</span>=<span class="value">”Alternate</span> <span class="attribute">Default</span> <span class="attribute">Style</span>”&gt;</span>
+</code></pre><p>3.可选择样式表，指定rel属性为alternate stylesheet，指定title的值，默认不会应用到页面上，会出现在用户可选择样式表列表内，且用户选了其他可替换样式表后，会去掉该样式表，可以有多类（title来区分），下面是两个示例：</p>
+<pre><code><span class="tag">&lt;<span class="title">link</span> <span class="attribute">href</span>=<span class="value">”basic.css”</span> <span class="attribute">rel</span>=<span class="value">”alternate</span> <span class="attribute">stylesheet</span>” <span class="attribute">type</span>=<span class="value">”text</span>/<span class="attribute">css</span>” <span class="attribute">title</span>=<span class="value">”Basic”</span>&gt;</span>
+
+<span class="tag">&lt;<span class="title">link</span> <span class="attribute">href</span>=<span class="value">”fancy.css”</span> <span class="attribute">rel</span>=<span class="value">”alternate</span> <span class="attribute">stylesheet</span>” <span class="attribute">type</span>=<span class="value">”text</span>/<span class="attribute">css</span>” <span class="attribute">title</span>=<span class="value">”Fancy”</span>&gt;</span>
+</code></pre><p>在Firefox中，使用菜单View&gt;&gt;Page Style可以查看可选择样式表列表（我的是Firefox 13.0.1）。</p>
+<h2 id="参考">参考</h2><ul>
+<li><a href="https://developer.mozilla.org/en/CSS/Alternative_style_sheets" target="_blank" rel="external">Alternative Style Sheets</a></li>
+</ul>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>可选择样式表这个问题，有点绕，之前看懂了，后来忘记，现在就把它记下来。 这个问题与样式表的rel和title属性的值和组合有关：</p>
+<p>1.默认样式表，指定rel属性为stylesheet，会在页面上一直存在的样式，不受用户选择其他可选择样式表的影响：</p>
+<p]]>
+    </summary>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[MDC上是如何实现bind函数的]]></title>
+    <link href="http://island205.com/2012/04/13/how-mdc-implement-bind/"/>
+    <id>http://island205.com/2012/04/13/how-mdc-implement-bind/</id>
+    <published>2012-04-12T16:00:00.000Z</published>
+    <updated>2015-03-19T00:06:35.000Z</updated>
+    <content type="html"><![CDATA[<p>在平时开发过程中想必都有把函数绑定到某个上下文 this 上 JavaScript 1.8.5 中引入了 <code>Function.prototype.bind</code> 来满足这个需求今天就来说一说这个函数 什么时候使用 <code>bind</code> 函数 先看这个例子：</p>
+<pre><code>$(<span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+  <span class="keyword">var</span> me;
+  me = {
+    name: <span class="string">"mee"</span>
+    init: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+      <span class="keyword">this</span>.bind();
+    }
+    bind: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+      $(<span class="built_in">window</span>).click(<span class="keyword">this</span>.sayHello);
+    }
+    sayHello: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+      alert(<span class="string">"Hello I am "</span>
+        <span class="keyword">this</span>.name <span class="string">" !"</span>);
+    }
+  };
+  me.init();
+});
+</code></pre><p>单击窗口之后结果是 <code>Hello I am result !</code> 这并不是我们想要的我们希望的是 <code>Hello I am meee !</code> 为什么会这样因为<code>$(window).click(this.sayHello)</code> 改变了 <code>sayHello</code> 的上下文如果我们使用如下的方法给 <code>sayHello</code> 绑定上正确的上下文即可：</p>
+<pre><code>$(<span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+  <span class="keyword">var</span> me;
+  me = {
+    name: <span class="string">"mee"</span>
+    init: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+      <span class="keyword">this</span>.bind();
+    }
+    bind: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+      $(<span class="built_in">window</span>).click(<span class="keyword">this</span>.sayHello.bind(<span class="keyword">this</span>));
+    }
+    sayHello: <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+      alert(<span class="string">"HelloI am "</span>
+        <span class="keyword">this</span>.name <span class="string">" !"</span>);
+    }
+  };
+  me.init();
+}); 
+</code></pre><p><code>bind</code> 函数到底是什么 在 JavaScript 中函数是非常灵活的函数执行时都是在某个特定的上下文中并且在 JavaScript 中可直接通过 <code>apply</code> 或者 <code>call</code> 函数来修改函数的上下文在较老的不支持bind函数的浏览器中我们可以通过如下的方式实现 <code>bind</code>：</p>
+<pre><code><span class="keyword">if</span> (!<span class="built_in">Function</span>.prototype.bind) {
+  <span class="built_in">Function</span>.prototype.bind = <span class="function"><span class="keyword">function</span><span class="params">(context)</span> </span>{
+    <span class="keyword">var</span> toBind;
+    toBind = <span class="keyword">this</span>;
+    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+      <span class="keyword">return</span> toBind.apply(context <span class="built_in">arguments</span>);
+    };
+  };
+}
+</code></pre><p>MDC 是如何实现 <code>bind</code> 函数的 实话是上面 <code>bind</code> 的实现和 MDC 的比起来弱爆了先看看 MDC 的实现：</p>
+<pre><code><span class="keyword">if</span> (!<span class="built_in">Function</span>.prototype.bind) {
+  <span class="built_in">Function</span>.prototype.bind = <span class="function"><span class="keyword">function</span><span class="params">(oThis)</span> </span>{
+    <span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="keyword">this</span> !== <span class="string">'function'</span>) {
+      <span class="comment">// closest thing possible to the ECMAScript 5</span>
+      <span class="comment">// internal IsCallable function</span>
+      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'Function.prototype.bind - what is trying to be bound is not callable'</span>);
+    }
+
+    <span class="keyword">var</span> aArgs   = <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>, <span class="number">1</span>),
+        fToBind = <span class="keyword">this</span>,
+        fNOP    = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{},
+        fBound  = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+          <span class="keyword">return</span> fToBind.apply(<span class="keyword">this</span> <span class="keyword">instanceof</span> fNOP
+                 ? <span class="keyword">this</span>
+                 : oThis,
+                 aArgs.concat(<span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>)));
+        };
+
+    fNOP.prototype = <span class="keyword">this</span>.prototype;
+    fBound.prototype = <span class="keyword">new</span> fNOP();
+
+    <span class="keyword">return</span> fBound;
+  };
+}
+</code></pre><p> MDC 的实现做了如下的处理 <code>typeof this !== function</code> 首先确定上下文是否是一个函数 <code>aArgs = Array.prototype.slice.call(arguments 1)</code> 标准里的一部分 <code>fun.bind(thisArg[ arg1[ arg2[ ...]]])</code> 可传入一些固定的参数 <code>this instanceof fNOP ? this : oThis || window</code> 这一句非常细节处理的问题是当使用 <code>new</code> 关键字调用绑定的函数后还能以新的 <code>this</code> 调用构造函数而不被绑定到特定的上下文中 <code>fNOP.prototype = this.prototype; fBound.prototype = new fNOP();</code> 这两句也很细节保证生成的绑定的新函数继承了原来函数的所有原型属性且对新函数原型的修改不会影响到原来的函数 总之只能调用函数的 <code>bind</code> 方法 <code>Function.prototype.bind.call({})</code> 就会报错即处理 1 生成的新函数包含了原函数的所有功能甚至包括元函数的原型但是对新函数的修改不会影响原函数新函数与原函数唯一的区别就是前者绑定了上下文而这个绑定的上下文并不影响 <code>new</code> 新函数。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>在平时开发过程中想必都有把函数绑定到某个上下文 this 上 JavaScript 1.8.5 中引入了 <code>Function.prototype.bind</code> 来满足这个需求今天就来说一说这个函数 什么时候使用 <code>bind</code> 函数 ]]>
+    </summary>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[JavaScript 未来是什么样的？]]></title>
+    <link href="http://island205.com/2011/12/02/the-future-of-javascript/"/>
+    <id>http://island205.com/2011/12/02/the-future-of-javascript/</id>
+    <published>2011-12-01T16:00:00.000Z</published>
+    <updated>2015-03-18T23:50:22.000Z</updated>
+    <content type="html"><![CDATA[<p>最近看了很多关于Javascript、ECMAScript、Node.js等等一些资料，且随着Javascript的广泛使用，V8带动JS引擎效率的提升，不禁会问：未来的Javascript是什么样子？</p>
+<p>以下是我的愚见：</p>
+<h2 id="语言特性">语言特性</h2><p>Javascript随着Ajax的概念的兴起，从2005年至今确实火了一大把，十多年前布兰登·艾克（Brendan Eich）十天搞定了它，应该想不到它如此的有影响力。然而Javascript将来走向何方，也完全看它自己的造化。</p>
+<p>CoffeeScript最近也很火，被称作JS的语法糖；也可以看看Move语言，同样也是编译为JS。使用CoffeeScript或者是Move来编写JS程序会更加方便，代码清晰易读，模块化组织（Move包含客户端的模块化组织），一些Ruby/Python的语法与思想精髓在这两个语法糖里若影若现，这代表什么？看看Node.js吧，遵循CommonJS的模块组织标准，真的，模块化在客户端也非常需要！</p>
+<p>从脚本加载器LABjs到模块加载器RequireJS甚至到玉伯SeaJS到其推出的模块组织工具，说明了什么？我们需要一个JS模块的标准，不单单服务端，在客户端我们也需要，我们需要jquery，我们就require(“jquery.js”)进来，这是趋势，这也是玉伯想干的事情，SeaJS不是一个简单的模块加载器，最终是一个客户端模块化的解决方案或者是事实标准。</p>
+<p>因此，从语言特性方面看，我们需要JS在语法上，代码组织上更加完善，足以挑起重担。Brendan Eich在文章中六次提到CoffeeScript，他喜欢它；ECMAScript6草稿中有为客户端模块化进行思考；这就是我们需要的，就是运行在浏览器上的类似Ruby/Python的JS，而JS不会逊色于它们。</p>
+<p>有人觉得CoffeeScript/Move这类语言没用，还要编译为JS，效率低下。但是我得说，它们是烈士，是JS发展方向上的先行者。当然随着JS的成熟，它们的使命也就达成了。</p>
+<h2 id="执行速度">执行速度</h2><p>实话说，Javascript的执行速度真是慢的可怜。在社区里，有人叫喊，我们在意且需要的是它的执行速度。是的，我们需要，Javascript未来有hold住大型程序、3D游戏的能力。</p>
+<p>谷歌chrome一出江湖就左突右闯，直接拿下了20%以上的市场份额，冲上老二的宝座，版本号如脱缰的野马，早将IE抛之脑后，搞得Firefox也耐不住寂寞，生生追赶。随着chrome横空出世的还有其JS引擎V8，它的JS执行速度还在继续优化，各浏览器厂商自觉提高自家的JS效率。基于V8的server-side JS Node.js高并发测评文章，抢眼不少。</p>
+<p>我敢说，JS的执行速度在将来会提高一百倍，毫无压力。</p>
+<p>标准的不断完善，JS语言趋于完备，加上高效的执行速度，不管是在server端还是客户端，它hold住。</p>
+<h2 id="富API">富API</h2><p>全屏与鼠标锁定API正在出台，地理位置API等等，JS有很多很酷的API，由于浏览器的跨平台，HTML的多变，html5/css3的支持，多变的程序和功能不在话下。</p>
+<p>将来，会有更多更酷的API出现，重力感应，加速度等等更多LBS物联网特性都将经过浏览器传递为JS API。</p>
+<h2 id="跨平台">跨平台</h2><p>跨平台是什么概念，Java称自己垮平台，一份代码，到处执行。JS跨平台么？当然，各种系统，很多设备都有浏览器，这就是跨平台。想想在HP WebOS夭折的Palm，我们可以用JS和HTML5开发程序。windows8说我们也支持Nodejs，我们也可以用HTML5开发本地程序。JS将来会无处不在，无所不能，有木有？</p>
+<h2 id="现在">现在</h2><p>展望的同时，看看现在。有没有觉得关于JS的好书已经很久没有出版了，不是没有优秀的人。之前大家发现了JS，现在JS在等待，等待下一次涅磐。现在JavaScript需要的不是解决浏览器的兼容问题，因为已经有jQuery等等；我们还在网络速度、浏览器渲染速度、JS文件并行加载、延迟加载、模块化做斗争，我们需要标准来解决问题；我们需要更多的是在标准之上、效率至上扩展和实现。这些问题搞定了，就有好书了。</p>
+<p>因此，未来的JS将更易用，更普遍，更多的表现和空间将由它开启，谁说它与Java不像呢？</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>最近看了很多关于Javascript、ECMAScript、Node.js等等一些资料，且随着Javascript的广泛使用，V8带动JS引擎效率的提升，不禁会问：未来的Javascript是什么样子？</p>
+<p>以下是我的愚见：</p>
+<h2 id="语言特性">语]]>
+    </summary>
+    
+  </entry>
+  
+</feed>
