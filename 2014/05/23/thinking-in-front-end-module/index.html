@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>前端模块化杂谈 | 一寸之志</title>
+  <meta name="description" content="" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="一寸之志">
+
+  
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(//pic.yupoo.com/island205/EvKihhOO/asOBK.jpg)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="//pic2.zhimg.com/734f2d039_l.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">一寸之志</h1>
+            <h2 class="blog-description"></h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2014-05-22T16:00:00.000Z" itemprop="datePublished">
+          2014年 5月23日
+      </time>
+    
+</span>
+    <h1 class="post-title">前端模块化杂谈</h1>
+    <section class="post-content">
+      <blockquote>
+<p>Teambition是一家追求卓越技术的公司，我们工程师都很Geek，我们使用了很多新潮的，开源的技术。同时我们也贡献了很多开源的项目。我们希望能够把一些技术经验分享给大家。于是有了这个「创作随笔」。废话休说，「创作随笔」第一弹，来自我们的前端工程师寸志，谈一谈他在前端模块化开发方面的一些感想。</p>
+</blockquote>
+<p>在模块化方面，Node.js就显得游刃有余。</p>
+<p>作为用户，我们把代码放到一个个JavaScript文件中，然后Node.js就有一套规则帮我们把这些代码组织起来，Node.js还有包的概念，于是我们就可以使用npm将代码放到一个个包中，放到这里那里的node_modules中使用。很方便不是？感谢Node.js。</p>
+<p>可在浏览器端，模块化这事就没那么简单了。</p>
+<h2 id="前端的模块">前端的模块</h2><p>前端的一个模块包含很多东西，JavaScript、CSS、图片字体等等。甚至，可能根据业务需要，还包含国际化的文件。一个模块如果包含以上这些东西，复杂度就上了几个数量级。</p>
+<p>怎么复杂了？和高大上的iOS开发比起来，人家有SDK，代码随便往项目里扔，图片扔，国际化有成熟的解决方案，最后构建一下一个可运行的应用就出来了。</p>
+<p>前端缺乏SDK，没有成熟统一的开发方案，集成方案，前端模块化之路很崎岖。开发时，我们需要一种方式来组织，加载代码，发布时，我们还需要另外一种方式将代码、资源合并到一起发布。</p>
+<h2 id="眼前的现状">眼前的现状</h2><p>TJ 给出了自己解决方案——Component。可以份文件开发，然后再把 JavaScript、CSS 和模板文件合并到一起。我只能说，理想很丰满，现实很骨感，Component 无法适应各种奇葩的应用场景。</p>
+<p>或者我们自由一点——</p>
+<p>依赖的第三方模块，我们有Bower，好爽，运行个命令，依赖就安装好了。</p>
+<p>但是Bower不是银弹，Bower只解决了模块依赖，安装依赖的问题。Bower中的模块没有任何标准和规则，有的只有JavaScript，有的支持AMD，有的可能只有CSS。文件结构，入口文件完全不一样。并不是使用Bower安装的模块我们就可以使用同样的方式使用任何一个模块，使用某种工具将这些模块打包发布！</p>
+<p>AMD作为事实上的前端JavaScript模块化标准，或可以出来解救我们。很多Bower模块都是支持AMD规范的。而且AMD还提供了打包工具，总算有点解脱了。好景不长……</p>
+<p>每个模块中的HTML怎么办，如果我们使用的框架是Backbone，注定我们要将HTML模板转换成JavaScript模块，或者使用模块加载器的插件来实现。如果我们使用AngularJS，那倒是可以交由AngularJS。发布时Backbone中的模块使用AMD打包，AngularJS可以使用Grunt内联到页面中。</p>
+<p>HTML模块也没有固定的模式，没有固定的SDK来解脱我们。我们只能组合现有的工具！</p>
+<p>CSS就更不用说了，分开写，使用LESS、SASS来组织？再一次没有固定的模式没有SDK。</p>
+<p>还有图片呢，字体呢？</p>
+<h2 id="拼凑的方案">拼凑的方案</h2><p>前端如果想做模块化开发，首先需要针对每一种资源（JavaScript、CSS、模板等）寻找一种模块与集成方案，然后需要根据情况的不同选用不同的工具框架拼凑出来。</p>
+<h3 id="JavaScript">JavaScript</h3><p>目前比较拿的出手的，也就是JavaScript的模块化，比如AMD或者CMD等等，分别可以使用RequireJS和SeaJS。</p>
+<blockquote>
+<p>去年在研究基于Backbone的框架Marionette时，想与Sea.js结合使用。现在来看这种组合是完全没有必要的。Marionette提供了模块化的组织方案，反而生拉硬扯在一起，冲突得很难受。其实把JavaScript文件一列放在HTML中也没什么问题。<br>究竟使用什么来实现JavaScript，往往与选择的JavaScript框架有关，选Backbone可以AMD，也可以CMD。选AngularJS直接引用就行。</p>
+</blockquote>
+<h3 id="CSS">CSS</h3><p>CSS模块化应该是两方面的问题——</p>
+<p>一是模块必须有一套基础样式。与JavaScript相比，CSS冲突简直是家常便饭，Shadow DOM还没成熟，原生的CSS样式隔离还在路上。所以必须有一套基础样式来规定这一套模块化组件的样式。我们可以选Bootstrap，如果闲它太重，也可以自己写。</p>
+<p>其次，每个组件必须有命名空间，避免组件间样式冲突。如果选择使用LESS、SASS等，那就比较好办，它们的缩进语法避免写很多重复的CSS代码。</p>
+<h3 id="HTML模板">HTML模板</h3><p>如果使用AngularJS，那AngularJS已经帮您解决了模板模块化的问题，AngularJS可以根据模块代码中的引用加载对应的HTML。如果使用Backbone，可以选择各种各样的模板引擎，Mustache？不过比起AngularJS就低端些，我们必须自己处理模板文件，要么通过模块加载器通过XHR请求，然后动态编译；或者将Mustache编译成JS，在当做模块加载。</p>
+<h3 id="图片、字体？">图片、字体？</h3><p>放在使用他们的模块中，该怎么引用就怎么引用。</p>
+<p>国际化文件？这些就不多说了，总之，每种文件需要选定一种开发的组织方式。</p>
+<h2 id="模块分发">模块分发</h2><p>模块采用统一的模式来开发之后，只需选定一种包的分发方式就行了——Bower。npm不适合这样的场景，npm的版本管理太过细致了。如果同一个项目中允许出现同一模块的不同版本，事情就做的太过复杂了。</p>
+<h2 id="发布上线">发布上线</h2><p>发布上线必须一个以终为始的过程。如果你不追求网站或者应用的速度，那就把那些开发文件直接丢到生产服务器上去吧。别说，我还真见过这样的商用的网站。</p>
+<p>如果讲究一些方案，资源合并成数个文件，代码线上组合和运行方式完全可以与本地开发不一样。只需要功能在就行。</p>
+<p>JavaScript代码打成一个文件，或者两个？都行。如果使用RequireJS，那RequireJS提供了打包的工具，打包成几个文件，什么粒度，都行。如果是Sea.js也有对应的工具。就算文件都是一个一个列出来，我们也总是可以打出来你想要的文件。</p>
+<p>CSS等等其他资源都是如此，就算开发时各自不同的结构模式，打包时都是可以打的。</p>
+<p>至于上线CDN，版本号缓存什么的并不在本文的讨论范围之内。</p>
+<h2 id="总结">总结</h2><p>前端模块没有什么特效药。唯一要遵守的原则就是，比起Node.js来讲，每种资源必须要有一种自己的开发和上线组织方式（Node.js开发和上线都是一致的），开发和上线完全可以是两种方式，大可不必人云亦云，只要适合可以随意组合；CSS在CSS Scoped Style正式使用之前，应该有一套基础样式和沙盒（模块样式命名空间）。</p>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>寸志</h4>
+    <p>为什么我的眼里常含泪水? 因为我对这土地爱得深沉</p>
+</section>
+      <section class="share">
+    <h4>分享本文</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://island205.com/2014/05/23/thinking-in-front-end-module/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://island205.com/2014/05/23/thinking-in-front-end-module/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://island205.com/2014/05/23/thinking-in-front-end-module/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <span class="page-number">•</span>
+    
+    <a class="older-posts" href="/2012/10/22/the-compiler-of-coffeescript-1/">
+        CoffeeScript编译器（一） →
+    </a>
+    
+</nav>
+  <div id="comment" class="comments-area">
+    <h1 class="title">
+      <a href="#disqus_comments" name="disqus_comments">
+        留言
+      </a>
+    </h1>
+
+    
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+    
+</div>
+</main>
+
+
+  
+<footer class="site-footer">
+  
+  <a class="subscribe icon-feed" href="/atom.xml"><span class="tooltip">RSS 订阅</span></a>
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">一寸之志</a> &copy; 2015 &bull; All rights reserved.</section>
+     <section class="poweredby">使用 <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a> 驱动</section>
+  </div>
+</footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+<script type="text/javascript">
+    var disqus_shortname = 'island205';
+
+    (function(){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+</body>
+</html>
