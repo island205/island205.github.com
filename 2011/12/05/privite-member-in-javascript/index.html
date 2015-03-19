@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>JavaScript 的私有属性和方法 | 一寸之志</title>
+  <meta name="description" content="" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="一寸之志">
+
+  
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(//pic.yupoo.com/island205/EvKihhOO/asOBK.jpg)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="//pic2.zhimg.com/734f2d039_l.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">一寸之志</h1>
+            <h2 class="blog-description"></h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2011-12-04T16:00:00.000Z" itemprop="datePublished">
+          2011年 12月5日
+      </time>
+    
+</span>
+    <h1 class="post-title">JavaScript 的私有属性和方法</h1>
+    <section class="post-content">
+      <p>在JavaScript中谈私有属性和私有方法就是扯淡，”private”还杵在保留字的位置上，不知道什么时候提上来实现真正的私有。那今天咱就来讨论下如何以JS当前的特性来实现私有成员。</p>
+<h2 id="闭包">闭包</h2><p>（比较枯燥，可以跳过本单元）JavaScript实现私有属性必须依赖闭包特性(可以先通过该链接补习)。下面也稍微补习下，看下面的例子：</p>
+<pre><code><span class="keyword">var</span> uniqueId;
+uniqueId = (<span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+  <span class="keyword">var</span> index;
+  index = <span class="number">0</span>;
+  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span><span class="params">(prefix)</span> </span>{
+    <span class="keyword">return</span> prefix + <span class="string">"_"</span> + index++;
+  };
+})();
+<span class="comment">//c_0</span>
+<span class="built_in">console</span>.log(uniqueId(<span class="string">"c"</span>));
+<span class="comment">//c_1</span>
+<span class="built_in">console</span>.log(uniqueId(<span class="string">"c"</span>));
+</code></pre><p>通常所说的或所看到的闭包就是这样子—— <code>(function(){})()</code>，但这不是它的全部或者是本质。在定义uniqueId这个函数的时候，我们使用了匿名函数表达式（请注意(function(){})是函数表达式）定义了一个函数且立即执行，把function(prefix){/<em>some code</em>/}作为返回值赋值给了quniqueId，此时这个 <code>function(prefix){/*some code*/}</code>已经生成了函数实例，在函数实例生成的过程中:</p>
+<ul>
+<li>通俗的讲将index这个外部函数定义的变量记住了（为什么要记住？没记住你让我怎么给你计算prefix+”_”+index的值嘛！）；</li>
+<li>再次我们没法通过什么this.index或者someObj.index引用到index，改变其值了，(function(){})()这个一执行完，局部变量index在外面怎么调得到嘛；</li>
+<li>怎么调得到，只能靠function(prefix){/<em>some code</em>/}，因为我们还能通过它间接的取得或改变index值。这就是闭包了。</li>
+</ul>
+<p>比较学术的解释：</p>
+<ul>
+<li>JS是词法作用域（就是程序看上去啥样就啥样）的，使用一个叫做[[scope]]的内部属性来标识每个执行上下文的作用域（我可以读写哪些变量啊，调用哪些哪些函数啊）；每个函数执行时都由该[scope]作用域加上活动对象来构成真实的执行上下文；</li>
+<li>而这个执行上下文[[scope]]属性是在函数生成时就指定的了，不严格的讲为生成该函数时的执行上下文；</li>
+<li>于是function(prefix){/<em>some code</em>/}生成时其内部的[[scope]]属性引用了(function(){})()执行上下文的scope链；该scope链即包含了该函数的[[scope]]和活动对象，且活动对象包含了index的定义引用；</li>
+<li>GC的回收规则，没人用我我就是垃圾！因此uniqueId引用了function(prefix){/<em>some code</em>/}函数实例，而该函数实例的[[scope]]引用了(function(){})()执行期的scope链，其包含活动对象，即有index的引用；ok，index还有人引用它，它不是垃圾，因此闭包形成了，我们可以通过uniqueId函数间接的读取或者修改index。</li>
+</ul>
+<p>总结：其实学术解释和通俗解释一个意思，不过闭包其实是相对的，并不是我们不能修改index，只是需要间接的方法（是不是有点私有属性和私有方法的感觉）。</p>
+<h2 id="私有属性和私有方法">私有属性和私有方法</h2><p>相对来说，构造单例对象的私有属性和方法都比较简单。</p>
+<pre><code><span class="keyword">var</span> aira;
+aira = (function () {
+    <span class="keyword">var</span> __getName, __name;
+    //private variable
+    __name = <span class="string">"HTC mobile"</span>;
+    //private <span class="keyword">method</span>
+    __getName = function () {
+        <span class="keyword">return</span> __name;
+    };
+    aira = {
+        init: function () {
+            //change private variable inner
+            __name = <span class="string">"aira"</span>;
+        },
+        hello: function () {
+            //execute private <span class="keyword">method</span> inner
+            console.log(<span class="string">"hello,my name is "</span> + (__getName()));
+        }
+    };
+    <span class="keyword">return</span> aira;
+})();
+aira.init();
+//hello,my name <span class="keyword">is</span> aira
+aira.hello();
+</code></pre><p>使用双下划线”<strong>“表示私有；aira手机有一个私有属性</strong>name和私有方法<strong>getName；我们可以在init中修改</strong>name，在hello中调用__getName，且在闭包外面无法直接调用和修改这两个成员。我们做到了，这就是单例对象的私有属性和私有方法。<br>但是更确切的说，其实aira能够有私有属性和方法仅仅是因为它有私有的一个闭包，即init和hello成员的[[scope]]都引用了闭包的活动对象。</p>
+<p>然而，一个构造函数（类）的私有属性和方法就么这么简单了。</p>
+<pre><code><span class="keyword">var</span> Phone, aira;
+<span class="comment">//wrap by function</span>
+Phone = <span class="function"><span class="keyword">function</span> <span class="params">(name)</span> </span>{
+    <span class="keyword">var</span> phone;
+    phone = (<span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+        <span class="keyword">var</span> __getName, __name;
+        __name = name;
+        __getName = <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+            <span class="keyword">return</span> __name;
+        };
+        phone = {
+            init: <span class="function"><span class="keyword">function</span> <span class="params">(number)</span> </span>{
+                __name += <span class="string">"#"</span> + number;
+            },
+            hello: <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+                <span class="built_in">console</span>.log(<span class="string">"hello,my name is "</span> + (__getName()));
+            }
+        };
+        <span class="keyword">return</span> phone;
+    })();
+    <span class="keyword">return</span> phone;
+};
+aira1 = Phone(<span class="string">"aira"</span>);
+aira1.init(<span class="number">1</span>);
+<span class="comment">//hello,my name is aira#1</span>
+aira1.hello();
+
+aira2 = Phone(<span class="string">"aira"</span>);
+aira2.init(<span class="number">2</span>);
+<span class="comment">//hello,my name is aira#2</span>
+aira2.hello();
+</code></pre><p>我们先来简单的将单例对象的构造包裹一个函数，实现产生不同的对象。我们可以说Phone是一个类，因为它可以产生不同的对象，有类似的功能。同样aira1和aira2都有自己闭包，于是都有自己的私有属性和方法。</p>
+<p>我想对自己说，别逗了你，这样就行啦？！JS中类的概念就是构造函数。</p>
+<pre><code><span class="keyword">var</span> Phone, aira1, aira2;
+Phone = <span class="function"><span class="keyword">function</span> <span class="params">(name)</span> </span>{
+    <span class="keyword">var</span> __getName, __name;
+    __name = name;
+    __getName = <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+        <span class="keyword">return</span> __name;
+    };
+    <span class="keyword">this</span>.init = <span class="function"><span class="keyword">function</span> <span class="params">(number)</span> </span>{
+        __name += <span class="string">"#"</span> + number;
+    };
+    <span class="keyword">this</span>.hello = <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+        <span class="built_in">console</span>.log(<span class="string">"hello,my name is "</span> + (__getName()));
+    };
+};
+aira1 = <span class="keyword">new</span> Phone(<span class="string">"aira"</span>);
+aira1.init(<span class="number">1</span>);
+<span class="comment">//hello,my name is aira#1</span>
+aira1.hello();
+
+aira2 = <span class="keyword">new</span> Phone(<span class="string">"aira"</span>);
+aira2.init(<span class="number">1</span>);
+<span class="comment">//hello,my name is aira#2</span>
+aira2.hello();
+</code></pre><p>Phone构造函数其实就是闭包的功能，每个Phone实例的init和hello都能引用其构造期间的形成的私有的<strong>name和</strong>getName。</p>
+<p>真的，我已经无力回天了，每个实例必须由闭包产生私有属性和方法，因此只能在该闭包中定义公共方法暴露出来（比如说init和hello），这就意味着每次构造一个实例我们都必须生成init和hello的函数实例，这是多么的低效，因为JS有原型。</p>
+<pre><code><span class="keyword">var</span> Phone, aira;
+Phone = <span class="function"><span class="keyword">function</span> <span class="params">(name)</span> </span>{
+    <span class="keyword">var</span> __getName, __name;
+    __name = name;
+    __getName = <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+        <span class="keyword">return</span> __name;
+    };
+};
+Phone.prototype.init = <span class="function"><span class="keyword">function</span> <span class="params">(number)</span> </span>{
+    __name += <span class="string">"#"</span> + number;
+};
+Phone.prototype.hello = <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+    <span class="built_in">console</span>.log(<span class="string">"hello,my name is "</span> + (__getName()));
+};
+aira = <span class="keyword">new</span> Phone(<span class="string">"aira"</span>);
+</code></pre><p>上面的代码是错误的（在init中的__name是全局的，hello中的__getName方法因为不存在，所以会报错），这就是问题所在，能够引用私有属性和变量的公共方法必须在闭包中定义，然后暴露出来，然而原型方法并不能在闭包中定义。</p>
+<h2 id="曲线救国">曲线救国</h2><h3 id="私有约定">私有约定</h3><pre><code><span class="keyword">var</span> Phone, aira1, aira2;
+Phone = <span class="function"><span class="keyword">function</span> <span class="params">(name)</span> </span>{
+    <span class="comment">//"__" private variable</span>
+    <span class="keyword">this</span>.__name = name;
+};
+Phone.prototype.init = <span class="function"><span class="keyword">function</span> <span class="params">(number)</span> </span>{
+    <span class="keyword">this</span>.__name += <span class="string">"#"</span> + number;
+};
+Phone.prototype.hello = <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+    <span class="built_in">console</span>.log(<span class="string">"hello,my name is "</span> + (<span class="keyword">this</span>.__getName()));
+};
+<span class="comment">//"__" private method</span>
+Phone.prototype.__getName = <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+    <span class="keyword">return</span> <span class="keyword">this</span>.__name;
+};
+aira1 = <span class="keyword">new</span> Phone(<span class="string">"aira"</span>);
+aira1.init(<span class="number">1</span>);
+<span class="comment">//hello,my name is aira#1</span>
+aira1.hello();
+aira2 = <span class="keyword">new</span> Phone(<span class="string">"aira"</span>);
+aira2.init(<span class="number">2</span>);
+<span class="comment">//hello,my name is aira#2</span>
+aira2.hello();
+</code></pre><p>以双下划线“__”表示私有，用最近看到的一代码注释来解释：“神奇，勿动”。<br>这是私有方法么？</p>
+<pre><code><span class="keyword">var</span> Phone, aira1, aira2;
+Phone = (<span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+    <span class="keyword">var</span> __getName, __name;
+    __getName = <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+        <span class="keyword">return</span> __name;
+    };
+    Phone = <span class="function"><span class="keyword">function</span> <span class="params">(name)</span> </span>{
+        __name = name;
+    };
+    Phone.prototype.init = <span class="function"><span class="keyword">function</span> <span class="params">(number)</span> </span>{
+        __name += <span class="string">"#"</span> + number;
+    };
+    Phone.prototype.hello = <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+        <span class="built_in">console</span>.log(<span class="string">"hello,my name is "</span> + (__getName()));
+    };
+    <span class="keyword">return</span> Phone;
+})();
+aira1 = <span class="keyword">new</span> Phone(<span class="string">"aira"</span>);
+aira1.init(<span class="number">1</span>);
+<span class="comment">//hello,my name is aira#1 right!</span>
+aira1.hello();
+aira2 = <span class="keyword">new</span> Phone(<span class="string">"aira"</span>);
+aira2.init(<span class="number">2</span>);
+<span class="comment">//hello,my name is aira#2 right!</span>
+aira2.hello();
+<span class="comment">//hello,my name is aira#2 wrong!</span>
+aira1.hello();
+</code></pre><p>试图用闭包包住构造函数，形成闭包，但是得到的结果是__name和__getName其实都是类的私有属性，而不是实例的。aira1和aira2共用了__name和__getName。<br>再来确定下什么是私有属性和私有方法，即每个类实例都拥有且只能在类内访问的变量和函数。也就是说变量和方法只能由类的方法来调用。说到这里，我们或许可以尝试下，不让类外的方法调用类的私有方法。</p>
+<pre><code><span class="keyword">var</span> inner, outer;
+outer = <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+    inner();
+};
+inner = <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+    <span class="built_in">console</span>.log(<span class="built_in">arguments</span>.callee.caller);
+};
+<span class="comment">/*
+  function(){
+      inner();
+  }
+  */</span>
+outer();
+</code></pre><p>从arguments的callee中可获得当前的执行函数inner，而inner的动态属性caller指向了调用inner的外层函数outer，由此看来我们可以使用arguments.callee.caller来确定函数的执行环境，实现私有方法和属性。</p>
+<pre><code><span class="keyword">var</span> Phone, aira1, aira2;
+<span class="built_in">Function</span>.prototype.__public = <span class="function"><span class="keyword">function</span> <span class="params">(klass)</span> </span>{
+    <span class="keyword">this</span>.klass = klass;
+    <span class="keyword">return</span> <span class="keyword">this</span>;
+};
+<span class="built_in">Function</span>.prototype.__private = <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+    <span class="keyword">var</span> that;
+    that = <span class="keyword">this</span>;
+    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+        <span class="keyword">if</span> (<span class="keyword">this</span>.constructor === <span class="built_in">arguments</span>.callee.caller.klass) {
+            <span class="keyword">return</span> that.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);
+        } <span class="keyword">else</span> {
+            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">""</span> + that + <span class="string">" is a private method!"</span>);
+        }
+    };
+};
+Phone = <span class="function"><span class="keyword">function</span> <span class="params">(name)</span> </span>{
+    <span class="keyword">var</span> __name;
+    __name = name;
+    <span class="keyword">this</span>.__getName = (<span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+        <span class="keyword">return</span> __name;
+    }).__private();
+    <span class="keyword">this</span>.__setName = (<span class="function"><span class="keyword">function</span> <span class="params">(name)</span> </span>{
+        __name = name;
+    }).__private();
+};
+Phone.prototype.init = (<span class="function"><span class="keyword">function</span> <span class="params">(number)</span> </span>{
+    <span class="keyword">this</span>.__setName(<span class="keyword">this</span>.__getName() + <span class="string">"#"</span> + number);
+}).__public(Phone);
+Phone.prototype.hello = (<span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+    <span class="built_in">console</span>.log(<span class="string">"hello,my name is "</span> + (<span class="keyword">this</span>.__getName()));
+}).__public(Phone);
+aira1 = <span class="keyword">new</span> Phone(<span class="string">"aira"</span>);
+aira1.init(<span class="number">1</span>);
+<span class="comment">//hello,my name is aira#1</span>
+aira1.hello();
+aira2 = <span class="keyword">new</span> Phone(<span class="string">"aira"</span>);
+aira2.init(<span class="number">1</span>);
+<span class="comment">//hello,my name is aira#2</span>
+aira2.hello();
+<span class="comment">//hello,my name is aira#1</span>
+aira1.hello();
+
+<span class="keyword">try</span> {
+    aira1.__getName();
+} <span class="keyword">catch</span> (e) {
+<span class="comment">/*
+Error Object
+    message:"function () {return __name;} is a private method!"
+*/</span>
+    <span class="built_in">console</span>.log(e);
+}
+</code></pre><ul>
+<li>请原谅我给Function原型上添加了两个方法__public和__private以此来实现私有方法的调用环境检测；</li>
+<li>其次，我无法给私有属性添加检测，所以私有属性直接不可见，使用私有的get，set方法访问；</li>
+<li>本身在aira1外部调用时我们还是能看到__getName和__setName方法，只是不能调用而已；</li>
+<li>唯一好的一点是原型方法（公共方法）终于可以从构造函数闭包中解放出来。</li>
+</ul>
+<h2 id="参考">参考</h2><ul>
+<li><a href="http://jibbering.com/faq/notes/closures/#clIRExSc" target="_blank" rel="external">Javascript Closures</a></li>
+</ul>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>寸志</h4>
+    <p>为什么我的眼里常含泪水? 因为我对这土地爱得深沉</p>
+</section>
+      <section class="share">
+    <h4>分享本文</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://island205.com/2011/12/05/privite-member-in-javascript/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://island205.com/2011/12/05/privite-member-in-javascript/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://island205.com/2011/12/05/privite-member-in-javascript/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <a class="newer-posts" href="/2011/12/13/innovators-of-the-net-brendan-eich-and-javascript/">
+        ← 互联网的缔造者们：Brendan Eich与JavaScript
+    </a>
+    
+    <span class="page-number">•</span>
+    
+    <a class="older-posts" href="/2011/12/02/the-future-of-javascript/">
+        JavaScript 未来是什么样的？ →
+    </a>
+    
+</nav>
+  <div id="comment" class="comments-area">
+    <h1 class="title">
+      <a href="#disqus_comments" name="disqus_comments">
+        留言
+      </a>
+    </h1>
+
+    
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+    
+</div>
+</main>
+
+
+  
+<footer class="site-footer">
+  
+  <a class="subscribe icon-feed" href="/atom.xml"><span class="tooltip">RSS 订阅</span></a>
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">一寸之志</a> &copy; 2015 &bull; All rights reserved.</section>
+     <section class="poweredby">使用 <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a> 驱动</section>
+  </div>
+</footer>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+<script type="text/javascript">
+    var disqus_shortname = 'island205';
+
+    (function(){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+</body>
+</html>

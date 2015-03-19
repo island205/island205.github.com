@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://island205.com/"/>
-  <updated>2015-03-18T23:48:05.000Z</updated>
+  <updated>2015-03-19T03:55:01.000Z</updated>
   <id>http://island205.com/</id>
   
   <author>
@@ -15,11 +15,171 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[CoffeeScript编译器（一）]]></title>
+    <link href="http://island205.com/2012/10/22/the-compiler-of-coffeescript-1/"/>
+    <id>http://island205.com/2012/10/22/the-compiler-of-coffeescript-1/</id>
+    <published>2012-10-21T16:00:00.000Z</published>
+    <updated>2015-03-19T03:55:01.000Z</updated>
+    <content type="html"><![CDATA[<p><a href="http://coffeescript.org/" target="_blank" rel="external">CoffeeScript</a>越来越流行，接触CoffeeScript也已经一年有余，最近正在看它的编译器实现，在这里把体会记录下来。</p>
+<p>目前，CoffeeScript编译器是使用CoffeeScript编写的，很多人会问，这是蛋生鸡呢，还是鸡生蛋？<br>其实CoffeeScript编译器最初是使用Ruby编写的，CoffeeScript团队于2010年2月21号发布了<a href="http://coffeescript.org/#changelog" target="_blank" rel="external">v0.5.0</a>，使用CoffeeScript重写了编译器。</p>
+<h2 id="CoffeeScript编译器的整体架构">CoffeeScript编译器的整体架构</h2><p>就目前的CoffeeScript编译器来说，整体架构如下图：</p>
+<pre><code>             -<span class="ruby">------------      -----------------
+</span>             -<span class="ruby">           -      -               -
+</span>cs code ---&gt; -   Lexer   - ---&gt; - Parser(Jison) - ---&gt; AST ---&gt; node.compile() ---&gt; js code
+             -<span class="ruby">           -      -               -
+</span>             -<span class="ruby">------------      -----------------
+</span>                                        ^
+                                        -<span class="ruby">
+</span>                                        -<span class="ruby">
+</span>                                  -<span class="ruby">------------
+</span>                                  -<span class="ruby">           -
+</span>                                  -<span class="ruby">   <span class="constant">Nodes</span>   -
+</span>                                  -<span class="ruby">           -
+</span>                                  -<span class="ruby">------------</span>
+</code></pre><p>概括来讲（通常了解点编译器的人都会说的），CoffeeScript编译器也不例外，主要也分为三大部分：词法解析器（Lexer），语法解析器（Parser）以及构造AST（抽象语法树），遍历语法树生成相应的代码。</p>
+<h2 id="下面首先对这三块进行简单的介绍：">下面首先对这三块进行简单的介绍：</h2><ul>
+<li><p><strong>Lexer(<a href="http://coffeescript.org/documentation/docs/lexer.html" target="_blank" rel="external">lexer.coffee</a>)</strong>：词法解析器就是接受输入的cs代码，然后输出token。虽然CoffeeScript语法解析是基于Jison的，Jison同时也可以做词法解析，但CoffeeScript却自己实现了词法解析器。为什么CoffeeScript要自己实现一个Lexer呢？因为CoffeeScript的语法是LALR(1)的，无法满足CoffeeScript简洁语法的需要，因此需要自定义Lexer，且使用<a href="http://coffeescript.org/documentation/docs/rewriter.html" target="_blank" rel="external">rewriter.coffee</a>来处理这些语法，在token流中插入补充token； </p>
+</li>
+<li><p><strong>Parser(<a href="http://coffeescript.org/documentation/docs/grammar.html" target="_blank" rel="external">grammar.coffee</a>)</strong>：语法解析器就是根据CoffeeScript的语法规则，接受Lexer的输出的token作为输入产生AST。生成AST并不是所有Parser都需要做的。在语法解析的过程中，使用不同的语法规则进行移入token，规约即可。只是可以定义规约时的操作，结合<a href="http://coffeescript.org/documentation/docs/nodes.html" target="_blank" rel="external">nodes.coffee</a>（其中定义了AST不同类型的节点）生成CoffeeScript所需的AST；<br>在源码中并没有一个名为<code>parser.coffee</code>的文件。Parser是使用Jison基于<code>grammar.coffee</code>生成的；</p>
+</li>
+<li><strong>AST</strong>：抽象语法树是Parser的产物，也就是<code>nodes.coffee</code>所定义的诸多节点组成的一棵树。每个节点都有<code>compile</code>和<code>compileNode</code>方法。从根节点开始，通过<code>compile</code>方法的调用，深度优先遍历整个AST，从而生成js代码。</li>
+</ul>
+<p>调用CoffeeScript提供出来的接口，可以看到产生的一些中间变量，例如：</p>
+<pre><code>code = <span class="string">''</span><span class="string">'
+do -&gt;
+    String::trim || String::trim = -&gt;
+        @replace /^\s+|\s+$/g,'</span><span class="string">'
+    return
+'</span><span class="string">''</span>
+<span class="comment">###</span>
+[
+    [<span class="string">"UNARY"</span>, <span class="string">"do"</span>, <span class="number">0</span>],
+    [<span class="string">"-&gt;"</span>, <span class="string">"-&gt;"</span>, <span class="number">0</span>],
+    [<span class="string">"INDENT"</span>, <span class="number">4</span>, <span class="number">1</span>],
+    [<span class="string">"IDENTIFIER"</span>, <span class="string">"String"</span>, <span class="number">1</span>],
+    [<span class="string">"::"</span>, <span class="string">"::"</span>, <span class="number">1</span>],
+    [<span class="string">"IDENTIFIER"</span>, <span class="string">"trim"</span>, <span class="number">1</span>],
+    [<span class="string">"LOGIC"</span>, <span class="string">"||"</span>, <span class="number">1</span>],
+    [<span class="string">"IDENTIFIER"</span>, <span class="string">"String"</span>, <span class="number">1</span>],
+    [<span class="string">"::"</span>, <span class="string">"::"</span>, <span class="number">1</span>],
+    [<span class="string">"IDENTIFIER"</span>, <span class="string">"trim"</span>, <span class="number">1</span>],
+    [<span class="string">"="</span>, <span class="string">"="</span>, <span class="number">1</span>],
+    [<span class="string">"-&gt;"</span>, <span class="string">"-&gt;"</span>, <span class="number">1</span>],
+    [<span class="string">"INDENT"</span>, <span class="number">4</span>, <span class="number">2</span>],
+    [<span class="string">"@"</span>, <span class="string">"@"</span>, <span class="number">2</span>],
+    [<span class="string">"IDENTIFIER"</span>, <span class="string">"replace"</span>, <span class="number">2</span>],
+    [<span class="string">"CALL_START"</span>, <span class="string">"("</span>, <span class="number">2</span>],
+    [<span class="string">"REGEX"</span>, <span class="string">"/^s+|s+$/g"</span>, <span class="number">2</span>],
+    [<span class="string">","</span>, <span class="string">","</span>, <span class="number">2</span>],
+    [<span class="string">"STRING"</span>, <span class="string">"''"</span>, <span class="number">2</span>],
+    [<span class="string">"CALL_END"</span>, <span class="string">")"</span>, <span class="number">3</span>],
+    [<span class="string">"OUTDENT"</span>, <span class="number">4</span>, <span class="number">3</span>],
+    [<span class="string">"TERMINATOR"</span>, <span class="string">"\n"</span>, <span class="number">3</span>],
+    [<span class="string">"RETURN"</span>, <span class="string">"return"</span>, <span class="number">3</span>],
+    [<span class="string">"OUTDENT"</span>, <span class="number">4</span>, <span class="number">3</span>],
+    [<span class="string">"TERMINATOR"</span>, <span class="string">"\n"</span>, <span class="number">3</span>]
+]
+<span class="comment">###</span>
+console.log JSON.stringify CoffeeScript.tokens code
+<span class="comment">###</span>
+{
+    <span class="string">"expressions"</span>: [{
+        <span class="string">"args"</span>: [],
+        <span class="string">"isNew"</span>: <span class="literal">false</span>,
+        <span class="string">"isSuper"</span>: <span class="literal">false</span>,
+        <span class="string">"variable"</span>: {
+            <span class="string">"params"</span>: [],
+            <span class="string">"body"</span>: {
+                <span class="string">"expressions"</span>: [{
+                    <span class="string">"operator"</span>: <span class="string">"||"</span>,
+                    <span class="string">"first"</span>: {
+                        <span class="string">"base"</span>: {
+                            <span class="string">"value"</span>: <span class="string">"String"</span>
+                        },
+                        <span class="string">"properties"</span>: [{
+                            <span class="string">"name"</span>: {
+                                <span class="string">"value"</span>: <span class="string">"trim"</span>,
+                                <span class="string">"asKey"</span>: <span class="literal">true</span>
+                            },
+                            <span class="string">"proto"</span>: <span class="string">".prototype"</span>,
+                            <span class="string">"soak"</span>: <span class="literal">false</span>
+                        }]
+                    },
+                    <span class="string">"second"</span>: {
+                        <span class="string">"variable"</span>: {
+                            <span class="string">"base"</span>: {
+                                <span class="string">"value"</span>: <span class="string">"String"</span>
+                            },
+                            <span class="string">"properties"</span>: [{
+                                <span class="string">"name"</span>: {
+                                    <span class="string">"value"</span>: <span class="string">"trim"</span>,
+                                    <span class="string">"asKey"</span>: <span class="literal">true</span>
+                                },
+                                <span class="string">"proto"</span>: <span class="string">".prototype"</span>,
+                                <span class="string">"soak"</span>: <span class="literal">false</span>
+                            }]
+                        },
+                        <span class="string">"value"</span>: {
+                            <span class="string">"params"</span>: [],
+                            <span class="string">"body"</span>: {
+                                <span class="string">"expressions"</span>: [{
+                                    <span class="string">"args"</span>: [{
+                                        <span class="string">"base"</span>: {
+                                            <span class="string">"value"</span>: <span class="string">"/^s+|s+$/g"</span>
+                                        },
+                                        <span class="string">"properties"</span>: []
+                                    }, {
+                                        <span class="string">"base"</span>: {
+                                            <span class="string">"value"</span>: <span class="string">"''"</span>
+                                        },
+                                        <span class="string">"properties"</span>: []
+                                    }],
+                                    <span class="string">"soak"</span>: <span class="literal">false</span>,
+                                    <span class="string">"isNew"</span>: <span class="literal">false</span>,
+                                    <span class="string">"isSuper"</span>: <span class="literal">false</span>,
+                                    <span class="string">"variable"</span>: {
+                                        <span class="string">"base"</span>: {
+                                            <span class="string">"value"</span>: <span class="string">"this"</span>
+                                        },
+                                        <span class="string">"properties"</span>: [{
+                                            <span class="string">"name"</span>: {
+                                                <span class="string">"value"</span>: <span class="string">"replace"</span>,
+                                                <span class="string">"asKey"</span>: <span class="literal">true</span>
+                                            },
+                                            <span class="string">"proto"</span>: <span class="string">""</span>,
+                                            <span class="string">"soak"</span>: <span class="literal">false</span>
+                                        }],
+                                        <span class="string">"this"</span>: <span class="literal">true</span>
+                                    }
+                                }]
+                            },
+                            <span class="string">"bound"</span>: <span class="literal">false</span>
+                        }
+                    },
+                    <span class="string">"flip"</span>: <span class="literal">false</span>
+                }, {}]
+            },
+            <span class="string">"bound"</span>: <span class="literal">false</span>
+        },
+        <span class="string">"do"</span>: <span class="literal">true</span>
+    }]
+}
+<span class="comment">###</span>
+console.log JSON.stringify CoffeeScript.nodes code
+</code></pre><p>这一部分就说到这里，之后会更加深入到CoffeeScript的各个实现细节之中。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><a href="http://coffeescript.org/" target="_blank" rel="external">CoffeeScript</a>越来越流行，接触CoffeeScript也已经一年有余，最近正在看它的编译器实现，在这里把体会记录下来。</p]]>
+    </summary>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[豆瓣阅读《CoffeeScript小书》上架啦！]]></title>
     <link href="http://island205.com/2012/07/19/the-little-book-of-coffeescript-on-douban/"/>
     <id>http://island205.com/2012/07/19/the-little-book-of-coffeescript-on-douban/</id>
     <published>2012-07-18T16:00:00.000Z</published>
-    <updated>2015-03-18T23:48:05.000Z</updated>
+    <updated>2015-03-19T00:11:07.000Z</updated>
     <content type="html"><![CDATA[<p>今天D2，豆瓣的石岩给我们带来豆瓣阅读在开发方面的心得，有一张PPT还用到了上周我在豆瓣阅读上架的一本书《CoffeeScript小书》。其实就是本博之前翻译的<a href="http://arcturo.github.com/library/coffeescript/" target="_blank" rel="external">the-little-book-on-coffeescript</a>的中文合集。</p>
 <p>豆瓣阅读的体验真的很不错，这是本书在豆瓣阅读Web版上的一张预览图：</p>
 <p><img src="http://pic.yupoo.com/island205/C65pIc2W/W8G6w.png" alt="douban"></p>
@@ -37,7 +197,7 @@
     <link href="http://island205.com/2012/07/04/alternative-stylesheet/"/>
     <id>http://island205.com/2012/07/04/alternative-stylesheet/</id>
     <published>2012-07-03T16:00:00.000Z</published>
-    <updated>2015-03-18T23:56:07.000Z</updated>
+    <updated>2015-03-19T00:11:07.000Z</updated>
     <content type="html"><![CDATA[<p>可选择样式表这个问题，有点绕，之前看懂了，后来忘记，现在就把它记下来。 这个问题与样式表的rel和title属性的值和组合有关：</p>
 <p>1.默认样式表，指定rel属性为stylesheet，会在页面上一直存在的样式，不受用户选择其他可选择样式表的影响：</p>
 <pre><code><span class="tag">&lt;<span class="title">link</span> <span class="attribute">href</span>=<span class="value">”default.css”</span> <span class="attribute">rel</span>=<span class="value">”stylesheet”</span> <span class="attribute">type</span>=<span class="value">”text</span>/<span class="attribute">css</span>”&gt;</span>
@@ -65,7 +225,7 @@
     <link href="http://island205.com/2012/04/13/how-mdc-implement-bind/"/>
     <id>http://island205.com/2012/04/13/how-mdc-implement-bind/</id>
     <published>2012-04-12T16:00:00.000Z</published>
-    <updated>2015-03-19T00:06:35.000Z</updated>
+    <updated>2015-03-19T00:11:07.000Z</updated>
     <content type="html"><![CDATA[<p>在平时开发过程中想必都有把函数绑定到某个上下文 this 上 JavaScript 1.8.5 中引入了 <code>Function.prototype.bind</code> 来满足这个需求今天就来说一说这个函数 什么时候使用 <code>bind</code> 函数 先看这个例子：</p>
 <pre><code>$(<span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
   <span class="keyword">var</span> me;
@@ -146,11 +306,356 @@
   </entry>
   
   <entry>
+    <title><![CDATA[《深处浅出 CoffeeScript》译者序]]></title>
+    <link href="http://island205.com/2012/04/01/translator-word-coffeescript-accelerated-javascript/"/>
+    <id>http://island205.com/2012/04/01/translator-word-coffeescript-accelerated-javascript/</id>
+    <published>2012-03-31T16:00:00.000Z</published>
+    <updated>2015-03-19T03:49:44.000Z</updated>
+    <content type="html"><![CDATA[<p><em>The golden rule of CoffeeScript is: “It’s just JavaScript”.</em>——<a href="http://coffeescript.org/" target="_blank" rel="external">coffeescript.org</a></p>
+<p>CoffeeScript的作者Jeremy Ashkenas在twitter上有个很好笑的段子： </p>
+<p>他说：“我非常想知道在GitHire上有多少人有五年的CoffeeScript经验，很显然我有很多地方需要向他们学习。”  </p>
+<p>有人答道：“对的，这些人大概是在一边煮咖啡，一边写脚本”。  </p>
+<p>确实，与Python和Ruby相比，CoffeeScript非常年轻，到现在才两年出头的时间。  </p>
+<p>还清楚地记得，我是在了解<a href="http://zombie.labnotes.org/" target="_blank" rel="external">Zombie.js</a>时第一次接触到CoffeeScript。Zombie.js是一个用于客户端JavaScript测试的轻型框架，在我查看Zombie.js的源码时，我就被CoffeeScript的优雅和左边漂亮文档所吸引了 。  </p>
+<p>谁说使用CoffeeScript不是如边煮咖啡边写脚本一样怡然自得呢？真的，这东西很酷！  </p>
+<p>CoffeeScript之于JavaScript，就如Less或Sass之于CSS。它吸收了JavaScript语言的精华，并且添加了很多现代脚本语言（Python和Ruby等）所具有的特性。比如列表解析，字符串插值，参数列，吸收操作符，等等。我想CoffeeScript就是大师Douglas Crockford所想要的那种JavaScript子集 。它能够减少三分之一的代码量，换来的却是去除了语言怪癖，兼容所有引擎环境的JavaScript代码！其编译生成的JavaScript代码可读性很强，而且优雅程度不亚于直接写出的JavaScript代码，研究这些，你甚至能看到JavaScript在各方面的最佳实践。  </p>
+<p>虽然CoffeeScript非常年轻，但因为<del>Ruby</del>Rails 3.1的直接集成和在Node.js开发方面的天然优势，CoffeeScript在很多方面都有了应用，比方说之前提到的浏览器模拟器Zombie.js，还有基于Express的高级Node.js开发框架<a href="http://zappajs.org/" target="_blank" rel="external">Zappa</a>，甚至使用CoffeeScript写成的PSD文件解析器<a href="http://meltingice.github.com/psd.js/" target="_blank" rel="external">psd.js</a> 。  </p>
+<p>但无论CoffeeScript如何的优雅，如何的艺术，总之要记住它的金科玉律：“it’s just JavaScript!”</p>
+<p>这句话是《深入浅出CoffeeScript》这本书的精髓。作者Trevor Burnham通过一个贯穿全书的5x5拼字游戏，从基础开始，通俗易懂的为我们讲解了CoffeeScript各方面的知识，如何与jQuery这类非常流行的类库完美集成，如何游刃有余的结合<a href="http://socket.io/" target="_blank" rel="external">Socket.IO</a>实现Node.js双通道异步通信。JavaScript能做的事情，CoffeeScript也可以，而且做起来更快，更优雅！  </p>
+<p>想要站在JavaScript开发和Web开发的最前沿么？这本书正好适合你！  </p>
+<p>感谢图灵公司引进了本书，给了我翻译该书的机会。感谢诸位编辑，傅志红老师，李松峰老师和李鑫老师，在翻译过程中给予我诸多帮助和鼓励。感谢图灵社区里的朋友，在阅读了样章之后给我了很多反馈。感谢大众点评网尤其是前端团队在翻译过程中给我的理解和支持。感谢Jeremy Ashkenas设计了这门优雅的语言，还要感谢本书的作者Trevor Burnham耐心为我解答我对原文中的疑问。  </p>
+<p>最后还要感谢我的爸爸妈妈，女友吴竞男，谢谢你们的支持和理解。尤其是小吴，算是我译稿的第一个读者，谢谢你的诸多批评和建议。  </p>
+<p>寸志<br>2012年2月27日</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><em>The golden rule of CoffeeScript is: “It’s just JavaScript”.</em>——<a href="http://coffeescript.org/" target="_blank" rel="external">c]]>
+    </summary>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[互联网的缔造者们：Brendan Eich与JavaScript]]></title>
+    <link href="http://island205.com/2011/12/13/innovators-of-the-net-brendan-eich-and-javascript/"/>
+    <id>http://island205.com/2011/12/13/innovators-of-the-net-brendan-eich-and-javascript/</id>
+    <published>2011-12-12T16:00:00.000Z</published>
+    <updated>2015-03-19T03:12:36.000Z</updated>
+    <content type="html"><![CDATA[<p><em>本文译自：<a href="http://archive.today/ZoS4T" target="_blank" rel="external">INNOVATORS OF THE NET: BRENDAN EICH AND JAVASCRIPT</a>，最近因为别的事情从网上搜出来这篇文章，该篇文章是对 JavaScript 之父 Brendan 的采访翻译出来为大家揭开真实的 JavaScript 出生的故事。当然该文已与其他采访集结出版中译本为《编程人生》，请原谅该文翻译得比较粗糙。</em></p>
+<blockquote>
+<p>Brendan 的技术很牛，眼界宽广，表达能力也非常强，因此在 Netscape 内部他的话很有影响力。与他共事的工程师，在互联网上与他交流的开发者，甚至包括他遇见的高管们都非常赞赏他，赞赏他过人的才华、谦逊的态度和热心肠。</p>
+</blockquote>
+<p>1998年6月24日-作为Netscape网景公司企业软件事业部的执行副总裁，我有幸与一些互联网中最好的工程师共事，他们中有很多人在互联网开发标准和协议方面都有很大的贡献。在接下来几个月中，我将在我的TechVision专栏上分析这些领头羊在互联网方面所做的卓越工作。我第一位采访的“互联网缔造者”是Brendan Eich，他一手设计并实现了著名的JavaScript语言。</p>
+<p>Brendan的技术很牛，眼界宽广，表达能力也非常强，因此在Netscape内部他的话很有影响力。与他共事的工程师，在互联网上与他交流的开发者，甚至包括他遇见的高管们都非常赞赏他，赞赏他过人的才华、谦逊的态度和热心肠。</p>
+<p>他疯狂的浏览讨论组的新帖子，以了解大家是如何使用和讨论JavaScript的。他对于那些JavaScript在外界中所引发的新闻条目非常关心，感觉良好。在JavaScript标准出现之前，各种新的特性应用户的需要而相继开发出来。用不了多久，有时候就15分钟，Brendan的代码里就会出现一个非常天才的解决方案。</p>
+<p>Brendan呆在电脑前就是一个恶魔，从舍不得浪费半点时间。如果同事因为某个问题打断了他与他交谈时，往往的结果就是，他会继续编程，收邮件，或者干脆同时与别人聊天，留给同事的只有半个侧脸。当谈话者要求他专心点，他就说他很忙，需要回去工作了。</p>
+<p>Brendan在空闲时，会演奏古典钢琴或者体操。他还喜欢旅行，当然他更喜欢工作！——他很多假期都被填满了，因为他有很多预先打算的事情要做。</p>
+<p>JavaScript于1995年发布，到现在已经是一个国际标准，旨在为开发提供一个更加容易的跨浏览器的动态HTML解决方案。</p>
+<p>1998年，Brendan的杰出贡献使得他荣获了<a href="http://Builder.com" target="_blank" rel="external">Builder.com</a>公司该年的“互联网缔造者”大奖。下面就是Brendan和他的JavaScript。</p>
+<h2 id="让网页动起来_Brendan_Eich，JavaScript之父**">让网页动起来 Brendan Eich，JavaScript之父**</h2><p><img src="http://pic3.zhimg.com/d6d07fe535354d5cc505c4632b5a906e_b.jpg" alt="Brendan Eich，JavaScript之父"></p>
+<blockquote>
+<p>内容建设不需要太高深。这不是什么只有专家或者牛逼哄哄的计算机科学家才能研究的深奥问题。这样有助于在内容创建和分享过程中节约成本有经济优势，。就如Netscape在网络建设中所做的一样。</p>
+</blockquote>
+<p>1995年4月，在SiliconGraphics工作了七年，又在MicroUnity System Enineering工作三年之后，我来到了现在的Netscape公司。Netscape公司一年前就开始找人开发一种脚本语言，希望能够运用到浏览器的网页里，让我网能够动起来。Java从First Person到Sun也经过了五个春秋，1994年是还为了能够应用到Web上而重构过。Netscape第一个获得了Java的认证，因此一个问题出现了：我们直接使用Java，还是令搞一个语言？</p>
+<p>有的人极力主张使用Java，Java很好，很适合程序员写组件。但是还有更多的人只是写点脚本，或者直接把别人的脚本拷过来改一改就行。这些人不是专业的程序员，大部分时间都用来干别的事情，而不是敲代码。比如说网管，或者一些只写脚本的业余人员。如果他们想写点代码，他们只希望随便敲打两下键盘就行。最后，我们决定开发一门新语言，必须长得像Java，并且是脚本语言。</p>
+<p>与其他所有语言一样，它也是从其他语言借鉴了很多东西。与1995年9月，它第一次跟随Navegator2.0 beta版一起发布，当时取名为LiveScript。紧接着，12月4号，公司与Sun公司一起宣布合作时更名为了JavaScript。</p>
+<p>JavaScript吸引到了大量的开发者，因为人所要的东西仅仅是从HTML中迈出一步，使用一点代码是网页动起来——使东西移动，对用户的输入做出反应，或者改变颜色；弹出一个窗口；或者弹出一个对话框问个问题，只有回答了才能继续——这些事情HTML干不了，你需要编程语言，但是要足够简单，不需像Java或者C++这样复杂。</p>
+<p>内容建设不需要太高深。这不是什么只有专家或者牛逼哄哄的计算机科学家才能研究的深奥问题。这样有助于在内容创建和分享过程中节约成本有经济优势，。就如Netscape在网络建设中所做的一样。</p>
+<p>将JavaScript称作“将网页粘在一起的胶水”，说明了JavaScript短小易于使用，但是这还不够公平。胶水会变硬，但是JavaScript比胶水更动态，它可以创建响应让东西继续运转下去，把JavaScript称作催化剂更合适。</p>
+<h2 id="互联网新标准">互联网新标准</h2><p>Navigator 2.0 beta版发布以后，JavaScript非常成功。因此，微软公司实现了兼容的语言跟进。于是有了创建一个标准的需求，上面写着：“它们应该按照这里规定的样子工作”，以便浏览器厂商能够都按照同样的标准来实现，web开发者开发的网页就能工作在各种可能的浏览器上。1996年8月，Navigator 3.0一发布之后，我们就着手以JavaScript为标准写一份草案提交给<a href="http://web.archive.org/web/20080208124612/http://www.ecma.ch/INDEX.htm" target="_blank" rel="external">欧洲计算机制造商协会（ECMA）</a>，它是国际通信标准的机构，总部设在瑞士日内瓦。ECMA在1997年6月通过了草案，并且同时作为ISO 标准。</p>
+<p>现在该标准正式名称为ECMAScript。在Netscape，我们继续使用有品牌价值的“JavaScript”来称呼我们对ECMAScript的实现。这包括了一套扩展，没有任何冲突，但可以附加价值，所以它可以以这种方式基于标准进行一些创新。我想这是推动标准的正确方式。如委员会一样，将大家聚到一起互相争论打仗最终妥协满足所有人的需求这是做不出东西的。要做的话只有先创建一个原型，看它能进化成什么样子。</p>
+<p>ECMA现在正在开会着手制定ECMAScript2.0标准，准备引入异常处理机制（一种显示处理错误的方式）还有几个其他的语言特性。这会使JavaScript更像一门编程语言——有点像Java，但是我觉得它应该悬崖勒马，不然会变得不好使用。</p>
+<h2 id="DOM差异的衔接">DOM差异的衔接</h2><p>ECMAScript标准制定的是语言的核心标准，不管它在什么平台上有一样：在浏览器端，服务器端，甚至的多媒体制作工具中。当你把它放到浏览器中，那还存在另外一个层围绕着它，这一层用来处理HTML，处理浏览器窗口，处理对话框等等。这些并没有标准化。HTML标准的一部分，DOM（文档对象模型），现在正在由W3C标准化。该标准并没有以某个具体的实现为基础，它只是以一种更加普通更加抽象的方式来制定，这或许更好。今年的某个时候该标准会发布第一版。</p>
+<p>内容制作者一直在抱怨，“我不得不为Netscape和IE不同的DOM模型写两遍代码。”我同意他们，他们有权利呐喊。开发者支出，如果一个函数不能同时工作在这两个浏览器上，他们就不会使用该函数。他们希望W3C的标准能够让动态网页开发走回正确的道路——这两浏览器在下一版是能够实现该标准。</p>
+<p>在此期间，你希望你的JS代码能在同样HTML能力水平互相竞争的浏览器上实现功能，你可以写一段而外的JS——在不同的浏览器实现之上放一个薄薄的抽象层。这个普通的层会想搞清楚它运行在什么浏览器上，然后使用该浏览器可用的特性。因此，JavaScript可以扮演一座桥的角色，在没有统一的DOM标准出现之前。</p>
+<p>例如，动态HTML包括两个W3C标准的支持，一是层叠样式表级别1（CSS1），它允许你格式化的HTML元素，另一个是层叠样式表定位（CSSP），它允许你放置、堆叠、隐藏并隐显示HTML元素。当前，开发者不得不在Netscape Navigator和IE中使用不同的DOM标准分别处理这些属性设置。但是，文档对象模型允许你使用JavaSript来设置元素的CSS1和CSSP属性。如果你现在写一个饱薄薄的抽象层，使用函数获取一个元素的属性值，然后进行浏览器检测，使用当前浏览器正确的DOM来设置。这个函数层，成为一个高层次的应用程序编程接口（API），你的代码可以随意调用，而不必担心其运行于什么浏览器之上。</p>
+<p>为了节省开发者的时间，本周我们正在提供一个文档以及一个基础的跨浏览器的JavaScript代码层来解决这个问题。第一篇名为跨浏览器的JavaScript和DHTML的文档提供了一个浏览器兼容性问题以及如何解决这些问题的概述。第二篇文档如何使用JavaScript设置的两种浏览器的CSS1属性，并且提供了一个代码生成器，自动为你生成必要的JavaScript代码。第三份文档介绍了在这两种浏览器上如何使用JavaScript设置CSSP的属性，并提供了一个跨浏览器的API层。作为一个实际的例子是如何工作的，我们已经更新动态HTML的演示模板，支持Navigator 4.x和Internet Explorer 4.x中，并用它创建一个跨浏览器的DHTML的演示，任何人都可以使用教给别人。 有一个实例能够说明这是如何工作的，我们更新了动态HTML的演示模板示例，现在在Navigator4.x IE4.x上都能正常工作。我们还用它做了一个关于跨浏览器DHTML的介绍，这样任何人都可以用它来教别人了。另一个例子是Web Building 的主页，它利用了跨浏览器DHTML和面向对象的JavaScript创建了一个浮动菜单;这篇文章解释了它是如何工作，还有示例代码。</p>
+<p>本着开放源代码的精神，我们鼓励开发人员提交改进的代码，可以并入到将来的版本中。事实上，跨浏览器API层的部分代码也是一个独立的开发者贡献的代码。</p>
+<h2 id="COMMUNICATOR_SOURCE_CODE">COMMUNICATOR SOURCE CODE</h2><p>现在网景公司的<a href="http://web.archive.org/web/20080208124612/http://wp.netscape.com/columns/techvision/source.html" target="_blank" rel="external">Communicator source code</a>已经可用了。整个开源社区现在都可以推进JavaScript向前发展了。现在我为<a href="http://web.archive.org/web/20080208124612/http://www.mozilla.org/" target="_blank" rel="external">mozilla.org</a>工作 。这是一个伟大的团队，有很多牛人在一起开发JavaScript。现在我可以预见到的是，开源代码将方便人们走到一起发生一些美妙的事情。这真是太棒了，因为我可以说，“有人想使用JavaScript在浏览器中的东西，这不是以前编写脚本的自动化，而别人想在这里做类似的自动化排序。 这真的很棒，因为我敢说：”有的人想用一些以前没有的脚本来在浏览器中实现一些自动化的事情，而且也有其他人想要类似的东西。我们自动化、钩子或者脚本的统一理论是什么？“然后，我可以帮助做到这一点。我会尽力，以确保没有任何重复努力和语言是最小的，并没有得到与功能，不是绝对必要或重叠以某种方式相互缀满。 去哦会尽力确保避免一些重复的劳动。这语言是最小的，没有那些没有必要的功能，且功能间不会有互相重叠的部分。</p>
+<p>我认为 <a href="http://mozilla.org" target="_blank" rel="external">mozilla.org</a> 成功是至关重要的。不只是为了Netscape，还为了开源社区，为了整个世界。反馈是关键的。雷蒙德， <a href="http://web.archive.org/web/20080208124612/http://www.opensource.org/" target="_blank" rel="external">开源软件</a>专家，他写了一个广泛讨论的文件，被称为 “大教堂和集市”，使得一个很好的点：软件主要是让你的代码的同行评审-不仅仅是质量保证，这是一个在审计过程中结束。 Eric Raymond，开源软件专家，他的一篇很有名的文章叫“大教堂和集市”指出：软件其实是对你的代码进行审查——不单单是QA，这是一个不断审视的过程。越多的双眼睛的审查，大多数情况下软件就越好，软件的品质就上去了。更多的目光投向帮助。这实际上在许多情况下，更好的软件。所以质量就上去了。</p>
+<p>这是我喜欢做什么东西，拥有大量的受众，富有创造力，对人有帮助的事情。JavaScript能满足人们切实的需要，而且在其他领域也开始显露头角，比如说，Adobe公司将其加入到了Acrobat中。</p>
+<p>我的上一个工作从来没有发布过产品，它是一项学要智力，充满挑战跨学科的研究。但是，除非产品可以交付到用户的手中，否则这样对于我来说没什么感觉。</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><em>本文译自：<a href="http://archive.today/ZoS4T" target="_blank" rel="external">INNOVATORS OF THE NET: BRENDAN EICH AND JAVASCRIPT</a>，最近因为别]]>
+    </summary>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[JavaScript 的私有属性和方法]]></title>
+    <link href="http://island205.com/2011/12/05/privite-member-in-javascript/"/>
+    <id>http://island205.com/2011/12/05/privite-member-in-javascript/</id>
+    <published>2011-12-04T16:00:00.000Z</published>
+    <updated>2015-03-19T03:30:07.000Z</updated>
+    <content type="html"><![CDATA[<p>在JavaScript中谈私有属性和私有方法就是扯淡，”private”还杵在保留字的位置上，不知道什么时候提上来实现真正的私有。那今天咱就来讨论下如何以JS当前的特性来实现私有成员。</p>
+<h2 id="闭包">闭包</h2><p>（比较枯燥，可以跳过本单元）JavaScript实现私有属性必须依赖闭包特性(可以先通过该链接补习)。下面也稍微补习下，看下面的例子：</p>
+<pre><code><span class="keyword">var</span> uniqueId;
+uniqueId = (<span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+  <span class="keyword">var</span> index;
+  index = <span class="number">0</span>;
+  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span><span class="params">(prefix)</span> </span>{
+    <span class="keyword">return</span> prefix + <span class="string">"_"</span> + index++;
+  };
+})();
+<span class="comment">//c_0</span>
+<span class="built_in">console</span>.log(uniqueId(<span class="string">"c"</span>));
+<span class="comment">//c_1</span>
+<span class="built_in">console</span>.log(uniqueId(<span class="string">"c"</span>));
+</code></pre><p>通常所说的或所看到的闭包就是这样子—— <code>(function(){})()</code>，但这不是它的全部或者是本质。在定义uniqueId这个函数的时候，我们使用了匿名函数表达式（请注意(function(){})是函数表达式）定义了一个函数且立即执行，把function(prefix){/<em>some code</em>/}作为返回值赋值给了quniqueId，此时这个 <code>function(prefix){/*some code*/}</code>已经生成了函数实例，在函数实例生成的过程中:</p>
+<ul>
+<li>通俗的讲将index这个外部函数定义的变量记住了（为什么要记住？没记住你让我怎么给你计算prefix+”_”+index的值嘛！）；</li>
+<li>再次我们没法通过什么this.index或者someObj.index引用到index，改变其值了，(function(){})()这个一执行完，局部变量index在外面怎么调得到嘛；</li>
+<li>怎么调得到，只能靠function(prefix){/<em>some code</em>/}，因为我们还能通过它间接的取得或改变index值。这就是闭包了。</li>
+</ul>
+<p>比较学术的解释：</p>
+<ul>
+<li>JS是词法作用域（就是程序看上去啥样就啥样）的，使用一个叫做[[scope]]的内部属性来标识每个执行上下文的作用域（我可以读写哪些变量啊，调用哪些哪些函数啊）；每个函数执行时都由该[scope]作用域加上活动对象来构成真实的执行上下文；</li>
+<li>而这个执行上下文[[scope]]属性是在函数生成时就指定的了，不严格的讲为生成该函数时的执行上下文；</li>
+<li>于是function(prefix){/<em>some code</em>/}生成时其内部的[[scope]]属性引用了(function(){})()执行上下文的scope链；该scope链即包含了该函数的[[scope]]和活动对象，且活动对象包含了index的定义引用；</li>
+<li>GC的回收规则，没人用我我就是垃圾！因此uniqueId引用了function(prefix){/<em>some code</em>/}函数实例，而该函数实例的[[scope]]引用了(function(){})()执行期的scope链，其包含活动对象，即有index的引用；ok，index还有人引用它，它不是垃圾，因此闭包形成了，我们可以通过uniqueId函数间接的读取或者修改index。</li>
+</ul>
+<p>总结：其实学术解释和通俗解释一个意思，不过闭包其实是相对的，并不是我们不能修改index，只是需要间接的方法（是不是有点私有属性和私有方法的感觉）。</p>
+<h2 id="私有属性和私有方法">私有属性和私有方法</h2><p>相对来说，构造单例对象的私有属性和方法都比较简单。</p>
+<pre><code><span class="keyword">var</span> aira;
+aira = (function () {
+    <span class="keyword">var</span> __getName, __name;
+    //private variable
+    __name = <span class="string">"HTC mobile"</span>;
+    //private <span class="keyword">method</span>
+    __getName = function () {
+        <span class="keyword">return</span> __name;
+    };
+    aira = {
+        init: function () {
+            //change private variable inner
+            __name = <span class="string">"aira"</span>;
+        },
+        hello: function () {
+            //execute private <span class="keyword">method</span> inner
+            console.log(<span class="string">"hello,my name is "</span> + (__getName()));
+        }
+    };
+    <span class="keyword">return</span> aira;
+})();
+aira.init();
+//hello,my name <span class="keyword">is</span> aira
+aira.hello();
+</code></pre><p>使用双下划线”<strong>“表示私有；aira手机有一个私有属性</strong>name和私有方法<strong>getName；我们可以在init中修改</strong>name，在hello中调用__getName，且在闭包外面无法直接调用和修改这两个成员。我们做到了，这就是单例对象的私有属性和私有方法。<br>但是更确切的说，其实aira能够有私有属性和方法仅仅是因为它有私有的一个闭包，即init和hello成员的[[scope]]都引用了闭包的活动对象。</p>
+<p>然而，一个构造函数（类）的私有属性和方法就么这么简单了。</p>
+<pre><code><span class="keyword">var</span> Phone, aira;
+<span class="comment">//wrap by function</span>
+Phone = <span class="function"><span class="keyword">function</span> <span class="params">(name)</span> </span>{
+    <span class="keyword">var</span> phone;
+    phone = (<span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+        <span class="keyword">var</span> __getName, __name;
+        __name = name;
+        __getName = <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+            <span class="keyword">return</span> __name;
+        };
+        phone = {
+            init: <span class="function"><span class="keyword">function</span> <span class="params">(number)</span> </span>{
+                __name += <span class="string">"#"</span> + number;
+            },
+            hello: <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+                <span class="built_in">console</span>.log(<span class="string">"hello,my name is "</span> + (__getName()));
+            }
+        };
+        <span class="keyword">return</span> phone;
+    })();
+    <span class="keyword">return</span> phone;
+};
+aira1 = Phone(<span class="string">"aira"</span>);
+aira1.init(<span class="number">1</span>);
+<span class="comment">//hello,my name is aira#1</span>
+aira1.hello();
+
+aira2 = Phone(<span class="string">"aira"</span>);
+aira2.init(<span class="number">2</span>);
+<span class="comment">//hello,my name is aira#2</span>
+aira2.hello();
+</code></pre><p>我们先来简单的将单例对象的构造包裹一个函数，实现产生不同的对象。我们可以说Phone是一个类，因为它可以产生不同的对象，有类似的功能。同样aira1和aira2都有自己闭包，于是都有自己的私有属性和方法。</p>
+<p>我想对自己说，别逗了你，这样就行啦？！JS中类的概念就是构造函数。</p>
+<pre><code><span class="keyword">var</span> Phone, aira1, aira2;
+Phone = <span class="function"><span class="keyword">function</span> <span class="params">(name)</span> </span>{
+    <span class="keyword">var</span> __getName, __name;
+    __name = name;
+    __getName = <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+        <span class="keyword">return</span> __name;
+    };
+    <span class="keyword">this</span>.init = <span class="function"><span class="keyword">function</span> <span class="params">(number)</span> </span>{
+        __name += <span class="string">"#"</span> + number;
+    };
+    <span class="keyword">this</span>.hello = <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+        <span class="built_in">console</span>.log(<span class="string">"hello,my name is "</span> + (__getName()));
+    };
+};
+aira1 = <span class="keyword">new</span> Phone(<span class="string">"aira"</span>);
+aira1.init(<span class="number">1</span>);
+<span class="comment">//hello,my name is aira#1</span>
+aira1.hello();
+
+aira2 = <span class="keyword">new</span> Phone(<span class="string">"aira"</span>);
+aira2.init(<span class="number">1</span>);
+<span class="comment">//hello,my name is aira#2</span>
+aira2.hello();
+</code></pre><p>Phone构造函数其实就是闭包的功能，每个Phone实例的init和hello都能引用其构造期间的形成的私有的<strong>name和</strong>getName。</p>
+<p>真的，我已经无力回天了，每个实例必须由闭包产生私有属性和方法，因此只能在该闭包中定义公共方法暴露出来（比如说init和hello），这就意味着每次构造一个实例我们都必须生成init和hello的函数实例，这是多么的低效，因为JS有原型。</p>
+<pre><code><span class="keyword">var</span> Phone, aira;
+Phone = <span class="function"><span class="keyword">function</span> <span class="params">(name)</span> </span>{
+    <span class="keyword">var</span> __getName, __name;
+    __name = name;
+    __getName = <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+        <span class="keyword">return</span> __name;
+    };
+};
+Phone.prototype.init = <span class="function"><span class="keyword">function</span> <span class="params">(number)</span> </span>{
+    __name += <span class="string">"#"</span> + number;
+};
+Phone.prototype.hello = <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+    <span class="built_in">console</span>.log(<span class="string">"hello,my name is "</span> + (__getName()));
+};
+aira = <span class="keyword">new</span> Phone(<span class="string">"aira"</span>);
+</code></pre><p>上面的代码是错误的（在init中的__name是全局的，hello中的__getName方法因为不存在，所以会报错），这就是问题所在，能够引用私有属性和变量的公共方法必须在闭包中定义，然后暴露出来，然而原型方法并不能在闭包中定义。</p>
+<h2 id="曲线救国">曲线救国</h2><h3 id="私有约定">私有约定</h3><pre><code><span class="keyword">var</span> Phone, aira1, aira2;
+Phone = <span class="function"><span class="keyword">function</span> <span class="params">(name)</span> </span>{
+    <span class="comment">//"__" private variable</span>
+    <span class="keyword">this</span>.__name = name;
+};
+Phone.prototype.init = <span class="function"><span class="keyword">function</span> <span class="params">(number)</span> </span>{
+    <span class="keyword">this</span>.__name += <span class="string">"#"</span> + number;
+};
+Phone.prototype.hello = <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+    <span class="built_in">console</span>.log(<span class="string">"hello,my name is "</span> + (<span class="keyword">this</span>.__getName()));
+};
+<span class="comment">//"__" private method</span>
+Phone.prototype.__getName = <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+    <span class="keyword">return</span> <span class="keyword">this</span>.__name;
+};
+aira1 = <span class="keyword">new</span> Phone(<span class="string">"aira"</span>);
+aira1.init(<span class="number">1</span>);
+<span class="comment">//hello,my name is aira#1</span>
+aira1.hello();
+aira2 = <span class="keyword">new</span> Phone(<span class="string">"aira"</span>);
+aira2.init(<span class="number">2</span>);
+<span class="comment">//hello,my name is aira#2</span>
+aira2.hello();
+</code></pre><p>以双下划线“__”表示私有，用最近看到的一代码注释来解释：“神奇，勿动”。<br>这是私有方法么？</p>
+<pre><code><span class="keyword">var</span> Phone, aira1, aira2;
+Phone = (<span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+    <span class="keyword">var</span> __getName, __name;
+    __getName = <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+        <span class="keyword">return</span> __name;
+    };
+    Phone = <span class="function"><span class="keyword">function</span> <span class="params">(name)</span> </span>{
+        __name = name;
+    };
+    Phone.prototype.init = <span class="function"><span class="keyword">function</span> <span class="params">(number)</span> </span>{
+        __name += <span class="string">"#"</span> + number;
+    };
+    Phone.prototype.hello = <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+        <span class="built_in">console</span>.log(<span class="string">"hello,my name is "</span> + (__getName()));
+    };
+    <span class="keyword">return</span> Phone;
+})();
+aira1 = <span class="keyword">new</span> Phone(<span class="string">"aira"</span>);
+aira1.init(<span class="number">1</span>);
+<span class="comment">//hello,my name is aira#1 right!</span>
+aira1.hello();
+aira2 = <span class="keyword">new</span> Phone(<span class="string">"aira"</span>);
+aira2.init(<span class="number">2</span>);
+<span class="comment">//hello,my name is aira#2 right!</span>
+aira2.hello();
+<span class="comment">//hello,my name is aira#2 wrong!</span>
+aira1.hello();
+</code></pre><p>试图用闭包包住构造函数，形成闭包，但是得到的结果是__name和__getName其实都是类的私有属性，而不是实例的。aira1和aira2共用了__name和__getName。<br>再来确定下什么是私有属性和私有方法，即每个类实例都拥有且只能在类内访问的变量和函数。也就是说变量和方法只能由类的方法来调用。说到这里，我们或许可以尝试下，不让类外的方法调用类的私有方法。</p>
+<pre><code><span class="keyword">var</span> inner, outer;
+outer = <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+    inner();
+};
+inner = <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+    <span class="built_in">console</span>.log(<span class="built_in">arguments</span>.callee.caller);
+};
+<span class="comment">/*
+  function(){
+      inner();
+  }
+  */</span>
+outer();
+</code></pre><p>从arguments的callee中可获得当前的执行函数inner，而inner的动态属性caller指向了调用inner的外层函数outer，由此看来我们可以使用arguments.callee.caller来确定函数的执行环境，实现私有方法和属性。</p>
+<pre><code><span class="keyword">var</span> Phone, aira1, aira2;
+<span class="built_in">Function</span>.prototype.__public = <span class="function"><span class="keyword">function</span> <span class="params">(klass)</span> </span>{
+    <span class="keyword">this</span>.klass = klass;
+    <span class="keyword">return</span> <span class="keyword">this</span>;
+};
+<span class="built_in">Function</span>.prototype.__private = <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+    <span class="keyword">var</span> that;
+    that = <span class="keyword">this</span>;
+    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+        <span class="keyword">if</span> (<span class="keyword">this</span>.constructor === <span class="built_in">arguments</span>.callee.caller.klass) {
+            <span class="keyword">return</span> that.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);
+        } <span class="keyword">else</span> {
+            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">""</span> + that + <span class="string">" is a private method!"</span>);
+        }
+    };
+};
+Phone = <span class="function"><span class="keyword">function</span> <span class="params">(name)</span> </span>{
+    <span class="keyword">var</span> __name;
+    __name = name;
+    <span class="keyword">this</span>.__getName = (<span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+        <span class="keyword">return</span> __name;
+    }).__private();
+    <span class="keyword">this</span>.__setName = (<span class="function"><span class="keyword">function</span> <span class="params">(name)</span> </span>{
+        __name = name;
+    }).__private();
+};
+Phone.prototype.init = (<span class="function"><span class="keyword">function</span> <span class="params">(number)</span> </span>{
+    <span class="keyword">this</span>.__setName(<span class="keyword">this</span>.__getName() + <span class="string">"#"</span> + number);
+}).__public(Phone);
+Phone.prototype.hello = (<span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+    <span class="built_in">console</span>.log(<span class="string">"hello,my name is "</span> + (<span class="keyword">this</span>.__getName()));
+}).__public(Phone);
+aira1 = <span class="keyword">new</span> Phone(<span class="string">"aira"</span>);
+aira1.init(<span class="number">1</span>);
+<span class="comment">//hello,my name is aira#1</span>
+aira1.hello();
+aira2 = <span class="keyword">new</span> Phone(<span class="string">"aira"</span>);
+aira2.init(<span class="number">1</span>);
+<span class="comment">//hello,my name is aira#2</span>
+aira2.hello();
+<span class="comment">//hello,my name is aira#1</span>
+aira1.hello();
+
+<span class="keyword">try</span> {
+    aira1.__getName();
+} <span class="keyword">catch</span> (e) {
+<span class="comment">/*
+Error Object
+    message:"function () {return __name;} is a private method!"
+*/</span>
+    <span class="built_in">console</span>.log(e);
+}
+</code></pre><ul>
+<li>请原谅我给Function原型上添加了两个方法__public和__private以此来实现私有方法的调用环境检测；</li>
+<li>其次，我无法给私有属性添加检测，所以私有属性直接不可见，使用私有的get，set方法访问；</li>
+<li>本身在aira1外部调用时我们还是能看到__getName和__setName方法，只是不能调用而已；</li>
+<li>唯一好的一点是原型方法（公共方法）终于可以从构造函数闭包中解放出来。</li>
+</ul>
+<h2 id="参考">参考</h2><ul>
+<li><a href="http://jibbering.com/faq/notes/closures/#clIRExSc" target="_blank" rel="external">Javascript Closures</a></li>
+</ul>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>在JavaScript中谈私有属性和私有方法就是扯淡，”private”还杵在保留字的位置上，不知道什么时候提上来实现真正的私有。那今天咱就来讨论下如何以JS当前的特性来实现私有成员。</p>
+<h2 id="闭包">闭包</h2><p>（比较枯燥，可以跳过本单元）Java]]>
+    </summary>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[JavaScript 未来是什么样的？]]></title>
     <link href="http://island205.com/2011/12/02/the-future-of-javascript/"/>
     <id>http://island205.com/2011/12/02/the-future-of-javascript/</id>
     <published>2011-12-01T16:00:00.000Z</published>
-    <updated>2015-03-18T23:50:22.000Z</updated>
+    <updated>2015-03-19T00:11:07.000Z</updated>
     <content type="html"><![CDATA[<p>最近看了很多关于Javascript、ECMAScript、Node.js等等一些资料，且随着Javascript的广泛使用，V8带动JS引擎效率的提升，不禁会问：未来的Javascript是什么样子？</p>
 <p>以下是我的愚见：</p>
 <h2 id="语言特性">语言特性</h2><p>Javascript随着Ajax的概念的兴起，从2005年至今确实火了一大把，十多年前布兰登·艾克（Brendan Eich）十天搞定了它，应该想不到它如此的有影响力。然而Javascript将来走向何方，也完全看它自己的造化。</p>
