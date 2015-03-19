@@ -3,7 +3,7 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: 一寸之志
+title: 寸志
 subtitle:
 description:
 author: 寸志
@@ -70,8 +70,8 @@ feed:
 ## Themes: http://hexo.io/themes/
 theme: casper
 
-disqus_shortname: island205
-duoshuo_shortname: 一寸之志
+# disqus_shortname: island205
+duoshuo_shortname: fronteer
 
 # Deployment
 ## Docs: http://hexo.io/docs/deployment.html
