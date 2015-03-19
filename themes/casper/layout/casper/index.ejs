@@ -16,15 +16,15 @@
       </p>
       <% if (theme.excerpt_link) { %>
       <p>
-          <a href="<%- config.root %><%- post.path %>" class="excerpt-link"><%= theme.excerpt_link %>...</a>
+          <a href="<%- config.root %><%- post.path %>" class="excerpt-link"><%= theme.excerpt_link %></a>
       </p>
       <% } %>
     </section>
   </article>
   <% }); %>
   <nav class="pagination" role="pagination">
-    <% if (page.prev) { %><a class="newer-posts" href="<%- url_for(page.prev_link) %>">← Newer Posts</a><% } %>
-    <span class="page-number">Page <%- page.current %> of <%- page.total %></span>
-    <% if (page.next) { %><a class="older-posts" href="<%- url_for(page.next_link) %>">Older Posts →</a><% } %>
+    <% if (page.prev) { %><a class="newer-posts" href="<%- url_for(page.prev_link) %>">← <%= __('casper.index.newer_posts')%></a><% } %>
+    <span class="page-number">第 <%- page.current %> 页 / 共 <%- page.total %> 页</span>
+    <% if (page.next) { %><a class="older-posts" href="<%- url_for(page.next_link) %>"><%= __('casper.index.older_posts')%> →</a><% } %>
   </nav>
 </main>
