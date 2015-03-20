@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://island205.com/"/>
-  <updated>2015-03-19T04:53:03.000Z</updated>
+  <updated>2015-03-19T11:20:05.000Z</updated>
   <id>http://island205.com/</id>
   
   <author>
@@ -19,11 +19,8 @@
     <link href="http://island205.com/2014/05/23/thinking-in-front-end-module/"/>
     <id>http://island205.com/2014/05/23/thinking-in-front-end-module/</id>
     <published>2014-05-22T16:00:00.000Z</published>
-    <updated>2015-03-19T04:53:03.000Z</updated>
-    <content type="html"><![CDATA[<blockquote>
-<p>Teambition是一家追求卓越技术的公司，我们工程师都很Geek，我们使用了很多新潮的，开源的技术。同时我们也贡献了很多开源的项目。我们希望能够把一些技术经验分享给大家。于是有了这个「创作随笔」。废话休说，「创作随笔」第一弹，来自我们的前端工程师寸志，谈一谈他在前端模块化开发方面的一些感想。</p>
-</blockquote>
-<p>在模块化方面，Node.js就显得游刃有余。</p>
+    <updated>2015-03-19T11:20:05.000Z</updated>
+    <content type="html"><![CDATA[<p>在模块化方面，Node.js就显得游刃有余。</p>
 <p>作为用户，我们把代码放到一个个JavaScript文件中，然后Node.js就有一套规则帮我们把这些代码组织起来，Node.js还有包的概念，于是我们就可以使用npm将代码放到一个个包中，放到这里那里的node_modules中使用。很方便不是？感谢Node.js。</p>
 <p>可在浏览器端，模块化这事就没那么简单了。</p>
 <h2 id="前端的模块">前端的模块</h2><p>前端的一个模块包含很多东西，JavaScript、CSS、图片字体等等。甚至，可能根据业务需要，还包含国际化的文件。一个模块如果包含以上这些东西，复杂度就上了几个数量级。</p>
@@ -58,8 +55,8 @@
 <h2 id="总结">总结</h2><p>前端模块没有什么特效药。唯一要遵守的原则就是，比起Node.js来讲，每种资源必须要有一种自己的开发和上线组织方式（Node.js开发和上线都是一致的），开发和上线完全可以是两种方式，大可不必人云亦云，只要适合可以随意组合；CSS在CSS Scoped Style正式使用之前，应该有一套基础样式和沙盒（模块样式命名空间）。</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<blockquote>
-<p>Teambition是一家追求卓越技术的公司，我们工程师都很Geek，我们使用了很多新潮的，开源的技术。同时我们也贡献了很多开源的项目。我们希望能够把一些技术经验分享给大家。于是有了这个「创作随笔」。废话休说，「创作随笔」第一弹，来自我们的前端工程]]>
+    <![CDATA[<p>在模块化方面，Node.js就显得游刃有余。</p>
+<p>作为用户，我们把代码放到一个个JavaScript文件中，然后Node.js就有一套规则帮我们把这些代码组织起来，Node.js还有包的概念，于是我们就可以使用npm将代码放到一个个包中，放到这里那里的node_m]]>
     </summary>
     
   </entry>
