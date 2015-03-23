@@ -31,12 +31,10 @@ function geo2weather(lat, lon, callback) {
   var params = {
     lat: lat,
     lon: lon,
-    APPID: '9bf4d2b07c7ddeb780c5b32e636c679d',
-    cnt: 5
+    APPID: '9bf4d2b07c7ddeb780c5b32e636c679d'
   }
-
   request({
-    url: 'http://api.openweathermap.org/data/2.5/forecast/daily?' + qs.stringify(params),
+    url: 'http://api.openweathermap.org/data/2.5/weather?' + qs.stringify(params),
     json: true,
     timeout: 2000,
   }, function(err, resp, body) {
@@ -95,26 +93,28 @@ function writeWeather(weathers, callback) {
   var weather
   for (var i = 0; i < weathers.length; i++) {
     weather = weathers[i]
-    output.push(weather)
+    output.push({
+      ip: weather.geo.ip,
+      weather: weather.weather[0].main,
+      region: weather.geo.region
+    })
   }
-  fs.writeFile('./weather.json', JSON.stringify(output), callback)
+  fs.writeFile('./weather.json', JSON.stringify(output, null, '  '), callback)
 }
 
 readIP('./ip.json', function(err, ips) {
   if (err) {
     console.log('readIP', err)
   } else {
-    console.log(ips)
     ips2geos(ips, function(err, geos) {
       if (err) {
         console.log('ips2geos', err)
       } else {
-        console.log(geos)
         geos2weathers(geos, function(err, weathers) {
           if (err) {
             console.log('geos2weathers', err)
           } else {
-            writeWeather( weathers, function() {
+            writeWeather(weathers, function() {
               console.log('success!')
             })
           }
