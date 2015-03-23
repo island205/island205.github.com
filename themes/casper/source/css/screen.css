@@ -868,6 +868,8 @@ pre .chunk {
     color: #BBC7CC;
     text-align: center;
     background: #F7FAFB;
+    background-size: cover;
+    background-position: center bottom;
 }
 
 .site-footer a {

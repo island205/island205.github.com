@@ -78,3 +78,5 @@ duoshuo_shortname: fronteer
 deploy:
   type: git
   repo: git@github.com:island205/island205.github.com.git
+
+mixpanel_token: 4263f8eff30a9a5545420500678d784f

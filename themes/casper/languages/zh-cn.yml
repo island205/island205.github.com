@@ -1,6 +1,6 @@
 casper:
   footer:
-    subscribe: RSS 订阅
+    subscribe: 订阅
   index:
     newer_posts: 更新的文章
     older_posts: 较老的文章

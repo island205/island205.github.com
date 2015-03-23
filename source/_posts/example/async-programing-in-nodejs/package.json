@@ -1,0 +1,15 @@
+{
+  "name": "async-programing-in-nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "blank.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "querystring": "^0.2.0",
+    "request": "^2.53.0"
+  }
+}

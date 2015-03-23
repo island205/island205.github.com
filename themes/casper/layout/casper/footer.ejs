@@ -1,5 +1,5 @@
 
-<footer class="site-footer">
+<footer class="site-footer" <% if (theme.cover) { %> style="background-image: url(<%- theme.cover %>)" <% } %>>
   <% if (config.rss || config.feed) {  %>
   <a class="subscribe icon-feed" href="/<%= (config.rss || config.feed.path) %>"><span class="tooltip"><%= __('casper.footer.subscribe')%></span></a>
   <% } %>
