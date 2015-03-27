@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>Node.js 异步编程之 Callback | 寸志</title>
+  <meta name="description" content="" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="寸志">
+
+  
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(https://unsplash.it/1366/768?random)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="//pic2.zhimg.com/734f2d039_l.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">寸志</h1>
+            <h2 class="blog-description"></h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2015-03-26T16:00:00.000Z" itemprop="datePublished">
+          2015年 3月27日
+      </time>
+    
+</span>
+    <h1 class="post-title">Node.js 异步编程之 Callback</h1>
+    <section class="post-content">
+      <p>Node.js 基于 JavaScript 引擎 v8，是但线程的。Node.js 采用了与通常 Web 上的 JavaScript 异步编程的方式来处理会造成阻塞的I/O操作。在 Node.js 中读取文件、访问数据库、网络请求等等都有可能是异步的。对于 Node.js 新人或者从其他语言背景迁移到 Node.js  上的开发者来说，异步编程是比较痛苦的一部分。本章将由浅入深为大家讲解 Node.js 异步编程的方方面面。从最基础的 callback 到 thunk、Promise、co 直到 ES7 计划的 async/await。</p>
+<p>首先我们先从一个具体的异步编程的例子说起。</p>
+<h2 id="获取多个_ip_所在地的天气信息">获取多个 ip 所在地的天气信息</h2><p>在 ip.json 这个文件中，有一个数组我们存放了若干个 ip 地址，分别来自不同的敌方的不同访问者，内容如下：</p>
+<pre><code><span class="comment">// ip.json</span>
+[<span class="string">"115.29.230.208"</span>, <span class="string">"180.153.132.38"</span>, <span class="string">"74.125.235.224"</span>, <span class="string">"91.239.201.98"</span>, <span class="string">"60.28.215.115"</span>]
+</code></pre><p>希望可以每一个 ip 所在地当前的天气。将结果输出到 weather.json 这个文件中各式如下：</p>
+<pre><code><span class="comment">// weather.json</span>
+[
+  { <span class="string">"ip"</span>: <span class="string">"115.29.230.208"</span>, <span class="string">"weather"</span>: <span class="string">"Clouds"</span>, <span class="string">"region"</span>: <span class="string">"Zhejiang"</span> },
+  { <span class="string">"ip"</span>: <span class="string">"180.153.132.38"</span>, <span class="string">"weather"</span>: <span class="string">"Clear"</span>, <span class="string">"region"</span>: <span class="string">"Shanghai"</span> },
+  { <span class="string">"ip"</span>: <span class="string">"74.125.235.224"</span>, <span class="string">"weather"</span>: <span class="string">"Rain"</span>, <span class="string">"region"</span>: <span class="string">"California"</span> },
+  { <span class="string">"ip"</span>: <span class="string">"60.28.215.115"</span>, <span class="string">"weather"</span>: <span class="string">"Clear"</span>, <span class="string">"region"</span>: <span class="string">"Tianjin"</span> }
+]
+</code></pre><p>整理思路，我们分成以下几步来完成：</p>
+<ul>
+<li>读取 ip 地址；</li>
+<li>根据 ip 地址获取 ip 所在地的地理位置；</li>
+<li>根据地理位置查询当地的天气；</li>
+<li>将结果写入到 weather.json 文件中。</li>
+</ul>
+<p>这些步骤都是异步的（读写文件可以同步，但作为示例，都用异步）。</p>
+<h2 id="callback">callback</h2><p>首先我们尝试不借助任何库，试着以 Node.js API 通常提供的方式——专递一个 callback 作为异步回调——来实现。我们将借助三个基础模块：</p>
+<ul>
+<li>fs：从文件 ip.json 读取 IP 列表；把结果写入到文件中；</li>
+<li>request：用来发送 HTTP 请求，根据 IP 地址获取 geo 数据，再通过 geo 数据获取天气数据；</li>
+<li>querystring：用来组装发送请求的 url 参数。</li>
+</ul>
+<p>新建一个 callback.js 文件，引入这几个模块：</p>
+<pre><code><span class="comment">// callback.js</span>
+<span class="tag">var</span> fs = <span class="function"><span class="title">require</span><span class="params">(<span class="string">'fs'</span>)</span></span>
+<span class="tag">var</span> request = <span class="function"><span class="title">require</span><span class="params">(<span class="string">'request'</span>)</span></span>
+<span class="tag">var</span> qs = <span class="function"><span class="title">require</span><span class="params">(<span class="string">'querystring'</span>)</span></span>
+</code></pre><p>读取文件中的 IP 列表，调用 <code>fs.readFile</code> 读取文件内容，再通过 <code>JSON.parse</code> 来解析 JSON 数据：</p>
+<pre><code><span class="keyword">...</span>
+<span class="keyword">function</span> readIP(path, callback) {
+  fs.readFile(path, <span class="keyword">function</span>(err, data) {
+    <span class="keyword">if</span> (err) {
+      callback(err)
+    } <span class="keyword">else</span> {
+      <span class="keyword">try</span> {
+        data = JSON.parse(data)
+        callback(null, data)
+      } catch (error) {
+        callback(error)
+      }
+    }
+  })
+}
+<span class="keyword">...</span>
+</code></pre><p>接着就是使用 IP 来获取geo，我们使用 <code>request</code> 来请求一个开放的 geo 服务：</p>
+<pre><code><span class="keyword">...</span>
+<span class="keyword">function</span> ip2geo(ip, callback) {
+  var url = <span class="string">'http://www.telize.com/geoip/'</span> + ip
+  request({
+    url: url,
+    json: true
+  }, <span class="keyword">function</span>(err, resp, body) {
+    callback(err, body)
+  })
+}
+<span class="keyword">...</span>
+</code></pre><p>使用 geo 数据来获取 weather：</p>
+<pre><code><span class="keyword">...</span>
+<span class="keyword">function</span> geo2weather(lat, lon, callback) {
+  var params = {
+    lat: lat,
+    lon: lon,
+    APPID: <span class="string">'9bf4d2b07c7ddeb780c5b32e636c679d'</span>
+  }
+  var url = <span class="string">'http://api.openweathermap.org/data/2.5/weather?'</span> + qs.stringify(params)
+  request({
+    url: url,
+    json: true,
+  }, <span class="keyword">function</span>(err, resp, body) {
+    callback(err, body)
+  })
+}
+<span class="keyword">...</span>
+</code></pre><p>现在我们已经获取 geo、获取 weather 的接口，接下来我们还有稍微复杂的问题要处理，因为 ip 有多个，所以我们需要并行地去读取 geo 已经并行地读取 weather 数据：</p>
+<pre><code>...
+<span class="function"><span class="keyword">function</span> <span class="title">ips2geos</span><span class="params">(ips, callback)</span> </span>{
+  <span class="keyword">var</span> geos = []
+  <span class="keyword">var</span> ip
+  <span class="keyword">var</span> remain = ips.length
+  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; ips.length; i++) {
+    ip = ips[i];
+    (<span class="function"><span class="keyword">function</span><span class="params">(ip)</span> </span>{
+      ip2geo(ip, <span class="function"><span class="keyword">function</span><span class="params">(err, geo)</span> </span>{
+        <span class="keyword">if</span> (err) {
+          <span class="keyword">callback</span>(err)
+        } <span class="keyword">else</span> {
+          geo.ip = ip
+          geos.push(geo)
+          remain--
+        }
+        <span class="keyword">if</span> (remain == <span class="number">0</span>) {
+          <span class="keyword">callback</span>(<span class="literal">null</span>, geos)
+        }
+      })
+    })(ip)
+  }
+}
+
+<span class="function"><span class="keyword">function</span> <span class="title">geos2weathers</span><span class="params">(geos, callback)</span> </span>{
+  <span class="keyword">var</span> weathers = []
+  <span class="keyword">var</span> geo
+  <span class="keyword">var</span> remain = geos.length
+  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; geos.length; i++) {
+    geo = geos[i];
+    (<span class="function"><span class="keyword">function</span><span class="params">(geo)</span> </span>{
+      geo2weather(geo.latitude, geo.longitude, <span class="function"><span class="keyword">function</span><span class="params">(err, weather)</span> </span>{
+        <span class="keyword">if</span> (err) {
+          <span class="keyword">callback</span>(err)
+        } <span class="keyword">else</span> {
+          weather.geo = geo
+          weathers.push(weather)
+          remain--
+        }
+        <span class="keyword">if</span> (remain == <span class="number">0</span>) {
+          <span class="keyword">callback</span>(<span class="literal">null</span>, weathers)
+        }
+      })
+    })(geo)
+  }
+}
+...
+</code></pre><p>ips2geos 和 geos2weathers 都使用了一种比较原始的方法，remain 来计算等待返回的个数，remain 为 0 表示并行请求结束，将处理结果装进一个数组返回。</p>
+<p>最后就是将结果写入到 weather.json 文件中：</p>
+<pre><code><span class="keyword">...</span>
+<span class="keyword">function</span> writeWeather(weathers, callback) {
+  var output = []
+  var weather
+  <span class="keyword">for</span> (var i = <span class="number">0</span>; i &lt; weathers.length; i++) {
+    weather = weathers[i]
+    output.push({
+      ip: weather.geo.ip,
+      weather: weather.weather[<span class="number">0</span>].main,
+      region: weather.geo.region
+    })
+  }
+  fs.writeFile(<span class="string">'./weather.json'</span>, JSON.stringify(output, null, <span class="string">'  '</span>), callback)
+}
+<span class="keyword">...</span>
+</code></pre><p>组合上面这些函数，我们就可以实现我们的目标：</p>
+<pre><code>...
+<span class="function"><span class="keyword">function</span> <span class="title">handlerError</span><span class="params">(err)</span> </span>{
+  <span class="built_in">console</span>.log(<span class="string">'error: '</span> + err)
+}
+
+readIP(<span class="string">'./ip.json'</span>, <span class="function"><span class="keyword">function</span><span class="params">(err, ips)</span> </span>{
+  <span class="keyword">if</span> (err) {
+    handlerError(err)
+  } <span class="keyword">else</span> {
+    ips2geos(ips, <span class="function"><span class="keyword">function</span><span class="params">(err, geos)</span> </span>{
+      <span class="keyword">if</span> (err) {
+        handlerError(err)
+      } <span class="keyword">else</span> {
+        geos2weathers(geos, <span class="function"><span class="keyword">function</span><span class="params">(err, weathers)</span> </span>{
+          <span class="keyword">if</span> (err) {
+            handlerError(err)
+          } <span class="keyword">else</span> {
+            writeWeather(weathers, <span class="function"><span class="keyword">function</span><span class="params">(err)</span> </span>{
+              <span class="keyword">if</span> (err) {
+                handlerError(err)
+              } <span class="keyword">else</span> {
+                <span class="built_in">console</span>.log(<span class="string">'success!'</span>)
+              }
+            })
+          }
+        })
+      }
+    })
+  }
+})
+</code></pre><p>哈哈，你妈这嵌套，你可能觉得这就是 JavaScript 异步的问题，说真的，嵌套不是 JavaScript 异步的真正问题所在。上面这段代码我们可以下面这样写：</p>
+<pre><code>...
+<span class="keyword">function</span> ReadIPCallback(<span class="built_in">err</span>, ips) {
+  <span class="keyword">if</span> (<span class="built_in">err</span>) {
+    handlerError(<span class="built_in">err</span>)
+  } <span class="keyword">else</span> {
+    ips2geos(ips, ips2geosCallback)
+  }
+}
+
+<span class="keyword">function</span> ips2geosCallback(<span class="built_in">err</span>, geos) {
+  <span class="keyword">if</span> (<span class="built_in">err</span>) {
+    handlerError(<span class="built_in">err</span>)
+  } <span class="keyword">else</span> {
+    geos2weathers(geos, geos2weathersCallback)
+  }
+}
+
+<span class="keyword">function</span> geos2weathersCallback(<span class="built_in">err</span>, weathers) {
+  <span class="keyword">if</span> (<span class="built_in">err</span>) {
+    handlerError(<span class="built_in">err</span>)
+  } <span class="keyword">else</span> {
+    writeWeather(weathers, writeWeatherCallback)
+  }
+}
+
+<span class="keyword">function</span> writeWeatherCallback(<span class="built_in">err</span>) {
+  <span class="keyword">if</span> (<span class="built_in">err</span>) {
+    handlerError(<span class="built_in">err</span>)
+  } <span class="keyword">else</span> {
+    console.<span class="built_in">log</span>(<span class="comment">'success!')</span>
+  }
+}
+
+readIP(<span class="comment">'./ip.json', ReadIPCallback)</span>
+</code></pre><p>好了，这是我们 callback.js 的全部内容。运行：</p>
+<pre><code>node <span class="keyword">callback</span>.js
+</code></pre><p>将会生成 weater.json 文件：</p>
+<pre><code>[
+  {
+    "<span class="attribute">ip</span>": <span class="value"><span class="string">"180.153.132.38"</span></span>,
+    "<span class="attribute">weather</span>": <span class="value"><span class="string">"Clear"</span></span>,
+    "<span class="attribute">region</span>": <span class="value"><span class="string">"Shanghai"</span>
+  </span>},
+  {
+    "<span class="attribute">ip</span>": <span class="value"><span class="string">"91.239.201.98"</span></span>,
+    "<span class="attribute">weather</span>": <span class="value"><span class="string">"Clouds"</span>
+  </span>},
+  {
+    "<span class="attribute">ip</span>": <span class="value"><span class="string">"60.28.215.115"</span></span>,
+    "<span class="attribute">weather</span>": <span class="value"><span class="string">"Clear"</span></span>,
+    "<span class="attribute">region</span>": <span class="value"><span class="string">"Tianjin"</span>
+  </span>},
+  {
+    "<span class="attribute">ip</span>": <span class="value"><span class="string">"74.125.235.224"</span></span>,
+    "<span class="attribute">weather</span>": <span class="value"><span class="string">"Clouds"</span></span>,
+    "<span class="attribute">region</span>": <span class="value"><span class="string">"California"</span>
+  </span>},
+  {
+    "<span class="attribute">ip</span>": <span class="value"><span class="string">"115.29.230.208"</span></span>,
+    "<span class="attribute">weather</span>": <span class="value"><span class="string">"Clear"</span></span>,
+    "<span class="attribute">region</span>": <span class="value"><span class="string">"Zhejiang"</span>
+  </span>}
+]
+</code></pre><p>那正真的问题是什么？</p>
+<p>当然是异步的问题啦，异步本质上要处理三个事情：</p>
+<ul>
+<li>异步操作什么时候结束，需要通知回来，Callback 是一种方案；</li>
+<li>异步产生的结果需要传递回来，Callback 接受一个 data 参数，把数据传回来；</li>
+<li>异步如果出错了怎么办？Callback 接受 一个 err 参数，把错误传回来。</li>
+</ul>
+<p>但有没有发现好多重复的工作（各种 callback）？上面的这些代码有什么问题么？请大家期待本文的续篇。</p>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>寸志</h4>
+    <p>为什么我的眼里常含泪水? 因为我对这土地爱得深沉</p>
+</section>
+      <section class="share">
+    <h4>分享本文</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://island205.com/2015/03/27/asnyc-programing-in-nodejs-1/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://island205.com/2015/03/27/asnyc-programing-in-nodejs-1/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://island205.com/2015/03/27/asnyc-programing-in-nodejs-1/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <span class="page-number">•</span>
+    
+    <a class="older-posts" href="/2014/05/23/thinking-in-front-end-module/">
+        前端模块化杂谈 →
+    </a>
+    
+</nav>
+  
+<div id="comment" class="comments-area">
+  <!-- 多说评论框 start -->
+  <div class="ds-thread" data-thread-key="post-asnyc-programing-in-nodejs-1" data-title="Node.js 异步编程之 Callback" data-url="http://island205.com/2015/03/27/asnyc-programing-in-nodejs-1/"></div>
+  <!-- 多说评论框 end -->
+  <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+  <script type="text/javascript">
+  var duoshuoQuery = {short_name:'fronteer'};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0] 
+       || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+  <!-- 多说公共JS代码 end -->
+</div>
+
+</main>
+
+
+  
+<footer class="site-footer"  style="background-image: url(https://unsplash.it/1366/768?random)" >
+  
+  <a class="subscribe icon-feed" href="/atom.xml"><span class="tooltip">订阅</span></a>
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">寸志</a> &copy; 2015 &bull; All rights reserved.</section>
+     <section class="poweredby">使用 <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a> 驱动</section>
+  </div>
+</footer>
+
+  <script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+
+<!-- start Mixpanel --><script type="text/javascript">(function(f,b){if(!b.__SV){var a,e,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2;a=f.createElement("script");a.type="text/javascript";a.async=!0;a.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";e=f.getElementsByTagName("script")[0];e.parentNode.insertBefore(a,e)}})(document,window.mixpanel||[]);
+mixpanel.init("4263f8eff30a9a5545420500678d784f");
+// page-view
+mixpanel.track("page-view");
+</script><!-- end Mixpanel -->
+
+
+
+
+
+</body>
+</html>
