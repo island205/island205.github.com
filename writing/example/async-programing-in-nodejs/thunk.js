@@ -2,19 +2,33 @@ var fs = require('fs')
 var request = require('request')
 var qs = require('querystring')
 
-function readIP(path, callback) {
-  fs.readFile(path, function(err, data) {
-    if (err) {
-      callback(err)
-    } else {
-      try {
-        data = JSON.parse(data)
-        callback(null, data)
-      } catch (err) {
+function Thunk() {
+  return function (fn) {
+    fn.apply(null, arguments)
+  }
+}
+
+function thunkify(fn) {
+  return function () {
+
+  }
+}
+
+function readIP(path) {
+  return function (fn) {
+    fs.readFile(path, function(err, data) {
+      if (err) {
         callback(err)
+      } else {
+        try {
+          data = JSON.parse(data)
+          fn(null, data)
+        } catch (error) {
+          fn(error)
+        }
       }
-    }
-  })
+    })
+  }
 }
 
 function ip2geo(ip, callback) {
@@ -23,7 +37,7 @@ function ip2geo(ip, callback) {
     json: true,
     timeout: 2000
   }, function(err, resp, body) {
-    callback(err, body)
+    return Thunk(err, body)
   })
 }
 
@@ -38,7 +52,7 @@ function geo2weather(lat, lon, callback) {
     json: true,
     timeout: 2000,
   }, function(err, resp, body) {
-    callback(err, body)
+    return Thunk(err, body)
   })
 }
 
@@ -51,14 +65,14 @@ function ips2geos(ips, callback) {
     (function(ip) {
       ip2geo(ip, function(err, geo) {
         if (err) {
-          callback(err)
+          return Thunk(err)
         } else {
           geo.ip = ip
           geos.push(geo)
           remain--
         }
-        if (remain == 0) {
-          callback(null, geos)
+        if (remain === 0) {
+          return Thunk(null, geos)
         }
       })
     })(ip)
@@ -74,14 +88,14 @@ function geos2weathers(geos, callback) {
     (function(geo) {
       geo2weather(geo.latitude, geo.longitude, function(err, weather) {
         if (err) {
-          callback(err)
+          return Thunk(err)
         } else {
           weather.geo = geo
           weathers.push(weather)
           remain--
         }
         if (remain == 0) {
-          callback(null, weathers)
+          return Thunk(null, weathers)
         }
       })
     })(geo)
