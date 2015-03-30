@@ -1,13 +1,13 @@
 title: Node.js 异步编程之 Callback
 ----
 
-Node.js 基于 JavaScript 引擎 v8，是但线程的。Node.js 采用了与通常 Web 上的 JavaScript 异步编程的方式来处理会造成阻塞的I/O操作。在 Node.js 中读取文件、访问数据库、网络请求等等都有可能是异步的。对于 Node.js 新人或者从其他语言背景迁移到 Node.js  上的开发者来说，异步编程是比较痛苦的一部分。本章将由浅入深为大家讲解 Node.js 异步编程的方方面面。从最基础的 callback 到 thunk、Promise、co 直到 ES7 计划的 async/await。
+Node.js 基于 JavaScript 引擎 v8，是单线程的。Node.js 采用了与通常 Web 上的 JavaScript 异步编程的方式来处理会造成阻塞的I/O操作。在 Node.js 中读取文件、访问数据库、网络请求等等都有可能是异步的。对于 Node.js 新人或者从其他语言背景迁移到 Node.js  上的开发者来说，异步编程是比较痛苦的一部分。本章将由浅入深为大家讲解 Node.js 异步编程的方方面面。从最基础的 callback 到 thunk、Promise、co 直到 ES7 计划的 async/await。
 
 首先我们先从一个具体的异步编程的例子说起。
 
 ## 获取多个 ip 所在地的天气信息
 
-在 ip.json 这个文件中，有一个数组我们存放了若干个 ip 地址，分别来自不同的敌方的不同访问者，内容如下：
+在 ip.json 这个文件中，有一个数组我们存放了若干个 ip 地址，分别来自不同的地方的不同访问者，内容如下：
 
     // ip.json
     ["115.29.230.208", "180.153.132.38", "74.125.235.224", "91.239.201.98", "60.28.215.115"]

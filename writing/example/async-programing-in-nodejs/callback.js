@@ -165,3 +165,13 @@ readIP('./ip.json', ReadIPCallback)
 //     })
 //   }
 // })
+
+function ips2geos(ips) {
+  var geos = []
+  var ip
+  for (var i = 0; i < ips.length; i++) {
+    ip = ips[i]
+    geos.push(ip2geo(ip))
+  }
+  return geos
+}
