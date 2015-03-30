@@ -42,6 +42,36 @@
   <article class="post">
     <header class="post-header">
       <span class="post-meta">
+      <time datetime="2015-03-30T16:00:00.000Z" itemprop="datePublished">
+          2015年 3月31日
+      </time>
+    
+</span>
+      <h2 class="post-title"><a href="/2015/03/31/the-problem-of-callback/">Node.js 异步编程之 Callback的问题</a></h2>
+    </header>
+    <section class="post-excerpt">
+      <p>
+      
+        在上一篇中，我们使用 Callback 的方式来实现了我们需求，将一个 IP 列表转换成了具体的城市和天气。可以看出回调嵌套并不是 Callback 作为异步处理方案的真真问题。那正真的问题是什么呢？
+可靠性上篇文章发出来，就被 @朴灵 吐槽，我还浑然不知。看上一篇文章中的这段代码：
+try {
+  data = JSON.parse(data)
+  callback(null, data)
+} catch (error) {
+  ca
+      
+      </p>
+      
+      <p>
+          <a href="/2015/03/31/the-problem-of-callback/" class="excerpt-link">阅读</a>
+      </p>
+      
+    </section>
+  </article>
+  
+  <article class="post">
+    <header class="post-header">
+      <span class="post-meta">
       <time datetime="2015-03-26T16:00:00.000Z" itemprop="datePublished">
           2015年 3月27日
       </time>
