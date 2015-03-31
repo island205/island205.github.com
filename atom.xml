@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://island205.com/"/>
-  <updated>2015-03-30T23:28:23.000Z</updated>
+  <updated>2015-03-31T01:38:00.000Z</updated>
   <id>http://island205.com/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://island205.com/2015/03/31/the-problem-of-callback/"/>
     <id>http://island205.com/2015/03/31/the-problem-of-callback/</id>
     <published>2015-03-30T16:00:00.000Z</published>
-    <updated>2015-03-30T23:28:23.000Z</updated>
+    <updated>2015-03-31T01:38:00.000Z</updated>
     <content type="html"><![CDATA[<p>在上一篇中，我们使用 Callback 的方式来实现了我们需求，将一个 IP 列表转换成了具体的城市和天气。可以看出回调嵌套并不是 Callback 作为异步处理方案的真真问题。那正真的问题是什么呢？</p>
 <h2 id="可靠性">可靠性</h2><p>上篇文章发出来，就被 <a href="http://weibo.com/1744667943/CaykJoiwz?type=comment" target="_blank" rel="external">@朴灵</a> 吐槽，我还浑然不知。看上一篇文章中的这段代码：</p>
 <pre><code><span class="keyword">try</span> {
@@ -37,7 +37,7 @@
 <span class="keyword">try</span> {
   data = JSON.parse(data)
 } <span class="keyword">catch</span> (e) {
-  err = err
+  err = e
   hasError = <span class="literal">true</span>
 }
 <span class="keyword">if</span> (hasError) {
