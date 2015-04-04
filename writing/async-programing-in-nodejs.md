@@ -390,6 +390,166 @@ ips2geos 和 geos2weathers 都使用了一种比较原始的方法，remain 来�
 
 在本文中我们指出了 `callback` 作为异步处理的两个比较严重的问题，异步本身并不是坏事，只是 `callback` 的方案缺乏可靠性，表现力不足。在下一篇文章中我就进入正题，开始给大家介绍 thunk 以及 [thunks](https://github.com/thunks/thunks) 类库。后者是 [@严清](http://weibo.com/zensh) 开发的一个类库，灵感来自于 co，意在提升异步编程的体验。敬请期待。
 
+## thunk
+
+我们终于进入正题了，今天我们来聊聊 thunk，在讨论它之前，我们先来回顾一下讨论的内容。
+
+异步要处理的三个问题：
+
+- 异步介绍需要继续运行后面的逻辑
+- 要获取异步计算的结果
+- 需要知道异步是否出错
+
+采用 callback(err, data) 这样形式，确实可以满足上面这三点需求，但是自身存在问题：
+
+- 缺乏可靠性，callback 可能会被多次调用；
+- 缺乏表现力，容易造成代码的嵌套，不能很好地处理任务的串行和并行。
+
+我们先从第二点开始讨论，处理嵌套太多的问题。callback 嵌套太多就是因为对于一个异步的过程，我们传递了一个 callback 函数，然后如果这 callback 函数中还有异步的话，我们必须再传递一个 callback 进去，如此反复嵌套就越来越多了。
+
+问题就在这里，我们获取异步结果是以传递一个 callback 参数来实现的。如果不是传递 callback 而是把异步结果 return 回来不就没有嵌套的问题了。
+
+我们尝试修改 readIP 函数：
+
+    function readIP(path) {
+      return function(callback) {
+        fs.readFile(path, function(err, data) {
+          var hasError = false
+          if (err) {
+            callback(err)
+          } else {
+            try {
+              data = JSON.parse(data)
+            } catch (e) {
+              err = e
+              hasError = true
+            }
+            if (hasError) {
+              callback(err)
+            } else {
+              callback(null, data)
+            }
+          }
+        })
+      }
+    }
+
+我们把 readIP 真实的处理逻辑包含在了一个函数中，这个函数接受一个 callback 作为参数，用来获取异步的结果，然后 readIP 仅仅是返回了这个函数，这个函数就相当于**携带了结果**。于是我们可以这样是用 readIP：
+
+    readIP('./ip.json')(function (err, data) {
+      if (err) {
+        console.log(err)
+      } else {
+        console.log(data)
+      }
+    })
+
+继续修改 ip2geo：
+
+    function ip2geo(ip) {
+      return function (callback) {
+        var url = 'http://www.telize.com/geoip/' + ip
+        request({
+          url: url,
+          json: true
+        }, function(err, resp, body) {
+          callback(err, body)
+        })
+      }
+    }
+
+可以这样使用 ip2geo：
+
+    ip2geo('115.29.230.208')(function (err, data) {
+      if (err) {
+        console.log(err)
+      } else {
+        console.log(data)
+      }
+    })
+
+继续修改 geo2weather：
+
+    function geo2weather(lat, lon) {
+      return function (callback) {
+        var params = {
+          lat: lat,
+          lon: lon,
+          APPID: '9bf4d2b07c7ddeb780c5b32e636c679d'
+        }
+        var url = 'http://api.openweathermap.org/data/2.5/weather?' + qs.stringify(params)
+        request({
+          url: url,
+          json: true,
+        }, function(err, resp, body) {
+          callback(err, body)
+        })
+      }
+    }
+
+再来看看 ips2geos：
+
+    function ips2geos(ips) {
+      return function (callback) {
+        var geos = []
+        var ip
+        var remain = ips.length
+        var returned = false
+        for (var i = 0; i < ips.length; i++) {
+          ip = ips[i];
+          (function(ip) {
+            ip2geo(ip)(function (err, geo) {
+              if (returned) {
+                return
+              }
+              if (err) {
+                callback(err)
+                returned = true
+              } else {
+                geo.ip = ip
+                geos.push(geo)
+                remain--
+              }
+              if (remain == 0) {
+                callback(null, geos)
+              }
+            })
+          })(ip)
+        }
+      }
+    }
+
+
+当我们把所有代码都改完，最终的结果：
+
+    readIP('./ip.json')(function (err, ips) {
+      if (err) {
+        handlerError(err)
+      } else {
+        ips2geos(ips)(function (err, geos) {
+          if (err) {
+            handlerError(err)
+          } else {
+            geos2weathers(geos)(function (err, weathers) {
+              if (err) {
+                handlerError(err)
+              } else {
+                writeWeather(weathers)(function (err) {
+                  if (err) {
+                    handlerError(err)
+                  } else {
+                    console.log('success!')
+                  }
+                })
+              }
+            })
+          }
+        })
+      }
+    })
+
+这不还是嵌套么？？？
+
 
 
 ## co

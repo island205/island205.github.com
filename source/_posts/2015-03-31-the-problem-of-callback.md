@@ -24,7 +24,7 @@ title: Node.js 异步编程之 Callback的问题
     try {
       data = JSON.parse(data)
     } catch (e) {
-      err = err
+      err = e
       hasError = true
     }
     if (hasError) {
