@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://island205.com/"/>
-  <updated>2015-03-31T01:38:00.000Z</updated>
+  <updated>2015-05-12T09:41:13.000Z</updated>
   <id>http://island205.com/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://island205.com/2015/03/31/the-problem-of-callback/"/>
     <id>http://island205.com/2015/03/31/the-problem-of-callback/</id>
     <published>2015-03-30T16:00:00.000Z</published>
-    <updated>2015-03-31T01:38:00.000Z</updated>
+    <updated>2015-05-12T09:41:13.000Z</updated>
     <content type="html"><![CDATA[<p>在上一篇中，我们使用 Callback 的方式来实现了我们需求，将一个 IP 列表转换成了具体的城市和天气。可以看出回调嵌套并不是 Callback 作为异步处理方案的真真问题。那正真的问题是什么呢？</p>
 <h2 id="可靠性">可靠性</h2><p>上篇文章发出来，就被 <a href="http://weibo.com/1744667943/CaykJoiwz?type=comment" target="_blank" rel="external">@朴灵</a> 吐槽，我还浑然不知。看上一篇文章中的这段代码：</p>
 <pre><code><span class="keyword">try</span> {
@@ -123,7 +123,7 @@
     <link href="http://island205.com/2015/03/27/asnyc-programing-in-nodejs-1/"/>
     <id>http://island205.com/2015/03/27/asnyc-programing-in-nodejs-1/</id>
     <published>2015-03-26T16:00:00.000Z</published>
-    <updated>2015-03-27T15:48:31.000Z</updated>
+    <updated>2015-05-12T09:41:13.000Z</updated>
     <content type="html"><![CDATA[<p>Node.js 基于 JavaScript 引擎 v8，是单线程的。Node.js 采用了与通常 Web 上的 JavaScript 异步编程的方式来处理会造成阻塞的I/O操作。在 Node.js 中读取文件、访问数据库、网络请求等等都有可能是异步的。对于 Node.js 新人或者从其他语言背景迁移到 Node.js  上的开发者来说，异步编程是比较痛苦的一部分。本章将由浅入深为大家讲解 Node.js 异步编程的方方面面。从最基础的 callback 到 thunk、Promise、co 直到 ES7 计划的 async/await。</p>
 <p>首先我们先从一个具体的异步编程的例子说起。</p>
 <h2 id="获取多个_ip_所在地的天气信息">获取多个 ip 所在地的天气信息</h2><p>在 ip.json 这个文件中，有一个数组我们存放了若干个 ip 地址，分别来自不同的地方的不同访问者，内容如下：</p>
@@ -382,7 +382,7 @@ readIP(<span class="comment">'./ip.json', ReadIPCallback)</span>
     <link href="http://island205.com/2014/05/23/thinking-in-front-end-module/"/>
     <id>http://island205.com/2014/05/23/thinking-in-front-end-module/</id>
     <published>2014-05-22T16:00:00.000Z</published>
-    <updated>2015-03-19T11:20:05.000Z</updated>
+    <updated>2015-05-12T09:41:13.000Z</updated>
     <content type="html"><![CDATA[<p>在模块化方面，Node.js就显得游刃有余。</p>
 <p>作为用户，我们把代码放到一个个JavaScript文件中，然后Node.js就有一套规则帮我们把这些代码组织起来，Node.js还有包的概念，于是我们就可以使用npm将代码放到一个个包中，放到这里那里的node_modules中使用。很方便不是？感谢Node.js。</p>
 <p>可在浏览器端，模块化这事就没那么简单了。</p>
@@ -429,7 +429,7 @@ readIP(<span class="comment">'./ip.json', ReadIPCallback)</span>
     <link href="http://island205.com/2012/10/22/the-compiler-of-coffeescript-1/"/>
     <id>http://island205.com/2012/10/22/the-compiler-of-coffeescript-1/</id>
     <published>2012-10-21T16:00:00.000Z</published>
-    <updated>2015-03-19T03:55:01.000Z</updated>
+    <updated>2015-05-12T09:41:13.000Z</updated>
     <content type="html"><![CDATA[<p><a href="http://coffeescript.org/" target="_blank" rel="external">CoffeeScript</a>越来越流行，接触CoffeeScript也已经一年有余，最近正在看它的编译器实现，在这里把体会记录下来。</p>
 <p>目前，CoffeeScript编译器是使用CoffeeScript编写的，很多人会问，这是蛋生鸡呢，还是鸡生蛋？<br>其实CoffeeScript编译器最初是使用Ruby编写的，CoffeeScript团队于2010年2月21号发布了<a href="http://coffeescript.org/#changelog" target="_blank" rel="external">v0.5.0</a>，使用CoffeeScript重写了编译器。</p>
 <h2 id="CoffeeScript编译器的整体架构">CoffeeScript编译器的整体架构</h2><p>就目前的CoffeeScript编译器来说，整体架构如下图：</p>
@@ -720,7 +720,7 @@ console.log JSON.stringify CoffeeScript.nodes code
     <link href="http://island205.com/2012/04/01/translator-word-coffeescript-accelerated-javascript/"/>
     <id>http://island205.com/2012/04/01/translator-word-coffeescript-accelerated-javascript/</id>
     <published>2012-03-31T16:00:00.000Z</published>
-    <updated>2015-03-19T03:49:44.000Z</updated>
+    <updated>2015-05-12T09:41:13.000Z</updated>
     <content type="html"><![CDATA[<p><em>The golden rule of CoffeeScript is: “It’s just JavaScript”.</em>——<a href="http://coffeescript.org/" target="_blank" rel="external">coffeescript.org</a></p>
 <p>CoffeeScript的作者Jeremy Ashkenas在twitter上有个很好笑的段子： </p>
 <p>他说：“我非常想知道在GitHire上有多少人有五年的CoffeeScript经验，很显然我有很多地方需要向他们学习。”  </p>
@@ -748,7 +748,7 @@ console.log JSON.stringify CoffeeScript.nodes code
     <link href="http://island205.com/2011/12/13/innovators-of-the-net-brendan-eich-and-javascript/"/>
     <id>http://island205.com/2011/12/13/innovators-of-the-net-brendan-eich-and-javascript/</id>
     <published>2011-12-12T16:00:00.000Z</published>
-    <updated>2015-03-19T03:12:36.000Z</updated>
+    <updated>2015-05-12T09:41:13.000Z</updated>
     <content type="html"><![CDATA[<p><em>本文译自：<a href="http://archive.today/ZoS4T" target="_blank" rel="external">INNOVATORS OF THE NET: BRENDAN EICH AND JAVASCRIPT</a>，最近因为别的事情从网上搜出来这篇文章，该篇文章是对 JavaScript 之父 Brendan 的采访翻译出来为大家揭开真实的 JavaScript 出生的故事。当然该文已与其他采访集结出版中译本为《编程人生》，请原谅该文翻译得比较粗糙。</em></p>
 <blockquote>
 <p>Brendan 的技术很牛，眼界宽广，表达能力也非常强，因此在 Netscape 内部他的话很有影响力。与他共事的工程师，在互联网上与他交流的开发者，甚至包括他遇见的高管们都非常赞赏他，赞赏他过人的才华、谦逊的态度和热心肠。</p>
@@ -795,7 +795,7 @@ console.log JSON.stringify CoffeeScript.nodes code
     <link href="http://island205.com/2011/12/05/privite-member-in-javascript/"/>
     <id>http://island205.com/2011/12/05/privite-member-in-javascript/</id>
     <published>2011-12-04T16:00:00.000Z</published>
-    <updated>2015-03-19T03:30:07.000Z</updated>
+    <updated>2015-05-12T09:41:13.000Z</updated>
     <content type="html"><![CDATA[<p>在JavaScript中谈私有属性和私有方法就是扯淡，”private”还杵在保留字的位置上，不知道什么时候提上来实现真正的私有。那今天咱就来讨论下如何以JS当前的特性来实现私有成员。</p>
 <h2 id="闭包">闭包</h2><p>（比较枯燥，可以跳过本单元）JavaScript实现私有属性必须依赖闭包特性(可以先通过该链接补习)。下面也稍微补习下，看下面的例子：</p>
 <pre><code><span class="keyword">var</span> uniqueId;
