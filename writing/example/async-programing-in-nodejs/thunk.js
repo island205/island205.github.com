@@ -3,31 +3,25 @@ var request = require('request')
 var qs = require('querystring')
 
 function readIP(path) {
-  return function(callback) {
-    return function (callback) {
-      return function (callback) {
-        return function (callback) {
-          fs.readFile(path, function(err, data) {
-            var hasError = false
-            if (err) {
-              callback(err)
-            } else {
-              try {
-                data = JSON.parse(data)
-              } catch (e) {
-                err = e
-                hasError = true
-              }
-              if (hasError) {
-                callback(err)
-              } else {
-                callback(null, data)
-              }
-            }
-          })
+  return function (callback) {
+    fs.readFile(path, function(err, data) {
+      var hasError = false
+      if (err) {
+        callback(err)
+      } else {
+        try {
+          data = JSON.parse(data)
+        } catch (e) {
+          err = e
+          hasError = true
+        }
+        if (hasError) {
+          callback(err)
+        } else {
+          callback(null, data)
         }
       }
-    }
+    })
   }
 }
 
