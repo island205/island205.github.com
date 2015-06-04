@@ -42,6 +42,35 @@
   <article class="post">
     <header class="post-header">
       <span class="post-meta">
+      <time datetime="2011-12-04T16:00:00.000Z" itemprop="datePublished">
+          2011年 12月5日
+      </time>
+    
+</span>
+      <h2 class="post-title"><a href="/2011/12/05/privite-member-in-javascript/">JavaScript 的私有属性和方法</a></h2>
+    </header>
+    <section class="post-excerpt">
+      <p>
+      
+        在JavaScript中谈私有属性和私有方法就是扯淡，”private”还杵在保留字的位置上，不知道什么时候提上来实现真正的私有。那今天咱就来讨论下如何以JS当前的特性来实现私有成员。
+闭包（比较枯燥，可以跳过本单元）JavaScript实现私有属性必须依赖闭包特性(可以先通过该链接补习)。下面也稍微补习下，看下面的例子：
+var uniqueId;
+uniqueId = (function() {
+  var index;
+  ind
+      
+      </p>
+      
+      <p>
+          <a href="/2011/12/05/privite-member-in-javascript/" class="excerpt-link">阅读</a>
+      </p>
+      
+    </section>
+  </article>
+  
+  <article class="post">
+    <header class="post-header">
+      <span class="post-meta">
       <time datetime="2011-12-01T16:00:00.000Z" itemprop="datePublished">
           2011年 12月2日
       </time>

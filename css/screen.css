@@ -286,6 +286,7 @@ table {
     width:100%;
     max-width: 100%;
     background-color: transparent;
+    border: 1px solid #C0C0C0;
 }
 
 table th,
@@ -295,6 +296,7 @@ table td {
     text-align: left;
     vertical-align: top;
     border-top: 1px solid #efefef;
+    border: 1px solid #C0C0C0;
 }
 
 table th { color: #000; }
