@@ -4,7 +4,7 @@
   
   <link href="/atom.xml" rel="self"/>
   <link href="http://island205.com/"/>
-  <updated>2015-06-04T08:00:55.000Z</updated>
+  <updated>2015-06-06T15:31:37.000Z</updated>
   <id>http://island205.com/</id>
   
   <author>
@@ -13,6 +13,100 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[我的 RSS 订阅列表]]></title>
+    <link href="http://island205.com/2015/06/06/my-rss-list/"/>
+    <id>http://island205.com/2015/06/06/my-rss-list/</id>
+    <published>2015-06-05T16:00:00.000Z</published>
+    <updated>2015-06-06T15:31:37.000Z</updated>
+    <content type="html"><![CDATA[<blockquote>
+<p>可以到<a href="https://github.com/island205/island205.github.com/issues/11" target="_blank" rel="external">这里</a>复制，存储为 <code>xml</code> 格式。</p>
+</blockquote>
+<p>通常会碰到下面两个问题：</p>
+<ul>
+<li>我不知道目前在流行些什么新技术，也不知道从哪里获取？</li>
+<li>你们<a href="http://zhuanlan.zhihu.com/FrontendMagazine" target="_blank" rel="external">《专栏》</a>的文章都是从哪里找的？</li>
+</ul>
+<p>我的回答就是我一直在维护一个自己 RSS 列表，订阅了国内外一些有意思的前端（包括 Node.js）相关的列表。</p>
+<p>大概是六年前我就开始使用 Google Reader （记得还是受到女友的启蒙）订阅一些相关的资讯，后来慢慢集中到技术上来。毕业后开始从事专业的前端工作，业余时间（地铁上、路上）我都在用 Android 上的 Google Reader 浏览资讯。终于有一天感觉看得好累，感觉是在逼着自己阅读一样，我就基本删掉了非前端相关的、更新过于平凡的源。逐渐就形成了下面会给出的一个列表。</p>
+<p>2013年1月11日，RSS 的发明者之一<a href="http://movie.douban.com/celebrity/1342002/" target="_blank" rel="external">亚伦·斯沃茨</a>自杀身亡；2013年7月1日，<a href="http://en.wikipedia.org/wiki/Google_Reader" target="_blank" rel="external">Google Reader 关闭</a>。但 RSS 并没有灭亡。在这之前就  <a href="http://www.feedly.com" target="_blank" rel="external">feedly</a> 这个阅读体验非常不错的可以连接 Google Reader 的阅读器，但试用和对比之后，我还是切换到了 <a href="http://digg.com/reader" target="_blank" rel="external">Digg Reader</a>，体验与 Google Reader 一致，也有移动客户端。</p>
+<p>基本每天上班的第一件事就是打开 Digg Reader，浏览昨天前端又发生了什么事情，除了特别忙或者特别烦的日子以外。后来还用上了 <a href="https://getpocket.com/a/" target="_blank" rel="external">Pocket</a>，一款精读应用，Digg Reader 作为资讯快速浏览，把需要精读的文章添加到 Pocket 中，利用碎片时间精读。甚至突击 AngularJS 技术的那段时间，我一口气添加了上百篇相关的文章去阅读。很多时候确实需要写文章才能深入浅出，鞭辟入里；文章写作不死，自然 RSS 也不死。</p>
+<p>我喜欢 Digg Reader 和 Pocket，享受阅读技术文章，学习新知识的乐趣。下面我挑出一些我频繁加入精读的源：</p>
+<h4 id="日报周报">日报周报</h4><p><strong><a href="http://us1.campaign-archive.com/feed?u=0618f6a79d6bb9675f313ceb2&amp;id=596bcf37c5" target="_blank" rel="external">JavaScript Weekly Archive Feed</a></strong></p>
+<blockquote>
+<p>JavaScript 周报。</p>
+</blockquote>
+<p><strong><a href="http://html5weekly.com" target="_blank" rel="external">HTML5 Weekly Archive Feed</a> </strong></p>
+<blockquote>
+<p>HTML5 周报。</p>
+</blockquote>
+<p><strong><a href="http://dailyjs.com/" target="_blank" rel="external">DailyJS</a></strong></p>
+<blockquote>
+<p>每天几盘 JavaScript 小菜！</p>
+</blockquote>
+<p><strong><a href="http://www.75team.com/weekly/issue111.html" target="_blank" rel="external">奇舞周刊</a></strong></p>
+<blockquote>
+<p>有一些不错的资讯，不过主要还是看看专栏的收录情况；</p>
+</blockquote>
+<h4 id="入门实践">入门实践</h4><p><strong><a href="http://www.sitepoint.com/" target="_blank" rel="external">sitepint</a></strong></p>
+<blockquote>
+<p>各种 Getting Start，各种带实例的实践。</p>
+</blockquote>
+<p><strong><a href="http://net.tutsplus.com/" target="_blank" rel="external">Nettuts+</a></strong></p>
+<blockquote>
+<p>同样各种 Getting Start，各种带实例的实践。</p>
+</blockquote>
+<p><strong><a href="http://demosthenes.info" target="_blank" rel="external">demosthenes.info</a></strong></p>
+<blockquote>
+<p>最新 CSS/CSS3 实践资讯。</p>
+</blockquote>
+<h4 id="大神">大神</h4><p><strong><a href="http://blog.izs.me/" target="_blank" rel="external">blog.izs.me</a></strong></p>
+<blockquote>
+<p>博主是 npm 的作者 <a href="https://github.com/isaacs" target="_blank" rel="external"> Isaac Z. Schlueter</a>，关注 Node.js 必读博客之一。</p>
+</blockquote>
+<p><strong><a href="http://www.tjholowaychuk.com/" target="_blank" rel="external">TJ Holowaychuk</a></strong></p>
+<blockquote>
+<p>TJ 的博客，很少更新，你会发现，TJ 原来喜欢搞艺术创作！</p>
+</blockquote>
+<h4 id="技术娱乐">技术娱乐</h4><p><strong><a href="http://www.vaikan.com/" target="_blank" rel="external">外刊IT评论网</a></strong></p>
+<blockquote>
+<p>技术小品，你懂的，常常会有人一大早上就看到我在那边对着屏幕发笑，应该就是因为它。最近不更新了还是 RSS 地址换了？</p>
+</blockquote>
+<p>这里列出的只是我最常加入精读的部分。列表中还有其他很多源时长也有很多有用的文章。当然也有一些奇怪的订阅。</p>
+<h4 id="奇怪的订阅">奇怪的订阅</h4><p><strong><a href="http://island205.com/">island205.com</a></strong></p>
+<blockquote>
+<p>本博的 RSS。</p>
+</blockquote>
+<p><strong><a href="http://www.ppurl.com/" target="_blank" rel="external">皮皮书屋</a></strong></p>
+<blockquote>
+<p>皮皮书屋更新列表，但现在已经无用了。记得大学那会儿，我还订阅过学校图书馆新入计算机图书列表。</p>
+</blockquote>
+<p><strong><a href="http://www.douban.com/people/compmanwu/" target="_blank" rel="external">咸蛋 的收藏</a></strong></p>
+<blockquote>
+<p>这是我女朋友豆瓣的收藏 RSS，常常可以看到她又看了什么书啦，电影啦，全方位关注 GF 思想动态。</p>
+</blockquote>
+<p><strong><a href="http://blog.qhm123.com/" target="_blank" rel="external">鸣的博客</a></strong></p>
+<blockquote>
+<p>已经打不开了，但是有些感伤，几年前一度是一位在线的技术小伙伴，许久不联系了。</p>
+<p>可以到<a href="https://github.com/island205/island205.github.com/issues/11" target="_blank" rel="external">这里</a>复制，存储为 <code>xml</code> 格式。</p>
+</blockquote>
+<p>我公开的原因有三个：</p>
+<ul>
+<li>有人要每次给，不如索性公开，谁要就贴这篇文章；</li>
+<li>公开让喜欢的人受益；</li>
+<li>这些 RSS 列表对我的受益越来越小了。无论阅读再多的文章，都只是知了，但并不知道，之后会把更多的时间放到实践和创造上！</li>
+</ul>
+<blockquote>
+<p>如果对你有用，就请取走吧！</p>
+</blockquote>
+]]></content>
+    <summary type="html">
+    <![CDATA[<blockquote>
+<p>可以到<a href="https://github.com/island205/island205.github.com/issues/11" target="_blank" rel="external">这里</a>复制，存储为 <code>x]]>
+    </summary>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[测试驱动编写 React 简易计算器]]></title>
