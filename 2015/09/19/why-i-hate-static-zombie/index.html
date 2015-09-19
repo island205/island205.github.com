@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>为什么我讨厌 Static Zombie | 寸志</title>
+  <meta name="description" content="" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="http://fonts.useso.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="寸志">
+
+  
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(https://unsplash.it/1366/768?random)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="http://pic.yupoo.com/island205/EE6jEQLb/medium.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">寸志</h1>
+            <h2 class="blog-description"></h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2015-09-18T16:00:00.000Z" itemprop="datePublished">
+          2015年 9月19日
+      </time>
+    
+</span>
+    <h1 class="post-title">为什么我讨厌 Static Zombie</h1>
+    <section class="post-content">
+      <blockquote>
+<p>我说有种静态资源叫做：static zombie——引用的地方添文件名加了时间戳或者 MD5，源码中又找不到这类文件，但测试或者生产环境上又有这个文件，不过是经过压缩的，一般这类文件时间都比较久远。深深地刺痛着我。</p>
+</blockquote>
+<p>前两天发了这条微博，目的就是吐槽一下我司静态文件管理的混乱（历史原因就是很多 Web 项目之前不是由前端负责的）。造了个词 <strong>Static Zombie</strong>。在重构这些项目的时候，我发现源码中很多地方的源码就像下面这样：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/javascript"</span> <span class="attribute">src</span>=<span class="value">"http://example.cdn.com/jquery-1.7.1/20141023.jquery-1.7.1.min.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><code>http://example.cdn.com/</code> 只是一个示例。</p>
+</blockquote>
+<p>这些静态文件的引用包含如下特点：</p>
+<ul>
+<li>文件都是从测试/线上环境中获取的；</li>
+<li>这些文件在任何源码仓库中都找不到；</li>
+<li>带版本号（日期或者 MD5 值）；</li>
+<li>javascript/css/image 都有；</li>
+<li>脚本和样式都是经过压缩的；</li>
+</ul>
+<p>看到这些文件，我只想说：</p>
+<blockquote>
+<p>我操，我怎么重构？</p>
+</blockquote>
+<p><img src="http://ww1.sinaimg.cn/large/df8f8722jw1egbuyyxbhmj20bo0ccjsi.jpg" alt=""></p>
+<p>完全没法改啊，尤其是 css 文件，请求了一看，都是压缩的，而且还引用了很多背景图片。</p>
+<p>这就是所谓的 Static Zombie，这种文件没法改，不能更新，也不能删。无论我愿不愿意，它们就在那里，和尸体差不多！</p>
+<p>重要的事情说三遍：</p>
+<p><strong>千万不要写死版本号！千万不要直接引用 CDN 上的地址！千万通过自动化（不要手动）地工具来管理静态资源！</strong><br><strong>千万不要写死版本号！千万不要直接引用 CDN 上的地址！千万通过自动化（不要手动）地工具来管理静态资源！</strong><br><strong>千万不要写死版本号！千万不要直接引用 CDN 上的地址！千万通过自动化（不要手动）地工具来管理静态资源！</strong></p>
+<blockquote>
+<p>否则满满都是坑！</p>
+</blockquote>
+<p>几点关于静态资源管理的心得：</p>
+<ul>
+<li>使用 MD5 而不是时间戳；</li>
+<li>开发运行时和线上运行时分开——开发引用项目的中的文件，上线时则环境带版本号的 CDN 文件；</li>
+<li>全自动化的管理静态资源，任何时候都不要图方便手动写死版本号，或者手动上传到 CDN，然后在项目直接使用 CDN 上的文件。</li>
+</ul>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>寸志</h4>
+    <p>为什么我的眼里常含泪水? 因为我对这土地爱得深沉</p>
+</section>
+      <section class="share">
+    <h4>分享本文</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://island205.com/2015/09/19/why-i-hate-static-zombie/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://island205.com/2015/09/19/why-i-hate-static-zombie/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://island205.com/2015/09/19/why-i-hate-static-zombie/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <span class="page-number">•</span>
+    
+    <a class="older-posts" href="/2015/06/06/my-rss-list/">
+        我的 RSS 订阅列表 →
+    </a>
+    
+</nav>
+  
+<div id="comment" class="comments-area">
+  <!-- 多说评论框 start -->
+  <div class="ds-thread" data-thread-key="post-why-i-hate-static-zombie" data-title="为什么我讨厌 Static Zombie" data-url="http://island205.com/2015/09/19/why-i-hate-static-zombie/"></div>
+  <!-- 多说评论框 end -->
+  <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+  <script type="text/javascript">
+  var duoshuoQuery = {short_name:'fronteer'};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0] 
+       || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+  <!-- 多说公共JS代码 end -->
+</div>
+
+</main>
+
+
+  
+<footer class="site-footer"  style="background-image: url(https://unsplash.it/1366/768?random)" >
+  
+  <a class="subscribe icon-feed" href="/atom.xml"><span class="tooltip">订阅</span></a>
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">寸志</a> &copy; 2015 &bull; All rights reserved.</section>
+     <section class="poweredby">使用 <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a> 驱动</section>
+  </div>
+</footer>
+
+  <script src="http://ajax.useso.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+
+<!-- start Mixpanel --><script type="text/javascript">(function(f,b){if(!b.__SV){var a,e,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2;a=f.createElement("script");a.type="text/javascript";a.async=!0;a.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";e=f.getElementsByTagName("script")[0];e.parentNode.insertBefore(a,e)}})(document,window.mixpanel||[]);
+mixpanel.init("4263f8eff30a9a5545420500678d784f");
+// page-view
+mixpanel.track("page-view");
+</script><!-- end Mixpanel -->
+
+
+
+
+
+</body>
+</html>
