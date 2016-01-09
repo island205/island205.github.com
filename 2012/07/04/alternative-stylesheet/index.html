@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>可选择样式表 | 寸志</title>
+  <meta name="description" content="" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="http://fonts.useso.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="寸志">
+
+  
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(https://unsplash.it/1366/768?random)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="http://pic.yupoo.com/island205/EE6jEQLb/medium.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">寸志</h1>
+            <h2 class="blog-description"></h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2012-07-03T16:00:00.000Z" itemprop="datePublished">
+          2012年 7月4日
+      </time>
+    
+</span>
+    <h1 class="post-title">可选择样式表</h1>
+    <section class="post-content">
+      <p>可选择样式表这个问题，有点绕，之前看懂了，后来忘记，现在就把它记下来。 这个问题与样式表的rel和title属性的值和组合有关：</p>
+<p>1.默认样式表，指定rel属性为stylesheet，会在页面上一直存在的样式，不受用户选择其他可选择样式表的影响：</p>
+<pre><code><span class="tag">&lt;<span class="title">link</span> <span class="attribute">href</span>=<span class="value">”default.css”</span> <span class="attribute">rel</span>=<span class="value">”stylesheet”</span> <span class="attribute">type</span>=<span class="value">”text</span>/<span class="attribute">css</span>”&gt;</span>
+</code></pre><p>2.可选择默认样式表，指定rel属性为stylesheet，指定title的值，默认会应用到页面上，会出现在用户可选择样式表列表内，且用户选了其他可替换样式表后，会去掉该样式表：</p>
+<pre><code><span class="tag">&lt;<span class="title">link</span> <span class="attribute">href</span>=<span class="value">”default.css”</span> <span class="attribute">rel</span>=<span class="value">”stylesheet”</span> <span class="attribute">type</span>=<span class="value">”text</span>/<span class="attribute">css</span>” <span class="attribute">title</span>=<span class="value">”Alternate</span> <span class="attribute">Default</span> <span class="attribute">Style</span>”&gt;</span>
+</code></pre><p>3.可选择样式表，指定rel属性为alternate stylesheet，指定title的值，默认不会应用到页面上，会出现在用户可选择样式表列表内，且用户选了其他可替换样式表后，会去掉该样式表，可以有多类（title来区分），下面是两个示例：</p>
+<pre><code><span class="tag">&lt;<span class="title">link</span> <span class="attribute">href</span>=<span class="value">”basic.css”</span> <span class="attribute">rel</span>=<span class="value">”alternate</span> <span class="attribute">stylesheet</span>” <span class="attribute">type</span>=<span class="value">”text</span>/<span class="attribute">css</span>” <span class="attribute">title</span>=<span class="value">”Basic”</span>&gt;</span>
+
+<span class="tag">&lt;<span class="title">link</span> <span class="attribute">href</span>=<span class="value">”fancy.css”</span> <span class="attribute">rel</span>=<span class="value">”alternate</span> <span class="attribute">stylesheet</span>” <span class="attribute">type</span>=<span class="value">”text</span>/<span class="attribute">css</span>” <span class="attribute">title</span>=<span class="value">”Fancy”</span>&gt;</span>
+</code></pre><p>在Firefox中，使用菜单View&gt;&gt;Page Style可以查看可选择样式表列表（我的是Firefox 13.0.1）。</p>
+<h2 id="参考">参考</h2><ul>
+<li><a href="https://developer.mozilla.org/en/CSS/Alternative_style_sheets" target="_blank" rel="external">Alternative Style Sheets</a></li>
+</ul>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>寸志</h4>
+    <p>为什么我的眼里常含泪水? 因为我对这土地爱得深沉</p>
+</section>
+      <section class="share">
+    <h4>分享本文</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://island205.com/2012/07/04/alternative-stylesheet/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://island205.com/2012/07/04/alternative-stylesheet/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://island205.com/2012/07/04/alternative-stylesheet/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <a class="newer-posts" href="/2012/07/19/the-little-book-of-coffeescript-on-douban/">
+        ← 豆瓣阅读《CoffeeScript小书》上架啦！
+    </a>
+    
+    <span class="page-number">•</span>
+    
+    <a class="older-posts" href="/2012/04/13/how-mdc-implement-bind/">
+        MDC上是如何实现bind函数的 →
+    </a>
+    
+</nav>
+  
+<div id="comment" class="comments-area">
+  <!-- 多说评论框 start -->
+  <div class="ds-thread" data-thread-key="post-alternative-stylesheet" data-title="可选择样式表" data-url="http://island205.com/2012/07/04/alternative-stylesheet/"></div>
+  <!-- 多说评论框 end -->
+  <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+  <script type="text/javascript">
+  var duoshuoQuery = {short_name:'fronteer'};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0] 
+       || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+  <!-- 多说公共JS代码 end -->
+</div>
+
+</main>
+
+
+  
+<footer class="site-footer"  style="background-image: url(https://unsplash.it/1366/768?random)" >
+  
+  <a class="subscribe icon-feed" href="/atom.xml"><span class="tooltip">订阅</span></a>
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">寸志</a> &copy; 2015 &bull; All rights reserved.</section>
+     <section class="poweredby">使用 <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a> 驱动</section>
+  </div>
+</footer>
+
+  <script src="http://ajax.useso.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+
+<!-- start Mixpanel --><script type="text/javascript">(function(f,b){if(!b.__SV){var a,e,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2;a=f.createElement("script");a.type="text/javascript";a.async=!0;a.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";e=f.getElementsByTagName("script")[0];e.parentNode.insertBefore(a,e)}})(document,window.mixpanel||[]);
+mixpanel.init("4263f8eff30a9a5545420500678d784f");
+// page-view
+mixpanel.track("page-view");
+</script><!-- end Mixpanel -->
+
+
+
+
+
+</body>
+</html>

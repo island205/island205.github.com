@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>Archives: 2012 | 寸志</title>
+  <meta name="description" content="" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="http://fonts.useso.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="寸志">
+
+  
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
+  
+  
+
+  
+</head>
+
+
+<body class="home-template">
+
+  <header class="site-head"  style="background-image: url(https://unsplash.it/1366/768?random)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="http://pic.yupoo.com/island205/EE6jEQLb/medium.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">寸志</h1>
+            <h2 class="blog-description"></h2>
+        </div>
+    </div>
+</header>
+  
+<main class="content" role="main">
+  
+  <article class="post">
+    <header class="post-header">
+      <span class="post-meta">
+      <time datetime="2012-10-21T16:00:00.000Z" itemprop="datePublished">
+          2012年 10月22日
+      </time>
+    
+</span>
+      <h2 class="post-title"><a href="/2012/10/22/the-compiler-of-coffeescript-1/">CoffeeScript编译器（一）</a></h2>
+    </header>
+    <section class="post-excerpt">
+      <p>
+      
+        CoffeeScript越来越流行，接触CoffeeScript也已经一年有余，最近正在看它的编译器实现，在这里把体会记录下来。
+目前，CoffeeScript编译器是使用CoffeeScript编写的，很多人会问，这是蛋生鸡呢，还是鸡生蛋？其实CoffeeScript编译器最初是使用Ruby编写的，CoffeeScript团队于2010年2月21号发布了v0.5.0，使用CoffeeScript重写了编译器。
+CoffeeScript
+      
+      </p>
+      
+      <p>
+          <a href="/2012/10/22/the-compiler-of-coffeescript-1/" class="excerpt-link">阅读</a>
+      </p>
+      
+    </section>
+  </article>
+  
+  <article class="post">
+    <header class="post-header">
+      <span class="post-meta">
+      <time datetime="2012-07-18T16:00:00.000Z" itemprop="datePublished">
+          2012年 7月19日
+      </time>
+    
+</span>
+      <h2 class="post-title"><a href="/2012/07/19/the-little-book-of-coffeescript-on-douban/">豆瓣阅读《CoffeeScript小书》上架啦！</a></h2>
+    </header>
+    <section class="post-excerpt">
+      <p>
+      
+        今天D2，豆瓣的石岩给我们带来豆瓣阅读在开发方面的心得，有一张PPT还用到了上周我在豆瓣阅读上架的一本书《CoffeeScript小书》。其实就是本博之前翻译的the-little-book-on-coffeescript的中文合集。
+豆瓣阅读的体验真的很不错，这是本书在豆瓣阅读Web版上的一张预览图：
+
+在其他平台上，比如说Android，iPad，Kindle Fire上体验也很好。大家可以访问《CoffeeScript小书》试读，
+      
+      </p>
+      
+      <p>
+          <a href="/2012/07/19/the-little-book-of-coffeescript-on-douban/" class="excerpt-link">阅读</a>
+      </p>
+      
+    </section>
+  </article>
+  
+  <article class="post">
+    <header class="post-header">
+      <span class="post-meta">
+      <time datetime="2012-07-03T16:00:00.000Z" itemprop="datePublished">
+          2012年 7月4日
+      </time>
+    
+</span>
+      <h2 class="post-title"><a href="/2012/07/04/alternative-stylesheet/">可选择样式表</a></h2>
+    </header>
+    <section class="post-excerpt">
+      <p>
+      
+        可选择样式表这个问题，有点绕，之前看懂了，后来忘记，现在就把它记下来。 这个问题与样式表的rel和title属性的值和组合有关：
+1.默认样式表，指定rel属性为stylesheet，会在页面上一直存在的样式，不受用户选择其他可选择样式表的影响：
+&lt;link href=”default.css” rel=”stylesheet” type=”text/css”&gt;
+2.可选择默认样式表，指定rel属性为stylesheet，指
+      
+      </p>
+      
+      <p>
+          <a href="/2012/07/04/alternative-stylesheet/" class="excerpt-link">阅读</a>
+      </p>
+      
+    </section>
+  </article>
+  
+  <article class="post">
+    <header class="post-header">
+      <span class="post-meta">
+      <time datetime="2012-04-12T16:00:00.000Z" itemprop="datePublished">
+          2012年 4月13日
+      </time>
+    
+</span>
+      <h2 class="post-title"><a href="/2012/04/13/how-mdc-implement-bind/">MDC上是如何实现bind函数的</a></h2>
+    </header>
+    <section class="post-excerpt">
+      <p>
+      
+        在平时开发过程中想必都有把函数绑定到某个上下文 this 上 JavaScript 1.8.5 中引入了 Function.prototype.bind 来满足这个需求今天就来说一说这个函数 什么时候使用 bind 函数 先看这个例子：
+$(function() {
+  var me;
+  me = {
+    name: "mee"
+    init: function() {
+      this.bind();
+    }
+   
+      
+      </p>
+      
+      <p>
+          <a href="/2012/04/13/how-mdc-implement-bind/" class="excerpt-link">阅读</a>
+      </p>
+      
+    </section>
+  </article>
+  
+  <article class="post">
+    <header class="post-header">
+      <span class="post-meta">
+      <time datetime="2012-03-31T16:00:00.000Z" itemprop="datePublished">
+          2012年 4月1日
+      </time>
+    
+</span>
+      <h2 class="post-title"><a href="/2012/04/01/translator-word-coffeescript-accelerated-javascript/">《深处浅出 CoffeeScript》译者序</a></h2>
+    </header>
+    <section class="post-excerpt">
+      <p>
+      
+        The golden rule of CoffeeScript is: “It’s just JavaScript”.——coffeescript.org
+CoffeeScript的作者Jeremy Ashkenas在twitter上有个很好笑的段子： 
+他说：“我非常想知道在GitHire上有多少人有五年的CoffeeScript经验，很显然我有很多地方需要向他们学习。”  
+有人答道：“对的，这些人大概是在一边煮咖啡，一边写脚本”。
+      
+      </p>
+      
+      <p>
+          <a href="/2012/04/01/translator-word-coffeescript-accelerated-javascript/" class="excerpt-link">阅读</a>
+      </p>
+      
+    </section>
+  </article>
+  
+  <nav class="pagination" role="pagination">
+    
+    <span class="page-number">第 1 页 / 共 1 页</span>
+    
+  </nav>
+</main>
+
+
+  
+<footer class="site-footer"  style="background-image: url(https://unsplash.it/1366/768?random)" >
+  
+  <a class="subscribe icon-feed" href="/atom.xml"><span class="tooltip">订阅</span></a>
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">寸志</a> &copy; 2015 &bull; All rights reserved.</section>
+     <section class="poweredby">使用 <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a> 驱动</section>
+  </div>
+</footer>
+
+  <script src="http://ajax.useso.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+
+<!-- start Mixpanel --><script type="text/javascript">(function(f,b){if(!b.__SV){var a,e,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2;a=f.createElement("script");a.type="text/javascript";a.async=!0;a.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";e=f.getElementsByTagName("script")[0];e.parentNode.insertBefore(a,e)}})(document,window.mixpanel||[]);
+mixpanel.init("4263f8eff30a9a5545420500678d784f");
+// page-view
+mixpanel.track("page-view");
+</script><!-- end Mixpanel -->
+
+
+
+
+
+</body>
+</html>

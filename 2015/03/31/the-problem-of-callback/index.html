@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>Node.js 异步编程之 Callback的问题 | 寸志</title>
+  <meta name="description" content="" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="http://fonts.useso.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="寸志">
+
+  
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(https://unsplash.it/1366/768?random)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="http://pic.yupoo.com/island205/EE6jEQLb/medium.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">寸志</h1>
+            <h2 class="blog-description"></h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2015-03-30T16:00:00.000Z" itemprop="datePublished">
+          2015年 3月31日
+      </time>
+    
+</span>
+    <h1 class="post-title">Node.js 异步编程之 Callback的问题</h1>
+    <section class="post-content">
+      <p>在上一篇中，我们使用 Callback 的方式来实现了我们需求，将一个 IP 列表转换成了具体的城市和天气。可以看出回调嵌套并不是 Callback 作为异步处理方案的真真问题。那正真的问题是什么呢？</p>
+<h2 id="可靠性">可靠性</h2><p>上篇文章发出来，就被 <a href="http://weibo.com/1744667943/CaykJoiwz?type=comment" target="_blank" rel="external">@朴灵</a> 吐槽，我还浑然不知。看上一篇文章中的这段代码：</p>
+<pre><code><span class="keyword">try</span> {
+  data = JSON.parse(data)
+  callback(<span class="keyword">null</span>, data)
+} <span class="keyword">catch</span> (<span class="keyword">error</span>) {
+  callback(<span class="keyword">error</span>)
+}
+</code></pre><p>事实上，在这段代码中，<code>callback</code> 有可能被调用两次。</p>
+<blockquote>
+<p>这个问题<a href="http://www.infoq.com/cn/presentations/Nodejs-hole" target="_blank" rel="external">苏千在12年的沪JS大会上已经讲过了</a>，我是现场观众，但却忘记了……</p>
+</blockquote>
+<p>如果<code>JSON.parse</code> 成功，但是 <code>callback</code> 在运行的时候报异常的话，就会触发 <code>catch</code> 块，<code>callback</code> 就会再被调用一次。这个问题不难理解，但是非常隐蔽。下面是可行的一种 fix 方案：</p>
+<pre><code><span class="keyword">var</span> hasError = <span class="literal">false</span>
+<span class="keyword">try</span> {
+  data = JSON.parse(data)
+} <span class="keyword">catch</span> (e) {
+  err = e
+  hasError = <span class="literal">true</span>
+}
+<span class="keyword">if</span> (hasError) {
+  <span class="keyword">callback</span>(err)
+} <span class="keyword">else</span> {
+  <span class="keyword">callback</span>(<span class="literal">null</span>, data)
+}
+</code></pre><p>其实不仅仅是上面这段代码，看下面这一段：</p>
+<pre><code><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; ips.length; i++) {
+  ip = ips[i];
+  (<span class="function"><span class="keyword">function</span><span class="params">(ip)</span> </span>{
+    ip2geo(ip, <span class="function"><span class="keyword">function</span><span class="params">(err, geo)</span> </span>{
+      <span class="keyword">if</span> (err) {
+        <span class="keyword">callback</span>(err)
+      } <span class="keyword">else</span> {
+        geo.ip = ip
+        geos.push(geo)
+        remain--
+      }
+      <span class="keyword">if</span> (remain == <span class="number">0</span>) {
+        <span class="keyword">callback</span>(<span class="literal">null</span>, geos)
+      }
+    })
+  })(ip)
+}
+</code></pre><p>这段代码来自 <code>ips2geos</code> 函数，这个函数就是实现并行地异步读取多个 IP 地址的 geo 数据，读取成功后组装成数组返回给 <code>callback</code>；但如果某个异步读取过程出错了，就直接调用 <code>callback</code> 将错误信息返回。但在这段代码中，<code>callback</code> 很可能被调用多次，<strong>这种情况出现在有多个异步 IP 转 geo 出错的时候</strong>。一种还算凑活的修正：</p>
+<pre><code><span class="keyword">var</span> returned = <span class="literal">false</span>
+<span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; ips.length; i++) {
+  ip = ips[i];
+  (<span class="function"><span class="keyword">function</span><span class="params">(ip)</span> </span>{
+    ip2geo(ip, <span class="function"><span class="keyword">function</span><span class="params">(err, geo)</span> </span>{
+      <span class="keyword">if</span> (returned) {
+        <span class="keyword">return</span>
+      }
+      <span class="keyword">if</span> (err) {
+        <span class="keyword">callback</span>(err)
+        returned = <span class="literal">true</span>
+      } <span class="keyword">else</span> {
+        geo.ip = ip
+        geos.push(geo)
+        remain--
+      }
+      <span class="keyword">if</span> (remain == <span class="number">0</span>) {
+        <span class="keyword">callback</span>(<span class="literal">null</span>, geos)
+      }
+    })
+  })(ip)
+}
+</code></pre><p>这就是 <code>callback</code> 的可靠性问题。每个以 <code>callback</code> 作为异步回调逻辑都可能产生问题。我们自己写的代码，或者第三方类库都有可能导致 <code>callback</code> 被重复调用。以 <code>callback</code> 提供的异步 API 是无法保证回调次数的，这就产生了信任问题。如果有大量的异步嵌套，只要出错，就是一场灾难。</p>
+<h2 id="很难处理串/并行异步操作">很难处理串/并行异步操作</h2><p>串并行的异步操作大大提高了程序的复杂度，而直白的 <code>callback</code> 拿这个问题没有太大的办法。</p>
+<p>作为写程序的开发者，同步逻辑更容易理解，更直观。可以像下面这样：</p>
+<p>串行逻辑：</p>
+<pre><code><span class="tag">var</span> ips = <span class="function"><span class="title">readIP</span><span class="params">(<span class="string">'./ip.json'</span>)</span></span>
+<span class="tag">var</span> geos = <span class="function"><span class="title">ips2geos</span><span class="params">(ips)</span></span>
+<span class="tag">var</span> weathers = <span class="function"><span class="title">geos2weathers</span><span class="params">(geos)</span></span>
+...
+</code></pre><p>并行逻辑：</p>
+<pre><code><span class="function"><span class="keyword">function</span> <span class="title">ips2geos</span><span class="params">(ips)</span> {</span>
+  var geos = <span class="matrix">[]</span>
+  var ip
+  <span class="keyword">for</span> (var <span class="built_in">i</span> = <span class="number">0</span>; <span class="built_in">i</span> &lt; ips.<span class="built_in">length</span>; <span class="built_in">i</span>++) <span class="cell">{
+    ip = ips[i]
+    geos.push(ip2geo(ip))
+  }</span>
+  <span class="keyword">return</span> geos
+}
+</code></pre><p>很简单不是。</p>
+<blockquote>
+<p>像上面这样的代码，<a href="http://fibjs.org/" target="_blank" rel="external">fibjs</a> 可以做到，fibjs 把异步串/并行做到了自己的内部实现中。</p>
+</blockquote>
+<p>异步打破了程序运行的正常顺序，而 <code>callback</code> 的表现力非常不足，稍微复杂的处理逻辑代码写起来就一团糟。见第一节的 <code>ips2geos</code> 等函数。</p>
+<h3 id="总结">总结</h3><p>在本文中我们指出了 <code>callback</code> 作为异步处理的两个比较严重的问题，异步本身并不是坏事，只是 <code>callback</code> 的方案缺乏可靠性，表现力不足。在下一篇文章中我就进入正题，开始给大家介绍 thunk 以及 <a href="https://github.com/thunks/thunks" target="_blank" rel="external">thunks</a> 类库。后者是 <a href="http://weibo.com/zensh" target="_blank" rel="external">@严清</a> 开发的一个类库，灵感来自于 co，意在提升异步编程的体验。敬请期待。</p>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>寸志</h4>
+    <p>为什么我的眼里常含泪水? 因为我对这土地爱得深沉</p>
+</section>
+      <section class="share">
+    <h4>分享本文</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://island205.com/2015/03/31/the-problem-of-callback/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://island205.com/2015/03/31/the-problem-of-callback/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://island205.com/2015/03/31/the-problem-of-callback/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <a class="newer-posts" href="/2015/06/04/write-caculator-with-reactjs-and-tdd/">
+        ← 测试驱动编写 React 简易计算器
+    </a>
+    
+    <span class="page-number">•</span>
+    
+    <a class="older-posts" href="/2015/03/27/asnyc-programing-in-nodejs-1/">
+        Node.js 异步编程之 Callback →
+    </a>
+    
+</nav>
+  
+<div id="comment" class="comments-area">
+  <!-- 多说评论框 start -->
+  <div class="ds-thread" data-thread-key="post-the-problem-of-callback" data-title="Node.js 异步编程之 Callback的问题" data-url="http://island205.com/2015/03/31/the-problem-of-callback/"></div>
+  <!-- 多说评论框 end -->
+  <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+  <script type="text/javascript">
+  var duoshuoQuery = {short_name:'fronteer'};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0] 
+       || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+  <!-- 多说公共JS代码 end -->
+</div>
+
+</main>
+
+
+  
+<footer class="site-footer"  style="background-image: url(https://unsplash.it/1366/768?random)" >
+  
+  <a class="subscribe icon-feed" href="/atom.xml"><span class="tooltip">订阅</span></a>
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">寸志</a> &copy; 2015 &bull; All rights reserved.</section>
+     <section class="poweredby">使用 <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a> 驱动</section>
+  </div>
+</footer>
+
+  <script src="http://ajax.useso.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+
+<!-- start Mixpanel --><script type="text/javascript">(function(f,b){if(!b.__SV){var a,e,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2;a=f.createElement("script");a.type="text/javascript";a.async=!0;a.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";e=f.getElementsByTagName("script")[0];e.parentNode.insertBefore(a,e)}})(document,window.mixpanel||[]);
+mixpanel.init("4263f8eff30a9a5545420500678d784f");
+// page-view
+mixpanel.track("page-view");
+</script><!-- end Mixpanel -->
+
+
+
+
+
+</body>
+</html>

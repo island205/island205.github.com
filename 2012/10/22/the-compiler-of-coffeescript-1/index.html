@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>CoffeeScript编译器（一） | 寸志</title>
+  <meta name="description" content="" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="http://fonts.useso.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="寸志">
+
+  
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(https://unsplash.it/1366/768?random)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="http://pic.yupoo.com/island205/EE6jEQLb/medium.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">寸志</h1>
+            <h2 class="blog-description"></h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2012-10-21T16:00:00.000Z" itemprop="datePublished">
+          2012年 10月22日
+      </time>
+    
+</span>
+    <h1 class="post-title">CoffeeScript编译器（一）</h1>
+    <section class="post-content">
+      <p><a href="http://coffeescript.org/" target="_blank" rel="external">CoffeeScript</a>越来越流行，接触CoffeeScript也已经一年有余，最近正在看它的编译器实现，在这里把体会记录下来。</p>
+<p>目前，CoffeeScript编译器是使用CoffeeScript编写的，很多人会问，这是蛋生鸡呢，还是鸡生蛋？<br>其实CoffeeScript编译器最初是使用Ruby编写的，CoffeeScript团队于2010年2月21号发布了<a href="http://coffeescript.org/#changelog" target="_blank" rel="external">v0.5.0</a>，使用CoffeeScript重写了编译器。</p>
+<h2 id="CoffeeScript编译器的整体架构">CoffeeScript编译器的整体架构</h2><p>就目前的CoffeeScript编译器来说，整体架构如下图：</p>
+<pre><code>             -<span class="ruby">------------      -----------------
+</span>             -<span class="ruby">           -      -               -
+</span>cs code ---&gt; -   Lexer   - ---&gt; - Parser(Jison) - ---&gt; AST ---&gt; node.compile() ---&gt; js code
+             -<span class="ruby">           -      -               -
+</span>             -<span class="ruby">------------      -----------------
+</span>                                        ^
+                                        -<span class="ruby">
+</span>                                        -<span class="ruby">
+</span>                                  -<span class="ruby">------------
+</span>                                  -<span class="ruby">           -
+</span>                                  -<span class="ruby">   <span class="constant">Nodes</span>   -
+</span>                                  -<span class="ruby">           -
+</span>                                  -<span class="ruby">------------</span>
+</code></pre><p>概括来讲（通常了解点编译器的人都会说的），CoffeeScript编译器也不例外，主要也分为三大部分：词法解析器（Lexer），语法解析器（Parser）以及构造AST（抽象语法树），遍历语法树生成相应的代码。</p>
+<h2 id="下面首先对这三块进行简单的介绍：">下面首先对这三块进行简单的介绍：</h2><ul>
+<li><p><strong>Lexer(<a href="http://coffeescript.org/documentation/docs/lexer.html" target="_blank" rel="external">lexer.coffee</a>)</strong>：词法解析器就是接受输入的cs代码，然后输出token。虽然CoffeeScript语法解析是基于Jison的，Jison同时也可以做词法解析，但CoffeeScript却自己实现了词法解析器。为什么CoffeeScript要自己实现一个Lexer呢？因为CoffeeScript的语法是LALR(1)的，无法满足CoffeeScript简洁语法的需要，因此需要自定义Lexer，且使用<a href="http://coffeescript.org/documentation/docs/rewriter.html" target="_blank" rel="external">rewriter.coffee</a>来处理这些语法，在token流中插入补充token； </p>
+</li>
+<li><p><strong>Parser(<a href="http://coffeescript.org/documentation/docs/grammar.html" target="_blank" rel="external">grammar.coffee</a>)</strong>：语法解析器就是根据CoffeeScript的语法规则，接受Lexer的输出的token作为输入产生AST。生成AST并不是所有Parser都需要做的。在语法解析的过程中，使用不同的语法规则进行移入token，规约即可。只是可以定义规约时的操作，结合<a href="http://coffeescript.org/documentation/docs/nodes.html" target="_blank" rel="external">nodes.coffee</a>（其中定义了AST不同类型的节点）生成CoffeeScript所需的AST；<br>在源码中并没有一个名为<code>parser.coffee</code>的文件。Parser是使用Jison基于<code>grammar.coffee</code>生成的；</p>
+</li>
+<li><strong>AST</strong>：抽象语法树是Parser的产物，也就是<code>nodes.coffee</code>所定义的诸多节点组成的一棵树。每个节点都有<code>compile</code>和<code>compileNode</code>方法。从根节点开始，通过<code>compile</code>方法的调用，深度优先遍历整个AST，从而生成js代码。</li>
+</ul>
+<p>调用CoffeeScript提供出来的接口，可以看到产生的一些中间变量，例如：</p>
+<pre><code>code = <span class="string">''</span><span class="string">'
+do -&gt;
+    String::trim || String::trim = -&gt;
+        @replace /^\s+|\s+$/g,'</span><span class="string">'
+    return
+'</span><span class="string">''</span>
+<span class="comment">###</span>
+[
+    [<span class="string">"UNARY"</span>, <span class="string">"do"</span>, <span class="number">0</span>],
+    [<span class="string">"-&gt;"</span>, <span class="string">"-&gt;"</span>, <span class="number">0</span>],
+    [<span class="string">"INDENT"</span>, <span class="number">4</span>, <span class="number">1</span>],
+    [<span class="string">"IDENTIFIER"</span>, <span class="string">"String"</span>, <span class="number">1</span>],
+    [<span class="string">"::"</span>, <span class="string">"::"</span>, <span class="number">1</span>],
+    [<span class="string">"IDENTIFIER"</span>, <span class="string">"trim"</span>, <span class="number">1</span>],
+    [<span class="string">"LOGIC"</span>, <span class="string">"||"</span>, <span class="number">1</span>],
+    [<span class="string">"IDENTIFIER"</span>, <span class="string">"String"</span>, <span class="number">1</span>],
+    [<span class="string">"::"</span>, <span class="string">"::"</span>, <span class="number">1</span>],
+    [<span class="string">"IDENTIFIER"</span>, <span class="string">"trim"</span>, <span class="number">1</span>],
+    [<span class="string">"="</span>, <span class="string">"="</span>, <span class="number">1</span>],
+    [<span class="string">"-&gt;"</span>, <span class="string">"-&gt;"</span>, <span class="number">1</span>],
+    [<span class="string">"INDENT"</span>, <span class="number">4</span>, <span class="number">2</span>],
+    [<span class="string">"@"</span>, <span class="string">"@"</span>, <span class="number">2</span>],
+    [<span class="string">"IDENTIFIER"</span>, <span class="string">"replace"</span>, <span class="number">2</span>],
+    [<span class="string">"CALL_START"</span>, <span class="string">"("</span>, <span class="number">2</span>],
+    [<span class="string">"REGEX"</span>, <span class="string">"/^s+|s+$/g"</span>, <span class="number">2</span>],
+    [<span class="string">","</span>, <span class="string">","</span>, <span class="number">2</span>],
+    [<span class="string">"STRING"</span>, <span class="string">"''"</span>, <span class="number">2</span>],
+    [<span class="string">"CALL_END"</span>, <span class="string">")"</span>, <span class="number">3</span>],
+    [<span class="string">"OUTDENT"</span>, <span class="number">4</span>, <span class="number">3</span>],
+    [<span class="string">"TERMINATOR"</span>, <span class="string">"\n"</span>, <span class="number">3</span>],
+    [<span class="string">"RETURN"</span>, <span class="string">"return"</span>, <span class="number">3</span>],
+    [<span class="string">"OUTDENT"</span>, <span class="number">4</span>, <span class="number">3</span>],
+    [<span class="string">"TERMINATOR"</span>, <span class="string">"\n"</span>, <span class="number">3</span>]
+]
+<span class="comment">###</span>
+console.log JSON.stringify CoffeeScript.tokens code
+<span class="comment">###</span>
+{
+    <span class="string">"expressions"</span>: [{
+        <span class="string">"args"</span>: [],
+        <span class="string">"isNew"</span>: <span class="literal">false</span>,
+        <span class="string">"isSuper"</span>: <span class="literal">false</span>,
+        <span class="string">"variable"</span>: {
+            <span class="string">"params"</span>: [],
+            <span class="string">"body"</span>: {
+                <span class="string">"expressions"</span>: [{
+                    <span class="string">"operator"</span>: <span class="string">"||"</span>,
+                    <span class="string">"first"</span>: {
+                        <span class="string">"base"</span>: {
+                            <span class="string">"value"</span>: <span class="string">"String"</span>
+                        },
+                        <span class="string">"properties"</span>: [{
+                            <span class="string">"name"</span>: {
+                                <span class="string">"value"</span>: <span class="string">"trim"</span>,
+                                <span class="string">"asKey"</span>: <span class="literal">true</span>
+                            },
+                            <span class="string">"proto"</span>: <span class="string">".prototype"</span>,
+                            <span class="string">"soak"</span>: <span class="literal">false</span>
+                        }]
+                    },
+                    <span class="string">"second"</span>: {
+                        <span class="string">"variable"</span>: {
+                            <span class="string">"base"</span>: {
+                                <span class="string">"value"</span>: <span class="string">"String"</span>
+                            },
+                            <span class="string">"properties"</span>: [{
+                                <span class="string">"name"</span>: {
+                                    <span class="string">"value"</span>: <span class="string">"trim"</span>,
+                                    <span class="string">"asKey"</span>: <span class="literal">true</span>
+                                },
+                                <span class="string">"proto"</span>: <span class="string">".prototype"</span>,
+                                <span class="string">"soak"</span>: <span class="literal">false</span>
+                            }]
+                        },
+                        <span class="string">"value"</span>: {
+                            <span class="string">"params"</span>: [],
+                            <span class="string">"body"</span>: {
+                                <span class="string">"expressions"</span>: [{
+                                    <span class="string">"args"</span>: [{
+                                        <span class="string">"base"</span>: {
+                                            <span class="string">"value"</span>: <span class="string">"/^s+|s+$/g"</span>
+                                        },
+                                        <span class="string">"properties"</span>: []
+                                    }, {
+                                        <span class="string">"base"</span>: {
+                                            <span class="string">"value"</span>: <span class="string">"''"</span>
+                                        },
+                                        <span class="string">"properties"</span>: []
+                                    }],
+                                    <span class="string">"soak"</span>: <span class="literal">false</span>,
+                                    <span class="string">"isNew"</span>: <span class="literal">false</span>,
+                                    <span class="string">"isSuper"</span>: <span class="literal">false</span>,
+                                    <span class="string">"variable"</span>: {
+                                        <span class="string">"base"</span>: {
+                                            <span class="string">"value"</span>: <span class="string">"this"</span>
+                                        },
+                                        <span class="string">"properties"</span>: [{
+                                            <span class="string">"name"</span>: {
+                                                <span class="string">"value"</span>: <span class="string">"replace"</span>,
+                                                <span class="string">"asKey"</span>: <span class="literal">true</span>
+                                            },
+                                            <span class="string">"proto"</span>: <span class="string">""</span>,
+                                            <span class="string">"soak"</span>: <span class="literal">false</span>
+                                        }],
+                                        <span class="string">"this"</span>: <span class="literal">true</span>
+                                    }
+                                }]
+                            },
+                            <span class="string">"bound"</span>: <span class="literal">false</span>
+                        }
+                    },
+                    <span class="string">"flip"</span>: <span class="literal">false</span>
+                }, {}]
+            },
+            <span class="string">"bound"</span>: <span class="literal">false</span>
+        },
+        <span class="string">"do"</span>: <span class="literal">true</span>
+    }]
+}
+<span class="comment">###</span>
+console.log JSON.stringify CoffeeScript.nodes code
+</code></pre><p>这一部分就说到这里，之后会更加深入到CoffeeScript的各个实现细节之中。</p>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>寸志</h4>
+    <p>为什么我的眼里常含泪水? 因为我对这土地爱得深沉</p>
+</section>
+      <section class="share">
+    <h4>分享本文</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://island205.com/2012/10/22/the-compiler-of-coffeescript-1/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://island205.com/2012/10/22/the-compiler-of-coffeescript-1/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://island205.com/2012/10/22/the-compiler-of-coffeescript-1/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <a class="newer-posts" href="/2014/05/23/thinking-in-front-end-module/">
+        ← 前端模块化杂谈
+    </a>
+    
+    <span class="page-number">•</span>
+    
+    <a class="older-posts" href="/2012/07/19/the-little-book-of-coffeescript-on-douban/">
+        豆瓣阅读《CoffeeScript小书》上架啦！ →
+    </a>
+    
+</nav>
+  
+<div id="comment" class="comments-area">
+  <!-- 多说评论框 start -->
+  <div class="ds-thread" data-thread-key="post-the-compiler-of-coffeescript-1" data-title="CoffeeScript编译器（一）" data-url="http://island205.com/2012/10/22/the-compiler-of-coffeescript-1/"></div>
+  <!-- 多说评论框 end -->
+  <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+  <script type="text/javascript">
+  var duoshuoQuery = {short_name:'fronteer'};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0] 
+       || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+  <!-- 多说公共JS代码 end -->
+</div>
+
+</main>
+
+
+  
+<footer class="site-footer"  style="background-image: url(https://unsplash.it/1366/768?random)" >
+  
+  <a class="subscribe icon-feed" href="/atom.xml"><span class="tooltip">订阅</span></a>
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">寸志</a> &copy; 2015 &bull; All rights reserved.</section>
+     <section class="poweredby">使用 <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a> 驱动</section>
+  </div>
+</footer>
+
+  <script src="http://ajax.useso.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+
+<!-- start Mixpanel --><script type="text/javascript">(function(f,b){if(!b.__SV){var a,e,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2;a=f.createElement("script");a.type="text/javascript";a.async=!0;a.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";e=f.getElementsByTagName("script")[0];e.parentNode.insertBefore(a,e)}})(document,window.mixpanel||[]);
+mixpanel.init("4263f8eff30a9a5545420500678d784f");
+// page-view
+mixpanel.track("page-view");
+</script><!-- end Mixpanel -->
+
+
+
+
+
+</body>
+</html>

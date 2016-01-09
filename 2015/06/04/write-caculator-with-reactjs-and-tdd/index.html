@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>测试驱动编写 React 简易计算器 | 寸志</title>
+  <meta name="description" content="" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <link rel="stylesheet" type="text/css" href="http://fonts.useso.com/css?family=Noto+Serif:400,700,400italic|Open+Sans:700,400" />
+
+  <meta name="generator" content="寸志">
+
+  
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="atom.xml">
+  
+  
+
+  
+</head>
+
+
+<body class="post-template">
+
+  <header class="site-head"  style="background-image: url(https://unsplash.it/1366/768?random)" >
+    <div class="vertical">
+        <div class="site-head-content inner">
+             <a class="blog-logo" href="/"><img src="http://pic.yupoo.com/island205/EE6jEQLb/medium.jpg" alt="Blog Logo"/></a> 
+            <h1 class="blog-title">寸志</h1>
+            <h2 class="blog-description"></h2>
+        </div>
+    </div>
+</header>
+  
+
+<main class="content" role="main">
+  <article class="post">
+    <span class="post-meta">
+      <time datetime="2015-06-03T16:00:00.000Z" itemprop="datePublished">
+          2015年 6月4日
+      </time>
+    
+</span>
+    <h1 class="post-title">测试驱动编写 React 简易计算器</h1>
+    <section class="post-content">
+      <blockquote>
+<p>本文的<a href="https://github.com/island205/ReactUnitTesting/tree/master/Caculator" target="_blank" rel="external">源码</a>和 <a href="http://island205.com/ReactUnitTesting/Caculator/">DEMO</a> 都可以点击链接找到。</p>
+</blockquote>
+<p>在5月30号 Teambition 组织的 React 的分享会中，我分享了如何对 React 组件进行单元测试，本文将做一些介绍和记录，以飨读者。</p>
+<h3 id="单元测试的重要性">单元测试的重要性</h3><blockquote>
+<p>此处省略十万字。</p>
+</blockquote>
+<h3 id="模块范式和测试方案">模块范式和测试方案</h3><p>React 的开发并不脱离前端的开发范式。下表总结了 React 开发各个环节的一些可选方案。</p>
+<!--
+<table>
+  <thead>
+    <tr>
+      <th>Code</th>
+      <th>Runtime</th>
+      <th>Unit Test</th>
+      <th>Test Runner</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Global</td>
+      <td>In Order</td>
+      <td rowspan=4>
+        Jasmine
+        <br>
+        Mocha
+        <br>
+        <br>
+        Tools:
+          <br>
+          Jasmine-react
+          <br>
+          Chance
+        </td>
+      <td rowspan=4>
+        Manual
+        <br>
+        Karma
+      </td>
+    </tr>
+    <tr>
+      <td>AMD</td>
+      <td>RequireJS</td>
+    </tr>
+    <tr>
+      <td>CommonJS</td>
+      <td>
+          Browserify
+          <br>
+          Webpack
+          <br>
+          RequireJS
+      </td>
+    </tr>
+    <tr>
+      <td>ES6 Module</td>
+      <td>
+          Browserify
+          <br>
+          Webpack
+          <br>
+          RequireJS
+      </td>
+    </tr>
+    <tr>
+      <td>CommonJS</td>
+      <td colspan=3>Jest</td>
+    </tr>
+  </tbody>
+</table>
+-->
+<table> <thead> <tr> <th>Code</th> <th>Runtime</th> <th>Unit Test</th> <th>Test Runner</th> </tr> </thead> <tbody> <tr> <td>Global</td> <td>In Order</td> <td rowspan="4"> Jasmine <br> Mocha <br> <br> Tools: <br> Jasmine-react <br> Chance </td> <td rowspan="4"> Manual <br> Karma </td> </tr> <tr> <td>AMD</td> <td>RequireJS</td> </tr> <tr> <td>CommonJS</td> <td> Browserify <br> Webpack <br> RequireJS </td> </tr> <tr> <td>ES6 Module</td> <td> Browserify <br> Webpack <br> RequireJS </td> </tr> <tr> <td>CommonJS</td> <td colspan="3">Jest</td> </tr> </tbody> </table>
+
+<h4 id="模块范式">模块范式</h4><p>目前前端通常有四种代码的组织范式。</p>
+<ul>
+<li><strong>Global</strong>：即无论是 React 还是 JSXTransformer，包括 业务代码都顺序的引入到页面中。通过全局对象来实现模块的共享。即如 <a href="http://facebook.github.io/react/docs/getting-started.html" target="_blank" rel="external">React 入门</a> 这样的例子；</li>
+<li><strong>AMD</strong>：我们也可以在 AMD 的项目中使用 React，AMD 已经是一种非常成熟的方案，而且社区对 AMD 的支持也非常广泛。我们可以把 Flux 中的各个要件都写成 AMD 模块，然后异步加载到前端配合使用；</li>
+<li><strong>CommonJS</strong>：CommonJS 是 React 项目本身代码组织的方式，也是 React 社区许多组件的模块化方案；基于 CommonJS；然后是用 Browserify 和 Webpack 来搭建运行时，当然通过一些工具转化成 AMD 模块也行；</li>
+<li><strong>ES6 Module</strong>：编写未来的模块，通过 babel 等工具转化成现在可用的模块。</li>
+</ul>
+<h4 id="测试用例">测试用例</h4><p>测试用例代码必须依附于开发范式，无论选择组织范式，代码必须都是分模块的（分文件、分模块），这样测试用例也可以分模块细粒度的编写。至于说基于何种测试框架，前端推荐使用 Jasmine，再加上一些测试的辅助工具即可，比如做 spy、mock 等。除此之外我们可以使用像 Karma 这样 Testing Runner，最大限度地排除开发过程中的重复劳动。</p>
+<h4 id="Jest">Jest</h4><p>Jest 是 Facebook 打造的无脑的 CommonJS 模块测试框架。优点如下：</p>
+<ul>
+<li>熟悉，基于 Jasmine；</li>
+<li>轻量，一个待测试模块文件，一个测试文件，命令行就可以跑，无需浏览器；</li>
+<li>内置 mock 方案，自动 mock 所有模块；</li>
+</ul>
+<p>但，跑了几个官方的例子，有的不通，Github 上看说是 <code>jsdom</code> 的问题，必须使用 <code>0.10.x</code> 版的 node。呵呵，还是使用小而美的组合比较靠谱。而且 Jest 只能用来测试 CommonJS 范式的代码。</p>
+<h4 id="ES6_+_Webpack_+_Jasmine_+_Karma_组合">ES6 + Webpack + Jasmine + Karma 组合</h4><p>我选择了 ES6 + Webpack + Jasmine + Karma 组合。</p>
+<!--
+<table>
+  <thead>
+    <tr>
+      <th>Code</th>
+      <th>Runtime</th>
+      <th>Unit Test</th>
+      <th>Test Runner</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Global</td>
+      <td>In Order</td>
+      <td rowspan=4>
+        <span style="font-weight: bold; color: green;">Jasmine</span>
+        <br>
+        Mocha
+        <br>
+        <br>
+        Tools:
+          <br>
+          Jasmine-react
+          <br>
+          Chance
+        </td>
+      <td rowspan=4>
+        Manual
+        <br>
+        <span style="font-weight: bold; color: green;">Karma</span>
+      </td>
+    </tr>
+    <tr>
+      <td>AMD</td>
+      <td>RequireJS</td>
+    </tr>
+    <tr>
+      <td>CommonJS</td>
+      <td>
+          Browserify
+          <br>
+          Webpack
+          <br>
+          RequireJS
+      </td>
+    </tr>
+    <tr>
+      <td style="font-weight: bold; color: green;">ES6 Module</td>
+      <td>
+          Browserify
+          <br>
+          <span style="font-weight: bold; color: green;">Webpack</span>
+          <br>
+          RequireJS
+      </td>
+    </tr>
+    <tr>
+      <td>CommonJS</td>
+      <td colspan=3>Jest</td>
+    </tr>
+  </tbody>
+</table>
+-->
+<table> <thead> <tr> <th>Code</th> <th>Runtime</th> <th>Unit Test</th> <th>Test Runner</th> </tr> </thead> <tbody> <tr> <td>Global</td> <td>In Order</td> <td rowspan="4"> <span style="font-weight: bold; color: green;">Jasmine</span> <br> Mocha <br> <br> Tools: <br> Jasmine-react <br> Chance </td> <td rowspan="4"> Manual <br> <span style="font-weight: bold; color: green;">Karma</span> </td> </tr> <tr> <td>AMD</td> <td>RequireJS</td> </tr> <tr> <td>CommonJS</td> <td> Browserify <br> Webpack <br> RequireJS </td> </tr> <tr> <td style="font-weight: bold; color: green;">ES6 Module</td> <td> Browserify <br> <span style="font-weight: bold; color: green;">Webpack</span> <br> RequireJS </td> </tr> <tr> <td>CommonJS</td> <td colspan="3">Jest</td> </tr> </tbody> </table>
+
+<p>ES6 Module，编写未来的代码，相信不久的将来 React 也会切换到 ES6 Module 上来。使用 Webpack 来 bundle 代码实现运行时，作为工具可以随时替换，如果之后有更好的工具就可以换掉。Jasmine 和 Karma 就不用细说了。</p>
+<h3 id="开始">开始</h3><p>我们的目标（也是最终结果）：</p>
+<p><img src="http://ntu.so/di/GXMSJ/Caculator.png" alt="React Caculator"></p>
+<p>拆解成三个模块来实现这个计算器：</p>
+<ul>
+<li>Caculator.js：主界面，包括计算结果显示屏；</li>
+<li>Button.js：每一个按钮；</li>
+<li>Parser.js：用来解析用户的输入流（2+1=+3=5+1-…），产生结果，本质是一个状态机。</li>
+</ul>
+<h4 id="搭建_TDD_环境">搭建 TDD 环境</h4><p>新建目录，添加文件如下：</p>
+<pre><code>├── src
+│   ├── Button<span class="class">.js</span>
+│   ├── Button<span class="class">.less</span>
+│   ├── Caculator<span class="class">.js</span>
+│   ├── Caculator<span class="class">.less</span>
+│   ├── Parser<span class="class">.js</span>
+├── test
+│   ├── specs
+│   │   ├── Button<span class="class">.spec</span><span class="class">.js</span>
+│   │   ├── Caculator<span class="class">.spec</span><span class="class">.js</span>
+│   │   └── Parser<span class="class">.spec</span><span class="class">.js</span>
+│   └── test-main<span class="class">.js</span>
+├── package<span class="class">.json</span>
+├── karma<span class="class">.conf</span><span class="class">.js</span>
+└── webpack<span class="class">.config</span><span class="class">.js</span>
+</code></pre><h5 id="karma-conf-js">karma.conf.js</h5><p>该文件通过 <code>karma init</code> 生成，然后做一些简单修改，添加 <code>karma-webpack</code> 插件把 <code>test/test-main.js</code> bundle 成一个可运行在浏览器中的测试文件：</p>
+<pre><code><span class="comment">// 监听文件变化，重新运行测试</span>
+<span class="string">files:</span> [
+  <span class="comment">// included: false 为不包含这些文件到浏览器中</span>
+  {<span class="string">pattern:</span> <span class="string">'src/*.js'</span>, <span class="string">included:</span> <span class="literal">false</span>},
+  {<span class="string">pattern:</span> <span class="string">'src/*.less'</span>, <span class="string">included:</span> <span class="literal">false</span>},
+  {<span class="string">pattern:</span> <span class="string">'test/specs/**/*.js'</span>, <span class="string">included:</span> <span class="literal">false</span>},
+  <span class="string">'test/test-main.js'</span>
+],
+<span class="comment">// ...</span>
+<span class="string">preprocessors:</span> {
+  <span class="string">'test/test-main.js'</span>: [<span class="string">'webpack'</span>]
+},
+<span class="label">
+webpack:</span> {
+<span class="label">  devtool:</span> <span class="string">'inline-source-map'</span>,
+<span class="label">  module:</span> {
+<span class="label">    loaders:</span> [
+      { <span class="string">test:</span> <span class="regexp">/\.js$/</span>, <span class="string">loader:</span> <span class="string">'babel-loader'</span> },
+      { <span class="string">test:</span> <span class="regexp">/\.less$/</span>, <span class="string">loader:</span> <span class="string">"style!css!less"</span> }
+    ]
+  }
+}
+<span class="label">
+webpackMiddleware:</span> {
+<span class="label">    noInfo:</span> <span class="literal">true</span>,
+<span class="label">    devtool:</span> <span class="string">"#inline-source-map"</span>
+},
+<span class="label">
+plugins:</span> [
+    require(<span class="string">"karma-webpack"</span>),
+    require(<span class="string">'karma-jasmine'</span>),
+    require(<span class="string">'karma-chrome-launcher'</span>)
+]
+</code></pre><h5 id="test-main-js">test-main.js</h5><p>ES6 module，加入测试用例。</p>
+<pre><code><span class="keyword">import</span> <span class="string">'./specs/Button.spec'</span>
+<span class="keyword">import</span> <span class="string">'./specs/Caculator.spec'</span>
+<span class="keyword">import</span> <span class="string">'./specs/Parser.spec'</span>
+</code></pre><h5 id="Caculator-spec-js">Caculator.spec.js</h5><p>首先编写 Caculator 的测试用例：</p>
+<pre><code><span class="keyword">import</span> React from <span class="string">'react/addons'</span>
+<span class="keyword">import</span> Caculator from <span class="string">'../../src/Caculator'</span>
+
+<span class="keyword">var</span> TestUtils = React.addons.TestUtils
+
+describe(<span class="string">'Caculator'</span>, <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+  <span class="keyword">var</span> caculator
+
+  beforeEach(<span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+    caculator = TestUtils.renderIntoDocument(&lt;Caculator /&gt;)
+  })
+
+  it(<span class="string">'should display a caculator'</span>, <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+    <span class="keyword">var</span> divs = TestUtils.scryRenderedDOMComponentsWithTag(caculator, <span class="string">'div'</span>)
+    expect(divs.length).toBe(<span class="number">3</span>)
+    <span class="keyword">var</span> as = TestUtils.scryRenderedDOMComponentsWithTag(caculator, <span class="string">'a'</span>)
+    expect(as.length).toBe(<span class="number">18</span>)
+  })
+})
+</code></pre><blockquote>
+<p><strong>TestUtils.renderIntoDocument</strong> 较于 <strong>React.render</strong> 的优点在于，并不会把组件渲染到页面上，这样测试用例之间不会互相污染。<code>TestUtils</code> 多个像 <code>scryRenderedDOMComponentsWithTag</code> 这样的方法，便于你在 React 组件中查找子对象（可以是标记名、组件名等）。</p>
+</blockquote>
+<h5 id="Caculator-js">Caculator.js</h5><p>首先编写一个简单的 React 组件：</p>
+<pre><code><span class="pi">"use strict"</span>;
+
+import <span class="string">'./Caculator.less'</span>
+
+export <span class="keyword">default</span> React.createClass({
+  render: <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+    <span class="keyword">return</span> (<span class="xml"><span class="tag">&lt;<span class="title">div</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span>)
+  }
+})</span>
+</code></pre><p>运行 <code>karma start</code>，运行测试用例：</p>
+<pre><code>$ karma start
+INFO [karma]: Karma v0<span class="number">.12</span><span class="number">.33</span> server started <span class="keyword">at</span> <span class="keyword">http</span>://localhost:<span class="number">9876</span>/
+INFO [launcher]: Starting browser Chrome
+INFO [Chrome <span class="number">43.0</span><span class="number">.2357</span> (Mac OS X <span class="number">10.10</span><span class="number">.4</span>)]: Connected <span class="command"><span class="keyword">on</span> <span class="title">socket</span> <span class="title">SQQx_6CxC3UHjooVPFk7</span> <span class="title">with</span> <span class="title">id</span> <span class="title">86084967</span></span>
+INFO [karma]: Delaying execution, these browsers are <span class="operator">not</span> ready: Chrome <span class="number">43.0</span><span class="number">.2357</span> (Mac OS X <span class="number">10.10</span><span class="number">.4</span>)
+Chrome <span class="number">43.0</span><span class="number">.2357</span> (Mac OS X <span class="number">10.10</span><span class="number">.4</span>) Caculator should display <span class="operator">a</span> caculator FAILED
+  Expected <span class="number">1</span> <span class="built_in">to</span> be <span class="number">3.</span>
+  Expected <span class="number">0</span> <span class="built_in">to</span> be <span class="number">18.</span>
+Chrome <span class="number">43.0</span><span class="number">.2357</span> (Mac OS X <span class="number">10.10</span><span class="number">.4</span>): Executed <span class="number">1</span> <span class="operator">of</span> <span class="number">1</span> (<span class="number">1</span> FAILED) (<span class="number">0</span> <span class="built_in">secs</span> / <span class="number">0.026</span> Chrome <span class="number">43.0</span><span class="number">.2357</span> (Mac OS X <span class="number">10.10</span><span class="number">.4</span>): Executed <span class="number">1</span> <span class="operator">of</span> <span class="number">1</span> (<span class="number">1</span> FAILED) ERROR (<span class="number">0.003</span> <span class="built_in">secs</span> / <span class="number">0.026</span> <span class="built_in">secs</span>)
+</code></pre><p>接下来我们编写 <code>Caculator.js</code> 的实现逻辑，以及修改 <code>Button.spec.js</code> 和 <code>Button.js</code>，实现计算器的 UI 功能。这里不再深入细节中，大家可以查看<a href="https://github.com/island205/ReactUnitTesting/tree/master/Caculator" target="_blank" rel="external">示例代码</a>。 </p>
+<h4 id="事件模拟">事件模拟</h4><p><code>Button</code> 会注册一个 <code>click</code> 监听函数，当用户点击时，会通知 <code>Caculator</code> 输入的内容是什么。下面是这部分的测试用例：</p>
+<pre><code>it(<span class="string">'should call onPress as being clicked'</span>, <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+  <span class="keyword">var</span> letter
+  <span class="keyword">var</span> button = TestUtils.renderIntoDocument(
+    &lt;Button
+      letter=<span class="string">"="</span> onPress={<span class="function"><span class="keyword">function</span> <span class="params">(lt)</span> </span>{
+        letter = lt
+      }}
+    /&gt;
+  )
+
+  TestUtils.Simulate.click(button.getDOMNode())
+
+  expect(letter).toBe(<span class="string">'='</span>)
+})
+</code></pre><p><strong>TestUtils.Simulate</strong> 是 <code>TestUtils</code> 提供的另外一个功能，可以模拟用户的操作，向组件发送事件。更多相关的使用可以参考<a href="http://facebook.github.io/react/docs/test-utils.html" target="_blank" rel="external">React 相关文档</a>。</p>
+<h4 id="Parser-js">Parser.js</h4><p><code>Parser.js</code> 是计算器的算法核心，提供了两个接口：</p>
+<ul>
+<li><strong>.take(letter)</strong>，将用户每次点击的按钮输入到解析器中；</li>
+<li><strong>.getScreen()</strong>，获取屏幕上应该显示的值。</li>
+</ul>
+<p><span></span></p>
+<pre><code><span class="comment">// Caculator.js</span>
+updateScreen: <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+  <span class="keyword">this</span>.setState({
+    screen: <span class="keyword">this</span>.parser.getScreen()
+  })
+},
+onPress: <span class="function"><span class="keyword">function</span> <span class="params">(letter)</span> </span>{
+  <span class="keyword">this</span>.parser.take(letter)
+  <span class="keyword">this</span>.updateScreen()
+},
+componentDidMount: <span class="function"><span class="keyword">function</span> <span class="params">()</span> </span>{
+  <span class="keyword">this</span>.parser = <span class="keyword">new</span> Parser()
+  <span class="keyword">this</span>.updateScreen()
+}
+</code></pre><p>在用户点击按钮的时候，输入 <code>letter</code>，然后调用  <code>getScreen()</code>，通过 <code>setState</code> 来更新显示。</p>
+<p>部分测试用例如下：</p>
+<pre><code>it<span class="comment">('should handle ±', function ()</span> {
+  parser.take<span class="comment">('1')</span>
+  expect<span class="comment">(parser.getScreen()</span>).toBe<span class="comment">('1')</span>
+  parser.take<span class="comment">('±')</span>
+  expect<span class="comment">(parser.getScreen()</span>).toBe<span class="comment">('-1')</span>
+  parser.take<span class="comment">('±')</span>
+  expect<span class="comment">(parser.getScreen()</span>).toBe<span class="comment">('1')</span>
+})
+
+it<span class="comment">('should accpet float', function ()</span> {
+  parser.take<span class="comment">('1')</span>
+  parser.take<span class="comment">('.')</span>
+  parser.take<span class="comment">('1')</span>
+  expect<span class="comment">(parser.getScreen()</span>).toBe<span class="comment">('1.1')</span>
+  parser.take<span class="comment">('±')</span>
+  expect<span class="comment">(parser.getScreen()</span>).toBe<span class="comment">('-1.1')</span>
+})
+
+it<span class="comment">('should clear screen when user click C', function ()</span> {
+  parser.take<span class="comment">('1')</span>
+  parser.take<span class="comment">('.')</span>
+  parser.take<span class="comment">('1')</span>
+  expect<span class="comment">(parser.getScreen()</span>).toBe<span class="comment">('1.1')</span>
+  parser.take<span class="comment">('C')</span>
+  expect<span class="comment">(parser.getScreen()</span>).toBe<span class="comment">(0)</span>
+})
+</code></pre><h5 id="状态图">状态图</h5><p>关于 Parser.js 里的算法，琢磨了很久，怎么改代码都写不好，很明显的问题就是，同一个输入在不同状态下，需要实施的操作完全不一样。于是停止 coding，先把状态图画出来：</p>
+<p><img src="http://t1.qpic.cn/mblogpic/9e8552609e06c7b03536/2000.jpg" alt="Caculator State Machine"></p>
+<ul>
+<li><strong>s1</strong>：初始状态（求值操作或者清空操作都会回到这个状态。）；</li>
+<li><strong>s2</strong>：左操作数输入中；</li>
+<li><strong>s3</strong>：右操作数输入中；</li>
+<li><strong>s4</strong>：出错（除0操作导致）；</li>
+</ul>
+<p>状态图画好，一切引刃而解，据此添加更多的测试用例，在 Parser.js 把逻辑实现即可。</p>
+<h4 id="webpack-config-js">webpack.config.js</h4><p>组件都写好了，新建 <code>dist</code> 目录，添加 <code>dist/index.html</code> 和  入口 ‘src/index.js’ 文件，是时候把组件组装成起来了：</p>
+<pre><code><span class="comment">// webpack.config.js</span>
+module.exports = {
+<span class="label">    entry:</span> <span class="string">"./src/index.js"</span>,
+<span class="label">    output:</span> {
+<span class="label">        path:</span> <span class="string">'dist/'</span>,
+<span class="label">        filename:</span> <span class="string">"bundle.js"</span>
+    },
+<span class="label">    module:</span> {
+<span class="label">        loaders:</span> [
+            { <span class="string">test:</span> <span class="regexp">/\.js$/</span>, <span class="string">loader:</span> <span class="string">'babel-loader'</span> },
+            { <span class="string">test:</span> <span class="regexp">/\.less$/</span>, <span class="string">loader:</span> <span class="string">"style!css!less"</span> }
+        ]
+    }
+}
+</code></pre><p>通过 <code>webpack</code> 把应用打包到 <code>dist/bundle.js</code>。做一些样式方面的调整就行啦。猛击 <a href="http://island205.com/ReactUnitTesting/Caculator/">DEMO</a>。</p>
+<h4 id="总结">总结</h4><p>单元测试驱动开发除了能够保证代码质量以外，一定还可以减少调试的重复劳动。比如 Parser 的输入序列使用测试用例来输入很简单，如果使用手动点击就很麻烦了。针对 React 组件的单元测试还有点本文并没有提到，比如 React-Jasmine rewire 的使用等等，大家可以自己琢磨。</p>
+
+    </section>
+    <footer class="post-footer">
+      <section class="author">
+    <h4>寸志</h4>
+    <p>为什么我的眼里常含泪水? 因为我对这土地爱得深沉</p>
+</section>
+      <section class="share">
+    <h4>分享本文</h4>
+    <a class="icon-twitter" href="http://twitter.com/share?url=http://island205.com/2015/06/04/write-caculator-with-reactjs-and-tdd/"
+       onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+        <span class="hidden">Twitter</span>
+    </a>
+    <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://island205.com/2015/06/04/write-caculator-with-reactjs-and-tdd/"
+       onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+        <span class="hidden">Facebook</span>
+    </a>
+    <a class="icon-google-plus" href="https://plus.google.com/share?url=http://island205.com/2015/06/04/write-caculator-with-reactjs-and-tdd/"
+       onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+        <span class="hidden">Google+</span>
+    </a>
+</section>
+    </footer>
+  </article>
+  <nav class="pagination" role="pagination">
+    
+    <a class="newer-posts" href="/2015/06/06/my-rss-list/">
+        ← 我的 RSS 订阅列表
+    </a>
+    
+    <span class="page-number">•</span>
+    
+    <a class="older-posts" href="/2015/03/31/the-problem-of-callback/">
+        Node.js 异步编程之 Callback的问题 →
+    </a>
+    
+</nav>
+  
+<div id="comment" class="comments-area">
+  <!-- 多说评论框 start -->
+  <div class="ds-thread" data-thread-key="post-write-caculator-with-reactjs-and-tdd" data-title="测试驱动编写 React 简易计算器" data-url="http://island205.com/2015/06/04/write-caculator-with-reactjs-and-tdd/"></div>
+  <!-- 多说评论框 end -->
+  <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+  <script type="text/javascript">
+  var duoshuoQuery = {short_name:'fronteer'};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0] 
+       || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+  <!-- 多说公共JS代码 end -->
+</div>
+
+</main>
+
+
+  
+<footer class="site-footer"  style="background-image: url(https://unsplash.it/1366/768?random)" >
+  
+  <a class="subscribe icon-feed" href="/atom.xml"><span class="tooltip">订阅</span></a>
+  
+  <div class="inner">
+     <section class="copyright">All content copyright <a href="/">寸志</a> &copy; 2015 &bull; All rights reserved.</section>
+     <section class="poweredby">使用 <a class="icon-ghost" href="http://zespia.tw/hexo/">Hexo</a> 驱动</section>
+  </div>
+</footer>
+
+  <script src="http://ajax.useso.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.fitvids.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+
+
+
+<!-- start Mixpanel --><script type="text/javascript">(function(f,b){if(!b.__SV){var a,e,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2;a=f.createElement("script");a.type="text/javascript";a.async=!0;a.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";e=f.getElementsByTagName("script")[0];e.parentNode.insertBefore(a,e)}})(document,window.mixpanel||[]);
+mixpanel.init("4263f8eff30a9a5545420500678d784f");
+// page-view
+mixpanel.track("page-view");
+</script><!-- end Mixpanel -->
+
+
+
+
+
+</body>
+</html>
